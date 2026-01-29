@@ -231,9 +231,11 @@ Tulis Pesanan
 fetch("https://docs.google.com/spreadsheets/d/1TNhwC9WaZza1MXvIKqUYjk4PgliSDKfRQgh6WfV4-o0/export?format=csv&gid=0")
 .then(res => res.text())
 .then(text => {
-  let rows = text.split("\n");
-  let saldo = rows[1].split(",")[4]; // kolom E (Saldo)
-  document.getElementById("saldo").innerText = saldo;
+  let rows = text.trim().split("\n");
+  let lastRow = rows[rows.length - 1].split(",");
+  let saldo = lastRow[4]; // kolom E = Saldo
+
+  document.getElementById("saldo").innerText = "Rp " + Number(saldo).toLocaleString("id-ID");
 });
 </script>
 </body>
