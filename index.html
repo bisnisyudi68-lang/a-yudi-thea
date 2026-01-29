@@ -5,8 +5,12 @@
 </head>
 <body class="bg-gray-50 text-gray-">  <!-- Header -->  <header class="bg-white shadow sticky top-0 z-10">
     <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
-      <h1 class="text-xl font-bold">A_YUDI_THEA</h1>
-      <nav class="space-x-4">
+      <div>
+  <h1 class="text-xl font-bold">A_YUDI_THEA</h1>
+  <p class="text-sm font-semibold text-green-600">
+    Saldo: <span id="saldo">Loading...</span>
+  </p>
+</div>
         <a href="#home" class="hover:underline">Home</a>
         <a href="#tentang" class="hover:underline">Tentang</a>
         <a href="#produk" class="hover:underline">Produk</a>
@@ -223,5 +227,14 @@ Tulis Pesanan
   </section>  <!-- Footer -->  <footer class="bg-gray-800 text-white text-center py-6">
     © 2026 A_YUDI_THEA. All rights reserved.
   </footer>
+<script>
+fetch("https://docs.google.com/spreadsheets/d/1TNhwC9WaZza1MXvIKqUYjk4PgliSDKfRQgh6WfV4-o0/export?format=csv&gid=0")
+.then(res => res.text())
+.then(text => {
+  let rows = text.split("\n");
+  let saldo = rows[1].split(",")[4]; // kolom E (Saldo)
+  document.getElementById("saldo").innerText = saldo;
+});
+</script>
 </body>
 </html>
