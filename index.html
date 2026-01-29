@@ -232,10 +232,19 @@ fetch("https://docs.google.com/spreadsheets/d/1TNhwC9WaZza1MXvIKqUYjk4PgliSDKfRQ
 .then(res => res.text())
 .then(text => {
   let rows = text.trim().split("\n");
-  let lastRow = rows[rows.length - 1].split(",");
-  let saldo = lastRow[4]; // kolom E = Saldo
 
-  document.getElementById("saldo").innerText = "Rp " + Number(saldo).toLocaleString("id-ID");
+  // cari baris terakhir yang kolom E nya ada isi
+  let saldo = 0;
+  for (let i = rows.length - 1; i > 0; i--) {
+    let cols = rows[i].split(",");
+    if (cols[4] && cols[4].trim() !== "") {
+      saldo = cols[4].replace(/"/g,"");
+      break;
+    }
+  }
+
+  document.getElementById("saldo").innerText =
+    "Rp " + Number(saldo).toLocaleString("id-ID");
 });
 </script>
 </body>
