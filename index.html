@@ -284,60 +284,43 @@ Ketik 1 / 2 / 3`
 }
 </script>
 <script>
-const WEBAPP_URL = "https://script.google.com/macros/s/AKfycby5JwHccoZLmmYUnJHyJ8cbB7MawemPetjN1VVds45PR7QnU0koA0aXyKUKWmxhATAkZg/exec";
-const WA = "6282319264646";
+const API="https://script.google.com/macros/s/AKfycby5JwHccoZLmmYUnJHyJ8cbB7MawemPetjN1VVds45PR7QnU0koA0aXyKUKWmxhATAkZg/exec";
 
-// ambil saldo terakhir dari sheet
-fetch(WEBAPP_URL)
+let saldo=0;
+
+// ambil saldo
+fetch(API)
 .then(r=>r.json())
 .then(d=>{
-  document.getElementById("saldo").innerText =
-   "Rp " + Number(d.saldo||0).toLocaleString("id-ID");
+ saldo=d.saldo;
+ document.getElementById("saldo").innerText=
+ "Rp "+Number(saldo).toLocaleString("id-ID");
 });
 
-// fungsi umum pesan produk
-function pesanProduk(nama,harga,tanya=false){
+function pesanProduk(nama,harga){
 
- let nominal = harga;
-
- if(tanya){
-   let x = prompt("Masukkan nominal:");
-   if(!x) return;
-   nominal = parseInt(x.replace(/[^\d]/g,""));
- }
-
- if(!nominal || nominal<=0){
-   alert("Nominal tidak valid");
+ if(saldo<harga){
+   alert("Saldo tidak cukup");
    return;
  }
 
- fetch(`${WEBAPP_URL}?pesanan=${encodeURIComponent(nama)}&harga=${nominal}`)
+ fetch(`${API}?pesanan=${encodeURIComponent(nama)}&harga=${harga}`)
  .then(r=>r.json())
  .then(d=>{
 
-   document.getElementById("saldo").innerText =
-    "Rp " + Number(d.sisa).toLocaleString("id-ID");
+   saldo=d.sisa;
+   document.getElementById("saldo").innerText=
+   "Rp "+Number(saldo).toLocaleString("id-ID");
 
-   let pesan =
+   const wa="6282319264646";
+   const msg=
 `Halo A_YUDI_THEA
-Saya pesan: ${nama}
-Harga: Rp ${nominal.toLocaleString("id-ID")}
-Sisa saldo: Rp ${Number(d.sisa).toLocaleString("id-ID")}`;
+Pesanan: ${nama}
+Harga: Rp ${harga.toLocaleString("id-ID")}
+Sisa saldo: Rp ${saldo.toLocaleString("id-ID")}`;
 
-   location.href="https://wa.me/"+WA+"?text="+encodeURIComponent(pesan);
+   location.href="https://wa.me/"+wa+"?text="+encodeURIComponent(msg);
  });
-}
-
-// BORNEO
-function pilihBorneo(){
- const p = prompt(`Pilih paket BORNEO:
-1 = 3 Bulan (180rb)
-2 = 6 Bulan (300rb)
-3 = 12 Bulan (550rb)`);
-
- if(p=="1") pesanProduk("BORNEO 3 Bulan",180000);
- else if(p=="2") pesanProduk("BORNEO 6 Bulan",300000);
- else if(p=="3") pesanProduk("BORNEO 12 Bulan",550000);
 }
 </script>
 </body>
