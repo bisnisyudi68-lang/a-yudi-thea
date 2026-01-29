@@ -228,33 +228,28 @@ Tulis Pesanan
     © 2026 A_YUDI_THEA. All rights reserved.
   </footer>
 <script>
-fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vRU984eXIh3xMGx20Q_pJdr0GeiLOhbYjlARCPdTH3Y8QKEh86hcTDDAAI41LC_3iC54OeIDP_YUoOy/pubhtml?gid=962020107&single=true")
-  .then(res => res.text())
-  .then(html => {
-    // cari semua sel <td> dari sheet
-    let parser = new DOMParser();
-    let doc = parser.parseFromString(html, "text/html");
-    let tds = doc.querySelectorAll("td");
+fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vRU984eXIh3xMGx20Q_pJdr0GeiLOhbYjlARCPdTH3Y8QKEh86hcTDDAAI41LC_3iC54OeIDP_YUoOy/pub?output=csv&gid=962020107")
+.then(res => res.text())
+.then(text => {
+  let rows = text.trim().split("\n");
 
-    let lastSaldo = 0;
+  let lastSaldo = 0;
 
-    // kita tahu di sheet Mas kolom Saldo itu kolom E
-    // index untuk E adalah ke-4 (0=A,1=B,2=C,3=D,4=E)
-    for (let i = tds.length - 1; i >= 0; i--) {
-      let text = tds[i].innerText.trim();
-      if (text !== "" && !isNaN(text)) {
-        lastSaldo = text;
-        break;
-      }
+  // loop dari bawah ke atas, cari kolom E yang ada isinya
+  for (let i = rows.length - 1; i > 0; i--) {
+    let cols = rows[i].split(",");
+    if (cols[4] && !isNaN(cols[4])) {
+      lastSaldo = cols[4];
+      break;
     }
+  }
 
-    document.getElementById("saldo").innerText =
-      "Rp " + Number(lastSaldo).toLocaleString("id-ID");
-  })
-  .catch(err => {
-    console.error("Gagal ambil saldo:", err);
-    document.getElementById("saldo").innerText = "Rp 0";
-  });
+  document.getElementById("saldo").innerText =
+    "Rp " + Number(lastSaldo).toLocaleString("id-ID");
+})
+.catch(() => {
+  document.getElementById("saldo").innerText = "Rp 0";
+});
 </script>
 </body>
 </html>
