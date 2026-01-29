@@ -233,17 +233,8 @@ fetch("https://docs.google.com/spreadsheets/d/1TNhwC9WaZza1MXvIKqUYjk4PgliSDKfRQ
 .then(text => {
   let rows = text.trim().split("\n");
 
-  let saldo = "0";
-
-  for (let i = rows.length - 1; i > 0; i--) {
-    // pakai ; bukan ,
-    let cols = rows[i].split(";");
-
-    if (cols[4] && cols[4].trim() !== "") {
-      saldo = cols[4].replace(/"/g,"").replace(/\r/g,"");
-      break;
-    }
-  }
+  // H2 = kolom ke-8 = index 7
+  let saldo = rows[1].split(";")[7];
 
   document.getElementById("saldo").innerText =
     "Rp " + Number(saldo).toLocaleString("id-ID");
