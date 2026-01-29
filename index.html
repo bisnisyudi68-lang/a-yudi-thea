@@ -223,20 +223,31 @@ Tulis Pesanan
 <script>
 const API="https://script.google.com/macros/s/AKfycby5JwHccoZLmmYUnJHyJ8cbB7MawemPetjN1VVds45PR7QnU0koA0aXyKUKWmxhATAkZg/exec";
 
-let saldo=0;
+let saldo = 0;
 
-// ambil saldo awal
+// ambil saldo awal dari spreadsheet
 fetch(API)
 .then(r=>r.json())
 .then(d=>{
- saldo=d.saldo;
- document.getElementById("saldo").innerText=
- "Rp "+Number(saldo).toLocaleString("id-ID");
+ saldo = Number(d.saldo)||0;
+ document.getElementById("saldo").innerText =
+ "Rp " + saldo.toLocaleString("id-ID");
 });
 
-function pesanProduk(nama,harga){
+function pesanProduk(nama,harga,tanya=false){
 
- if(saldo<harga){
+ if(tanya){
+   let input = prompt("Masukkan nominal:");
+   if(!input) return;
+   harga = parseInt(input.replace(/[^\d]/g,""));
+ }
+
+ if(!harga || harga<=0){
+   alert("Nominal tidak valid");
+   return;
+ }
+
+ if(saldo < harga){
    alert("Saldo tidak cukup");
    return;
  }
@@ -245,10 +256,10 @@ function pesanProduk(nama,harga){
  .then(r=>r.json())
  .then(d=>{
 
-   saldo=d.sisa;
+   saldo = Number(d.sisa)||0;
 
-   document.getElementById("saldo").innerText=
-   "Rp "+Number(saldo).toLocaleString("id-ID");
+   document.getElementById("saldo").innerText =
+   "Rp " + saldo.toLocaleString("id-ID");
 
    const wa="6282319264646";
    const msg=
