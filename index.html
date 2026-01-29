@@ -162,12 +162,9 @@ kebutuhan teknisi<br>
 
 <p class="font-bold mt-2">Rp 180.000 (3 bulan)</p>
 
-<a href="https://wa.me/6282319264646?text=Halo%20kak,%20saya%20mau%20AKTIVASI%20BORNEO%20SCHEMATIC"
-target="_blank"
-class="inline-block mt-3 bg-green-500 text-white py-2 px-6 rounded-xl">
+<button onclick="pilihBorneo()" class="bg-green-500 text-white px-4 py-2 rounded-lg w-full">
 Pesan WA
-</a>
-
+</button>
 </div>
 
 <!-- UNLOCKTOOL -->
@@ -250,6 +247,40 @@ fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vRU984eXIh3xMGx20Q_pJdr0G
 .catch(() => {
   document.getElementById("saldo").innerText = "Rp 0";
 });
+</script>
+<script>
+function pilihBorneo() {
+  const pilihan = prompt(
+`Pilih paket BORNEO:
+1 = 3 Bulan
+2 = 6 Bulan
+3 = 12 Bulan
+
+Ketik angka 1 / 2 / 3`
+  );
+
+  let paket = "";
+  let harga = "";
+
+  if (pilihan == "1") {
+    paket = "3 Bulan";
+    harga = "Rp 180.000";
+  } else if (pilihan == "2") {
+    paket = "6 Bulan";
+    harga = "Rp ...";
+  } else if (pilihan == "3") {
+    paket = "12 Bulan";
+    harga = "Rp ...";
+  } else {
+    return;
+  }
+
+  const wa = "6282319264646";
+
+  const pesan = `Halo A_YUDI_THEA,%0ASaya mau pesan BORNEO SCHEMATIC%0APaket: ${paket}%0AHarga: ${harga}`;
+
+  window.open(`https://wa.me/${wa}?text=${pesan}`, "_blank");
+}
 </script>
 </body>
 </html>
