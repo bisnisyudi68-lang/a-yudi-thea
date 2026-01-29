@@ -229,12 +229,12 @@ Tulis Pesanan
   </footer>
 <script>
 fetch("https://docs.google.com/spreadsheets/d/1TNhwC9WaZza1MXvIKqUYjk4PgliSDKfRQgh6WfV4-o0/export?format=csv&gid=0")
-.then(res => res.text())
-.then(text => {
-  let rows = text.trim().split("\n");
+.then(r => r.text())
+.then(t => {
+  let lines = t.split("\n");
+  let cols = lines[2].split(";"); // BARIS KE-3 (E3)
 
-  // H2 = kolom ke-8 = index 7
-  let saldo = rows[1].split(";")[7];
+  let saldo = cols[4]; // kolom E
 
   document.getElementById("saldo").innerText =
     "Rp " + Number(saldo).toLocaleString("id-ID");
