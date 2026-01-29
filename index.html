@@ -260,27 +260,9 @@ function pilihBorneo() {
 Ketik 1 / 2 / 3`
   );
 
-  if (!pilihan) return;
-
-  let paket = "";
-  let harga = "";
-
-  if (pilihan === "1") {
-    paket = "3 Bulan";
-    harga = "Rp 180.000";
-  } 
-  else if (pilihan === "2") {
-    paket = "6 Bulan";
-    harga = "Rp 300.000";
-  } 
-  else if (pilihan === "3") {
-    paket = "12 Bulan";
-    harga = "Rp 500.000";
-  } 
-  else {
-    alert("Pilihan tidak valid");
-    return;
-  }
+  if(pilihan=="1"){ paket="3 Bulan"; harga=180000;}
+else if(pilihan=="2"){ paket="6 Bulan"; harga=300000;}
+else if(pilihan=="3"){ paket="12 Bulan"; harga=550000;}
 
   const wa = "6282319264646";
 
