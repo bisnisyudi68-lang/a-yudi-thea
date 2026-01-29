@@ -237,7 +237,7 @@ fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vRU984eXIh3xMGx20Q_pJdr0G
 .then(r => r.text())
 .then(t => {
   let rws = t.split("\n");
-  let e2 = rws[1].split(",")[4]; // E2
+  let e2 = rws[1].split(",")[4]; // E6
 
   document.getElementById("saldo").innerText =
     "Rp " + Number(e2).toLocaleString("id-ID");
