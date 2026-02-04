@@ -2,96 +2,68 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>A-Yudi-Thea<br>
-Teman Solusi Software & Hardware hp kamu</title>
-<script src="https://cdn.tailwindcss.com"></script>
+<title>A-Yudi-Thea</title>
+
+<style>
+body{
+margin:0;
+font-family:Arial;
+background:#f2f2f2;
+text-align:center;
+}
+
+.header{
+background:#0d47a1;
+color:white;
+padding:30px;
+}
+
+.menu{
+margin-top:40px;
+}
+
+.btn{
+display:block;
+width:80%;
+max-width:300px;
+margin:15px auto;
+padding:15px;
+background:#25D366;
+color:white;
+text-decoration:none;
+border-radius:8px;
+font-size:18px;
+}
+
+.btn2{
+background:#ff9800;
+}
+
+.footer{
+margin-top:60px;
+color:#777;
+}
+</style>
 </head>
 
-<body class="bg-gray-100">
+<body>
 
-<div class="max-w-3xl mx-auto p-4">
-<img src="logo.jpg" class="mx-auto mb-4 w-32 rounded-full bg-transparent shadow">
-
-<h1 class="text-2xl font-bold text-center mb-2">A_YUDI_THEA</h1>
-<p class="text-center mb-6">Teman Solusi Software & Hardware hp kamu</p>
-
-<div class="bg-white rounded shadow p-4 mb-4">
-<h2 class="font-bold mb-2">Tentang Kami</h2>
-<p>
-Kami hadir untuk membantu semua kebutuhan teknologi Anda.
-Mulai dari servis perangkat, instalasi software, hingga solusi IT — semua dikerjakan cepat, rapi, dan profesional.
-</p>
-</div>
-<div class="bg-white rounded shadow p-4 mb-4 text-center">
-  <h2 class="font-bold mb-2">Demi transparansi dan kerapihan administrasi, seluruh transaksi mohon dilakukan melalui rekening bersama DPD TESPOIN Majalengka.<br><br>
-Saldo Rekening Bersama
-DPD TESPOIN Majalengka</h2>
-<div>
-  <p id="saldo" class="text-2xl font-bold text-green-600">Memuat...</p>
-</div>
-<div class="bg-white rounded shadow p-4 mb-4">
-<h2 class="font-bold mb-2">Layanan & Produk</h2>
-<ul class="list-none pl-0">
-  <li>Sparepart HP & Aksesoris</li>
-  <li>Jual peralatan Teknisi</li>
-  <li>Produk Elektronik Pendukung</li>
-  <li>Unlock / Flashing</li>
-  <li>Konsultasi Gratis</li>
-Kepuasan pelanggan adalah prioritas kami.
-📲 Hubungi kami sekarang — solusi ada di A-Yudi-Thea!
-</ul>
+<div class="header">
+<h2>A-Yudi-Thea</h2>
+<p>Software & Hardware Solution</p>
 </div>
 
-<div class="bg-white rounded shadow p-4 mb-4">
-<h2 class="font-bold mb-2">Menu</h2>
+<div class="menu">
 
-<div class="grid grid-cols-2 gap-3 mt-4">
+<a class="btn" href="produk.html">🛒 Jual Beli Produk</a>
 
-<a href="teknisi.html"
-class="bg-orange-500 text-white py-3 rounded-xl text-center font-semibold">
-👨‍🔧 Data Teknisi Majalengka
-</a>
-
-<a href="struktur.html" class="bg-blue-600 text-white py-3 rounded-xl text-center font-semibold">
-Program & Kegiatan
-</a>
-
-<a href="produk.html" class="bg-green-600 text-white py-3 rounded-xl text-center font-semibold">
-Jual beli produk
-</a>
-
-<a href="program.html" class="bg-purple-600 text-white py-3 rounded-xl text-center font-semibold">
-Struktur Organisasi
-</a>
-
-<a href="chat.html">💬 Chat</a>
-<a href="https://wa.me/6282319264646" class="bg-purple-600 text-white py-3 rounded-xl text-center font-semibold">
-Hubungi Kami
-</a>
+<a class="btn btn2" href="pelanggan.html">👥 Data Pelanggan</a>
 
 </div>
 
-<p class="text-center text-sm text-gray-500 mt-6">
-© DPD TESPOIN Majalengka — Komunitas Teknisi & Kolaborasi Usaha
-
+<div class="footer">
+<p>© A-Yudi-Thea</p>
 </div>
-<script>
-fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vS2JyZr-bsO2BKp3_GF5fO5D7bAcrywXQh7owph8Ng7LZxawQKwnw8Q57S5O-BvweUcW_FoqAIoavSL/pub?gid=0&single=true&output=csv")
-.then(r => r.text())
-.then(t => {
-  let rows = t.trim().split("\n");
-  let saldo = "";
-  for (let i = rows.length-1; i >= 1; i--) {
-    let cols = rows[i].split(",");
-    if (cols[3]) { saldo = cols[3]; break; }
-  }
 
-  saldo = saldo.replace(/[^0-9]/g,"");
-
-  document.getElementById("saldo").innerText =
-    "Rp " + Number(saldo).toLocaleString("id-ID");
-});
-</script>
 </body>
 </html>
