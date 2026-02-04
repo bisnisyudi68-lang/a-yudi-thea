@@ -37,8 +37,9 @@ fetch(url)
 const json=JSON.parse(t.substring(47).slice(0,-2));
 const rows=json.table.rows;
 
-// B=1, E=4, G=6
+// A=0, B=1, E=4, G=6
 window.data=rows.map(r=>({
+kode:r.c[0]?.v||"",
 nama:r.c[1]?.v||"",
 harga:r.c[4]?.v||"",
 stok:r.c[6]?.v||""
@@ -53,7 +54,8 @@ d.forEach(p=>{
 if(p.stok>0){
 hasil.innerHTML+=`
 <div class="card">
-<b>${p.nama}</b><br>
+<b>${p.kode}</b><br>
+${p.nama}<br>
 <span class="harga">Rp ${p.harga}</span><br>
 <span class="stok">Stok: ${p.stok}</span>
 </div>`;
@@ -63,7 +65,10 @@ hasil.innerHTML+=`
 
 function filter(){
 let q=cari.value.toLowerCase();
-tampil(data.filter(x=>x.nama.toLowerCase().includes(q)));
+tampil(data.filter(x=>
+x.nama.toLowerCase().includes(q) ||
+x.kode.toLowerCase().includes(q)
+));
 }
 </script>
 
