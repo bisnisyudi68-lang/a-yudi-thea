@@ -1,20 +1,42 @@
-<script>
-const sheetId = "136iuN-tMhDZk89YsVecnDEKJOfQlL6A3AImhIGmILKc";
-const sheetName = "Stock Konter";
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>A-Yudi-Thea</title>
 
-const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
+<style>
+body{font-family:Arial;background:#f2f2f2;margin:0}
+header{background:#0d47a1;color:#fff;padding:15px;text-align:center}
+input{width:95%;margin:10px;padding:10px}
+.card{background:#fff;margin:10px;padding:10px;border-radius:6px}
+</style>
+</head>
+
+<body>
+
+<header>
+<h3>A-Yudi-Thea</h3>
+<p>Stock Konter</p>
+</header>
+
+<input id="cari" placeholder="Cari barang..." onkeyup="filter()">
+
+<div id="hasil"></div>
+
+<script>
+const url="https://docs.google.com/spreadsheets/d/136iuN-tMhDZk89YsVecnDEKJOfQlL6A3AImhIGmILKc/gviz/tq?tqx=out:json&sheet=Stock%20Konter";
 
 fetch(url)
-.then(res => res.text())
-.then(txt => {
-const json = JSON.parse(txt.substring(47).slice(0, -2));
-const rows = json.table.rows;
+.then(r=>r.text())
+.then(t=>{
+const json=JSON.parse(t.substr(47).slice(0,-2));
+const rows=json.table.rows;
 
-window.data = rows.map(r => ({
-Kode: r.c[0]?.v || "",
-Nama: r.c[1]?.v || "",
-Harga: r.c[4]?.v || "",
-Sisa: r.c[6]?.v || ""
+window.data=rows.map(r=>({
+kode:r.c[0]?.v||"",
+nama:r.c[1]?.v||"",
+harga:r.c[4]?.v||"",
+stok:r.c[6]?.v||""
 }));
 
 tampil(window.data);
@@ -23,13 +45,13 @@ tampil(window.data);
 function tampil(d){
 hasil.innerHTML="";
 d.forEach(p=>{
-if(p.Sisa>0){
+if(p.stok>0){
 hasil.innerHTML+=`
 <div class="card">
-<b>${p.Kode}</b><br>
-${p.Nama}<br>
-<span class="harga">Rp ${p.Harga}</span><br>
-Stok: ${p.Sisa}
+<b>${p.kode}</b><br>
+${p.nama}<br>
+Rp ${p.harga}<br>
+Stok: ${p.stok}
 </div>`;
 }
 });
@@ -37,10 +59,13 @@ Stok: ${p.Sisa}
 
 function filter(){
 let q=cari.value.toLowerCase();
-let f=data.filter(p=>
-p.Kode.toLowerCase().includes(q) ||
-p.Nama.toLowerCase().includes(q)
+let f=data.filter(x=>
+x.nama.toLowerCase().includes(q)||
+x.kode.toLowerCase().includes(q)
 );
 tampil(f);
 }
 </script>
+
+</body>
+</html>
