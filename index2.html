@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DPD TESPOIN Majalengka</title>
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+
+<div class="max-w-3xl mx-auto p-4">
+<img src="logo.jpg" class="mx-auto mb-4 w-32 rounded-full bg-transparent shadow">
+
+<h1 class="text-2xl font-bold text-center mb-2">DPD TESPOIN MAJALENGKA</h1>
+<p class="text-center mb-6">Pusat Kolaborasi Teknisi & Distribusi Produk Majalengka</p>
+
+<div class="bg-white rounded shadow p-4 mb-4">
+<h2 class="font-bold mb-2">Tentang Kami</h2>
+<p>
+Web ini dibentuk untuk memudahkan transaksi antar anggota teknisi dalam satu wadah komunitas. Melalui platform ini, anggota dapat saling berbagi produk, layanan, dan kebutuhan teknisi secara lebih cepat, rapi, dan transparan.
+ serta memberikan manfaat bagi pelanggan. Selain itu, kami mendorong kolaborasi antar anggota, pengembangan keterampilan teknisi, serta peningkatan kualitas layanan kepada masyarakat.
+Web ini hadir sebagai ruang kerja sama, pertumbuhan usaha, dan penguatan solidaritas antar teknisi.
+</p>
+</div>
+<div class="bg-white rounded shadow p-4 mb-4 text-center">
+  <h2 class="font-bold mb-2">Demi transparansi dan kerapihan administrasi, seluruh transaksi mohon dilakukan melalui rekening bersama DPD TESPOIN Majalengka.<br><br>
+Saldo Rekening Bersama
+DPD TESPOIN Majalengka</h2>
+<div>
+  <p id="saldo" class="text-2xl font-bold text-green-600">Memuat...</p>
+</div>
+<div class="bg-white rounded shadow p-4 mb-4">
+<h2 class="font-bold mb-2">Layanan & Produk</h2>
+<ul class="list-none pl-0">
+  <li>Sparepart HP & Aksesoris</li>
+  <li>Peralatan Teknisi</li>
+  <li>Produk Elektronik Pendukung</li>
+  <li>Program Pelatihan</li>
+  <li>Kegiatan Komunitas</li>
+</ul>
+</div>
+
+<div class="bg-white rounded shadow p-4 mb-4">
+<h2 class="font-bold mb-2">Menu</h2>
+
+<div class="grid grid-cols-2 gap-3 mt-4">
+
+<a href="teknisi.html"
+class="bg-orange-500 text-white py-3 rounded-xl text-center font-semibold">
+👨‍🔧 Data Teknisi Majalengka
+</a>
+
+<a href="struktur.html" class="bg-blue-600 text-white py-3 rounded-xl text-center font-semibold">
+Program & Kegiatan
+</a>
+
+<a href="produk.html" class="bg-green-600 text-white py-3 rounded-xl text-center font-semibold">
+Jual beli produk
+</a>
+
+<a href="program.html" class="bg-purple-600 text-white py-3 rounded-xl text-center font-semibold">
+Struktur Organisasi
+</a>
+
+<a href="chat.html">💬 Chat</a>
+<a href="https://wa.me/6282319264646" class="bg-purple-600 text-white py-3 rounded-xl text-center font-semibold">
+Hubungi Kami
+</a>
+
+</div>
+
+<p class="text-center text-sm text-gray-500 mt-6">
+© DPD TESPOIN Majalengka — Komunitas Teknisi & Kolaborasi Usaha
+
+</div>
+<script>
+fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vS2JyZr-bsO2BKp3_GF5fO5D7bAcrywXQh7owph8Ng7LZxawQKwnw8Q57S5O-BvweUcW_FoqAIoavSL/pub?gid=0&single=true&output=csv")
+.then(r => r.text())
+.then(t => {
+  let rows = t.trim().split("\n");
+  let saldo = "";
+  for (let i = rows.length-1; i >= 1; i--) {
+    let cols = rows[i].split(",");
+    if (cols[3]) { saldo = cols[3]; break; }
+  }
+
+  saldo = saldo.replace(/[^0-9]/g,"");
+
+  document.getElementById("saldo").innerText =
+    "Rp " + Number(saldo).toLocaleString("id-ID");
+});
+</script>
+</body>
+</html>
