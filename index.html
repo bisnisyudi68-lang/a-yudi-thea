@@ -7,35 +7,13 @@
 <style>
 body{font-family:Arial;background:#f2f2f2;margin:0}
 
-header{
-background:#0d47a1;
-color:white;
-padding:15px;
-text-align:center
-}
+header{background:#0d47a1;color:white;padding:15px;text-align:center}
 
-.logo{width:60px;margin-bottom:5px}
+input{width:95%;margin:10px;padding:12px;font-size:16px}
 
-.judul{font-size:26px;font-weight:bold}
+.card{background:white;margin:10px;padding:12px;border-radius:8px}
 
-.subjudul{font-size:14px}
-
-input{
-width:98%;
-margin:15px auto;
-padding:16px;
-font-size:18px;
-display:block;
-border-radius:8px;
-border:1px solid #ccc
-}
-
-.card{
-background:white;
-margin:10px;
-padding:10px;
-border-radius:6px
-}
+.big{font-size:20px;font-weight:bold}
 
 .harga{color:red;font-weight:bold}
 .stok{color:green}
@@ -45,43 +23,81 @@ border-radius:6px
 <body>
 
 <header>
-<img src="logo.jpg" class="logo">
-<div class="judul">A-Yudi-Thea</div>
-<div class="subjudul">Pencarian Produk</div>
+<h2>A-Yudi-Thea</h2>
+<p>Dashboard & Stok Produk</p>
 </header>
 
-<input id="cari" placeholder="Cari nama / kode barang..." onkeyup="filter()">
+<!-- DASHBOARD -->
+<input type="date" id="tgl" onchange="filterTanggal()">
+
+<div class="card">Omset<div class="big" id="omset">Rp 0</div></div>
+<div class="card">Pengeluaran<div class="big" id="keluar">Rp 0</div></div>
+<div class="card">Laba<div class="big" id="laba">Rp 0</div></div>
+
+<hr>
+
+<!-- PENCARIAN PRODUK -->
+<input id="cari" placeholder="Cari nama / kode barang..." onkeyup="filterProduk()">
 
 <div id="hasil"></div>
 
 <script>
+// ===== DASHBOARD =====
 const sheetId="1iPbtRGldW5yz6tuUZ5oHzMGsnNb4cHyCbAEMkq51qK4";
-const sheetName="Stock Konter";
+const tabLaporan="FIX RUMUS";
 
-const url=`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?sheet=${encodeURIComponent(sheetName)}`;
+fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?sheet=${encodeURIComponent(tabLaporan)}`)
+.then(r=>r.text())
+.then(t=>{
+const json=JSON.parse(t.substring(47).slice(0,-2));
+window.rowsLaporan=json.table.rows;
+});
 
-fetch(url)
+function filterTanggal(){
+let pilih=tgl.value;
+let om=0, ke=0;
+
+rowsLaporan.forEach(r=>{
+let d=r.c[0]?.f||r.c[0]?.v||"";
+if(d.includes("/")){
+let p=d.split("/");
+d=`${p[2]}-${p[1]}-${p[0]}`;
+}
+if(d===pilih){
+om+=Number(r.c[11]?.v||0);
+ke+=Number(r.c[12]?.v||0);
+}
+});
+
+omset.innerText="Rp "+om;
+keluar.innerText="Rp "+ke;
+laba.innerText="Rp "+(om-ke);
+}
+
+// ===== PRODUK =====
+const tabProduk="Stock Konter";
+
+fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?sheet=${encodeURIComponent(tabProduk)}`)
 .then(r=>r.text())
 .then(t=>{
 const json=JSON.parse(t.substring(47).slice(0,-2));
 const rows=json.table.rows;
 
 // A=0 B=1 E=4 G=6
-window.data=rows.map(r=>({
+window.dataProduk=rows.map(r=>({
 kode:r.c[0]?.v||"",
 nama:r.c[1]?.v||"",
 harga:r.c[4]?.v||"",
 stok:r.c[6]?.v||""
 }));
 
-tampil(window.data);
+tampilProduk(dataProduk);
 });
 
-function tampil(d){
+function tampilProduk(d){
 hasil.innerHTML="";
 d.forEach(p=>{
-let status = p.stok>0 ? `Stok: ${p.stok}` : `<span style="color:red;font-weight:bold">Habis</span>`;
-
+let status=p.stok>0?`Stok: ${p.stok}`:`<span style="color:red">Habis</span>`;
 hasil.innerHTML+=`
 <div class="card">
 <b>${p.kode}</b><br>
@@ -92,9 +108,9 @@ ${status}
 });
 }
 
-function filter(){
+function filterProduk(){
 let q=cari.value.toLowerCase();
-tampil(data.filter(x=>
+tampilProduk(dataProduk.filter(x=>
 x.nama.toLowerCase().includes(q)||
 x.kode.toLowerCase().includes(q)
 ));
