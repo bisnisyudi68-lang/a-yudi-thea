@@ -1,40 +1,23 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>A-Yudi-Thea Stock</title>
-
-<style>
-body{font-family:Arial;background:#f2f2f2;margin:0}
-header{background:#0d47a1;color:#fff;padding:15px;text-align:center}
-input{width:95%;margin:10px;padding:12px;font-size:16px}
-.card{background:#fff;margin:10px;padding:10px;border-radius:8px}
-.harga{color:red;font-weight:bold}
-</style>
-
-</head>
-
-<body>
-
-<header>
-<h3>A-Yudi-Thea</h3>
-<p>Cari Stok Konter</p>
-</header>
-
-<input id="cari" placeholder="Ketik nama / kode barang..." onkeyup="filter()">
-
-<div id="hasil"></div>
-
 <script>
+const sheetId = "136iuN-tMhDZk89YsVecnDEKJOfQlL6A3AImhIGmILKc";
+const sheetName = "Stock Konter";
 
-const sheet="136iuN-tMhDZk89YsVecnDEKJOfQlL6A3AImhIGmILKc";
-const tab="Stock Konter";
+const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
 
-fetch(`https://opensheet.elk.sh/${sheet}/${encodeURIComponent(tab)}`)
-.then(r=>r.json())
-.then(d=>{
-window.data=d;
-tampil(d);
+fetch(url)
+.then(res => res.text())
+.then(txt => {
+const json = JSON.parse(txt.substring(47).slice(0, -2));
+const rows = json.table.rows;
+
+window.data = rows.map(r => ({
+Kode: r.c[0]?.v || "",
+Nama: r.c[1]?.v || "",
+Harga: r.c[4]?.v || "",
+Sisa: r.c[6]?.v || ""
+}));
+
+tampil(window.data);
 });
 
 function tampil(d){
@@ -44,7 +27,7 @@ if(p.Sisa>0){
 hasil.innerHTML+=`
 <div class="card">
 <b>${p.Kode}</b><br>
-${p["Nama barang"]}<br>
+${p.Nama}<br>
 <span class="harga">Rp ${p.Harga}</span><br>
 Stok: ${p.Sisa}
 </div>`;
@@ -56,12 +39,8 @@ function filter(){
 let q=cari.value.toLowerCase();
 let f=data.filter(p=>
 p.Kode.toLowerCase().includes(q) ||
-p["Nama barang"].toLowerCase().includes(q)
+p.Nama.toLowerCase().includes(q)
 );
 tampil(f);
 }
-
 </script>
-
-</body>
-</html>
