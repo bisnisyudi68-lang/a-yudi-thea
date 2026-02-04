@@ -1,16 +1,15 @@
 <!DOCTYPE html>
-<html lang="id">
+<html>
 <head>
 <meta charset="UTF-8">
-<title>A-Yudi-Thea | Stock Konter</title>
+<title>A-Yudi-Thea Stock</title>
 
 <style>
-body{font-family:Arial;background:#f2f2f2;margin:0;padding:10px}
-header{background:#0d47a1;color:#fff;padding:20px;text-align:center}
-input{width:100%;padding:12px;font-size:16px;margin:15px 0}
-.card{background:#fff;padding:10px;margin-bottom:10px;border-radius:8px}
+body{font-family:Arial;background:#f2f2f2;margin:0}
+header{background:#0d47a1;color:#fff;padding:15px;text-align:center}
+input{width:95%;margin:10px;padding:12px;font-size:16px}
+.card{background:#fff;margin:10px;padding:10px;border-radius:8px}
 .harga{color:red;font-weight:bold}
-.stok{color:green}
 </style>
 
 </head>
@@ -18,20 +17,20 @@ input{width:100%;padding:12px;font-size:16px;margin:15px 0}
 <body>
 
 <header>
-<h2>A-Yudi-Thea</h2>
-<p>Pencarian Produk Konter</p>
+<h3>A-Yudi-Thea</h3>
+<p>Cari Stok Konter</p>
 </header>
 
-<input id="cari" placeholder="Cari kode / nama barang..." onkeyup="filter()">
+<input id="cari" placeholder="Ketik nama / kode barang..." onkeyup="filter()">
 
 <div id="hasil"></div>
 
 <script>
 
-const sheet="2PACX-1vTAP_R50frV13whqx54ctjplc-8xhcN53rHEVk5mkhLeZE283xWnr6TdTBFr-KFymEiaYE_NWgGthpo";
-const url=`https://opensheet.elk.sh/${sheet}/Stock%20Konter`;
+const sheet="136iuN-tMhDZk89YsVecnDEKJOfQlL6A3AImhIGmILKc";
+const tab="Stock Konter";
 
-fetch(url)
+fetch(`https://opensheet.elk.sh/${sheet}/${encodeURIComponent(tab)}`)
 .then(r=>r.json())
 .then(d=>{
 window.data=d;
@@ -47,7 +46,7 @@ hasil.innerHTML+=`
 <b>${p.Kode}</b><br>
 ${p["Nama barang"]}<br>
 <span class="harga">Rp ${p.Harga}</span><br>
-<span class="stok">Stok: ${p.Sisa}</span>
+Stok: ${p.Sisa}
 </div>`;
 }
 });
