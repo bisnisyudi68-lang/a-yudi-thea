@@ -5,39 +5,52 @@
 <title>A-Yudi-Thea</title>
 
 <style>
-.logo{
-  width:60px;
-  margin-bottom:5px;
+body{font-family:Arial;background:#f2f2f2;margin:0}
+
+header{
+background:#0d47a1;
+color:white;
+padding:15px;
+text-align:center
 }
 
-.judul{
-  font-size:26px;
-  font-weight:bold;
+.logo{width:60px;margin-bottom:5px}
+
+.judul{font-size:26px;font-weight:bold}
+
+.subjudul{font-size:14px}
+
+input{
+width:98%;
+margin:15px auto;
+padding:16px;
+font-size:18px;
+display:block;
+border-radius:8px;
+border:1px solid #ccc
 }
 
-.subjudul{
-  font-size:14px;
+.card{
+background:white;
+margin:10px;
+padding:10px;
+border-radius:6px
 }
+
+.harga{color:red;font-weight:bold}
+.stok{color:green}
 </style>
 </head>
 
 <body>
 
 <header>
-  <img src="logo.png" class="logo">
-  <div class="judul">A-Yudi-Thea</div>
-  <div class="subjudul">Pencarian Produk</div>
+<img src="logo.png" class="logo">
+<div class="judul">A-Yudi-Thea</div>
+<div class="subjudul">Pencarian Produk</div>
 </header>
 
-input{
-  width:98%;
-  margin:15px auto;
-  padding:16px;
-  font-size:18px;
-  display:block;
-  border-radius:8px;
-  border:1px solid #ccc;
-}
+<input id="cari" placeholder="Cari nama / kode barang..." onkeyup="filter()">
 
 <div id="hasil"></div>
 
@@ -53,7 +66,7 @@ fetch(url)
 const json=JSON.parse(t.substring(47).slice(0,-2));
 const rows=json.table.rows;
 
-// A=0, B=1, E=4, G=6
+// A=0 B=1 E=4 G=6
 window.data=rows.map(r=>({
 kode:r.c[0]?.v||"",
 nama:r.c[1]?.v||"",
@@ -82,7 +95,7 @@ ${p.nama}<br>
 function filter(){
 let q=cari.value.toLowerCase();
 tampil(data.filter(x=>
-x.nama.toLowerCase().includes(q) ||
+x.nama.toLowerCase().includes(q)||
 x.kode.toLowerCase().includes(q)
 ));
 }
