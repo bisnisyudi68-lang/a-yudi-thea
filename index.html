@@ -80,15 +80,15 @@ tampil(window.data);
 function tampil(d){
 hasil.innerHTML="";
 d.forEach(p=>{
-if(p.stok>0){
+let status = p.stok>0 ? `Stok: ${p.stok}` : `<span style="color:red;font-weight:bold">Habis</span>`;
+
 hasil.innerHTML+=`
 <div class="card">
 <b>${p.kode}</b><br>
 ${p.nama}<br>
 <span class="harga">Rp ${p.harga}</span><br>
-<span class="stok">Stok: ${p.stok}</span>
+${status}
 </div>`;
-}
 });
 }
 
