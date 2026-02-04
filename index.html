@@ -5,23 +5,39 @@
 <title>A-Yudi-Thea</title>
 
 <style>
-body{font-family:Arial;background:#f2f2f2;margin:0}
-header{background:#0d47a1;color:white;padding:15px;text-align:center}
-input{width:95%;margin:10px;padding:12px;font-size:16px}
-.card{background:white;margin:10px;padding:10px;border-radius:6px}
-.harga{color:red;font-weight:bold}
-.stok{color:green}
+.logo{
+  width:60px;
+  margin-bottom:5px;
+}
+
+.judul{
+  font-size:26px;
+  font-weight:bold;
+}
+
+.subjudul{
+  font-size:14px;
+}
 </style>
 </head>
 
 <body>
 
 <header>
-<h3>A-Yudi-Thea</h3>
-<p>Cari Produk</p>
+  <img src="logo.png" class="logo">
+  <div class="judul">A-Yudi-Thea</div>
+  <div class="subjudul">Pencarian Produk</div>
 </header>
 
-<input id="cari" placeholder="Cari nama barang..." onkeyup="filter()">
+input{
+  width:98%;
+  margin:15px auto;
+  padding:16px;
+  font-size:18px;
+  display:block;
+  border-radius:8px;
+  border:1px solid #ccc;
+}
 
 <div id="hasil"></div>
 
