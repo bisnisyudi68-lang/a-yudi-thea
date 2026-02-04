@@ -2,13 +2,15 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>A-Yudi-Thea</title>
+<title>A-Yudi-Thea Stock</title>
 
 <style>
 body{font-family:Arial;background:#f2f2f2;margin:0}
 header{background:#0d47a1;color:#fff;padding:15px;text-align:center}
-input{width:95%;margin:10px;padding:10px}
+input{width:95%;margin:10px;padding:12px;font-size:16px}
 .card{background:#fff;margin:10px;padding:10px;border-radius:6px}
+.harga{color:red;font-weight:bold}
+.stok{color:green}
 </style>
 </head>
 
@@ -16,10 +18,10 @@ input{width:95%;margin:10px;padding:10px}
 
 <header>
 <h3>A-Yudi-Thea</h3>
-<p>Stock Konter</p>
+<p>Cari Produk</p>
 </header>
 
-<input id="cari" placeholder="Cari barang..." onkeyup="filter()">
+<input id="cari" placeholder="Cari nama barang..." onkeyup="filter()">
 
 <div id="hasil"></div>
 
@@ -32,8 +34,8 @@ fetch(url)
 const json=JSON.parse(t.substr(47).slice(0,-2));
 const rows=json.table.rows;
 
+// B = 1 , E = 4 , G = 6
 window.data=rows.map(r=>({
-kode:r.c[0]?.v||"",
 nama:r.c[1]?.v||"",
 harga:r.c[4]?.v||"",
 stok:r.c[6]?.v||""
@@ -48,10 +50,9 @@ d.forEach(p=>{
 if(p.stok>0){
 hasil.innerHTML+=`
 <div class="card">
-<b>${p.kode}</b><br>
-${p.nama}<br>
-Rp ${p.harga}<br>
-Stok: ${p.stok}
+<b>${p.nama}</b><br>
+<span class="harga">Rp ${p.harga}</span><br>
+<span class="stok">Stok: ${p.stok}</span>
 </div>`;
 }
 });
@@ -59,10 +60,7 @@ Stok: ${p.stok}
 
 function filter(){
 let q=cari.value.toLowerCase();
-let f=data.filter(x=>
-x.nama.toLowerCase().includes(q)||
-x.kode.toLowerCase().includes(q)
-);
+let f=data.filter(x=>x.nama.toLowerCase().includes(q));
 tampil(f);
 }
 </script>
