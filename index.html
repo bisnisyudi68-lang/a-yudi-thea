@@ -2,68 +2,67 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<title>A-Yudi-Thea</title>
+<title>A-Yudi-Thea | Stock Konter</title>
 
 <style>
-body{
-margin:0;
-font-family:Arial;
-background:#f2f2f2;
-text-align:center;
-}
-
-.header{
-background:#0d47a1;
-color:white;
-padding:30px;
-}
-
-.menu{
-margin-top:40px;
-}
-
-.btn{
-display:block;
-width:80%;
-max-width:300px;
-margin:15px auto;
-padding:15px;
-background:#25D366;
-color:white;
-text-decoration:none;
-border-radius:8px;
-font-size:18px;
-}
-
-.btn2{
-background:#ff9800;
-}
-
-.footer{
-margin-top:60px;
-color:#777;
-}
+body{font-family:Arial;background:#f2f2f2;margin:0;padding:10px}
+header{background:#0d47a1;color:#fff;padding:20px;text-align:center}
+input{width:100%;padding:12px;font-size:16px;margin:15px 0}
+.card{background:#fff;padding:10px;margin-bottom:10px;border-radius:8px}
+.harga{color:red;font-weight:bold}
+.stok{color:green}
 </style>
+
 </head>
 
 <body>
 
-<div class="header">
+<header>
 <h2>A-Yudi-Thea</h2>
-<p>Software & Hardware Solution</p>
-</div>
+<p>Pencarian Produk Konter</p>
+</header>
 
-<div class="menu">
+<input id="cari" placeholder="Cari kode / nama barang..." onkeyup="filter()">
 
-<a class="btn" href="produk.html">🛒 Jual Beli Produk</a>
+<div id="hasil"></div>
 
-<a class="btn btn2" href="pelanggan.html">👥 Data Pelanggan</a>
+<script>
 
-</div>
+const sheet="2PACX-1vTAP_R50frV13whqx54ctjplc-8xhcN53rHEVk5mkhLeZE283xWnr6TdTBFr-KFymEiaYE_NWgGthpo";
+const url=`https://opensheet.elk.sh/${sheet}/Stock%20Konter`;
 
-<div class="footer">
-<p>© A-Yudi-Thea</p>
-</div>
+fetch(url)
+.then(r=>r.json())
+.then(d=>{
+window.data=d;
+tampil(d);
+});
+
+function tampil(d){
+hasil.innerHTML="";
+d.forEach(p=>{
+if(p.Sisa>0){
+hasil.innerHTML+=`
+<div class="card">
+<b>${p.Kode}</b><br>
+${p["Nama barang"]}<br>
+<span class="harga">Rp ${p.Harga}</span><br>
+<span class="stok">Stok: ${p.Sisa}</span>
+</div>`;
+}
+});
+}
+
+function filter(){
+let q=cari.value.toLowerCase();
+let f=data.filter(p=>
+p.Kode.toLowerCase().includes(q) ||
+p["Nama barang"].toLowerCase().includes(q)
+);
+tampil(f);
+}
+
+</script>
 
 </body>
 </html>
