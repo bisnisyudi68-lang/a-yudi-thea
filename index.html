@@ -7,35 +7,13 @@
 <style>
 body{font-family:Arial;background:#f2f2f2;margin:0}
 
-header{
-background:#0d47a1;
-color:white;
-padding:15px;
-text-align:center
-}
+header{background:#0d47a1;color:white;padding:15px;text-align:center}
 
-.logo{width:60px;margin-bottom:5px}
+input{width:95%;margin:10px;padding:12px;font-size:16px}
 
-.judul{font-size:26px;font-weight:bold}
+.card{background:white;margin:10px;padding:12px;border-radius:8px}
 
-.subjudul{font-size:14px}
-
-input{
-width:98%;
-margin:15px auto;
-padding:16px;
-font-size:18px;
-display:block;
-border-radius:8px;
-border:1px solid #ccc
-}
-
-.card{
-background:white;
-margin:10px;
-padding:10px;
-border-radius:6px
-}
+.big{font-size:20px;font-weight:bold}
 
 .harga{color:red;font-weight:bold}
 .stok{color:green}
@@ -45,22 +23,20 @@ border-radius:6px
 <body>
 
 <header>
+<h2>A-Yudi-Thea</h2>
+<p>Dashboard & Stok Produk</p>
+</header>
 
-<img src="logo.jpg" class="logo">
-<div class="judul">A-Yudi-Thea</div>
-<div class="subjudul"></div>
+<!-- DASHBOARD -->
+<h3>📅 Data Harian</h3>
+<input type="date" id=" onchange="filterTanggal()">
 
-<div class="big">Sparepart & LCD Center</div>
-  <p>
-    Menyediakan berbagai varian LCD dan sparepart HP.<br>
-    Tersedia harga tunai, harga tempo, dan harga program.<br>
-    Sedia juga alat servis dan accessories.<br><br>
+<div class="card">Omset<div class="big" id="omset">Rp 0</div></div>
+<div class="card">Pengeluaran<div class="big" id="keluar">Rp 0</div></div>
+<div class="card">Laba<div class="big" id="laba">Rp 0</div></div>
 
-    Stok update harian<br>
-    Harga bersaing<br>
-    Siap kirim
-  </p>
-</div>
+<hr>
+
 <!-- PENCARIAN PRODUK -->
 <h3>🔎 Pencarian Produk</h3>
 <input id="cari" placeholder="Cari nama / kode barang..." onkeyup="filterProduk()">
