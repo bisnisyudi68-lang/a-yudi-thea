@@ -61,39 +61,69 @@ border-radius:6px
     Siap kirim
   </p>
 </div>
-</header>
-<h3>🔎 Pencarian Produk (harga tagihan hari sabtu)</h3>
+<!-- PENCARIAN PRODUK -->
+<h3>🔎 Pencarian Produk</h3>
 <input id="cari" placeholder="Cari nama / kode barang..." onkeyup="filterProduk()">
+
 <div id="hasil"></div>
 
 <script>
+// ===== DASHBOARD =====
 const sheetId="1iPbtRGldW5yz6tuUZ5oHzMGsnNb4cHyCbAEMkq51qK4";
-const sheetName="Stock Konter";
+const tabLaporan="FIX RUMUS";
 
-const url=`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?sheet=${encodeURIComponent(sheetName)}`;
+fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?sheet=${encodeURIComponent(tabLaporan)}`)
+.then(r=>r.text())
+.then(t=>{
+const json=JSON.parse(t.substring(47).slice(0,-2));
+window.rowsLaporan=json.table.rows;
+});
 
-fetch(url)
+function filterTanggal(){
+let pilih=tgl.value;
+let om=0, ke=0;
+
+rowsLaporan.forEach(r=>{
+let d=r.c[0]?.f||r.c[0]?.v||"";
+if(d.includes("/")){
+let p=d.split("/");
+d=`${p[2]}-${p[1]}-${p[0]}`;
+}
+if(d===pilih){
+om+=Number(r.c[11]?.v||0);
+ke+=Number(r.c[12]?.v||0);
+}
+});
+
+omset.innerText="Rp "+om;
+keluar.innerText="Rp "+ke;
+laba.innerText="Rp "+(om-ke);
+}
+
+// ===== PRODUK =====
+const tabProduk="Stock Konter";
+
+fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?sheet=${encodeURIComponent(tabProduk)}`)
 .then(r=>r.text())
 .then(t=>{
 const json=JSON.parse(t.substring(47).slice(0,-2));
 const rows=json.table.rows;
 
 // A=0 B=1 E=4 G=6
-window.data=rows.map(r=>({
+window.dataProduk=rows.map(r=>({
 kode:r.c[0]?.v||"",
 nama:r.c[1]?.v||"",
 harga:r.c[4]?.v||"",
 stok:r.c[6]?.v||""
 }));
 
-tampil(window.data);
+tampilProduk(dataProduk);
 });
 
-function tampil(d){
+function tampilProduk(d){
 hasil.innerHTML="";
 d.forEach(p=>{
-let status = p.stok>0 ? `Stok: ${p.stok}` : `<span style="color:red;font-weight:bold">Habis</span>`;
-
+let status=p.stok>0?`Stok: ${p.stok}`:`<span style="color:red">Habis</span>`;
 hasil.innerHTML+=`
 <div class="card">
 <b>${p.kode}</b><br>
@@ -103,9 +133,10 @@ ${status}
 </div>`;
 });
 }
-function filter(){
+
+function filterProduk(){
 let q=cari.value.toLowerCase();
-tampil(data.filter(x=>
+tampilProduk(dataProduk.filter(x=>
 x.nama.toLowerCase().includes(q)||
 x.kode.toLowerCase().includes(q)
 ));
