@@ -6,17 +6,12 @@
 
 <style>
 body{font-family:Arial;background:#f2f2f2;margin:0}
-
 header{background:#0d47a1;color:white;padding:15px;text-align:center}
-
 input{width:95%;margin:10px;padding:12px;font-size:16px}
 
 .card{background:white;margin:10px;padding:12px;border-radius:8px}
-
 .big{font-size:20px;font-weight:bold}
-
 .harga{color:red;font-weight:bold}
-.stok{color:green}
 </style>
 </head>
 
@@ -27,25 +22,25 @@ input{width:95%;margin:10px;padding:12px;font-size:16px}
 <p>Dashboard & Stok Produk</p>
 </header>
 
-<!-- DASHBOARD -->
-<h3>📅 Data Tagihan</h3>
-<input type="date" id=" onchange="filterTanggal()">
+<h3>📄 Data Tagihan</h3>
 
-<div class="card">Omset<div class="big" id="omset">Rp 0</div></div>
-<div class="card">Pengeluaran<div class="big" id="keluar">Rp 0</div></div>
-<div class="card">Laba<div class="big" id="laba">Rp 0</div></div>
+<div class="card">Total Tagihan<div class="big" id="omset">Rp 0</div></div>
+<div class="card">Total Pembayaran<div class="big" id="keluar">Rp 0</div></div>
+<div class="card">Sisa<div class="big" id="laba">Rp 0</div></div>
 
 <hr>
 
-<!-- PENCARIAN PRODUK -->
-<h3>🔎Tarik layar ke bawah 1 kali (Refresh) Baru Lakukan Pencarian Produk</h3>
+<h3>🔎 Cari Produk</h3>
 <input id="cari" placeholder="Cari nama / kode barang..." onkeyup="filterProduk()">
 
 <div id="hasil"></div>
 
 <script>
-// ===== DASHBOARD =====
-const sheetId="1iPbtRG1dW5yz6tuUZ5oHzMGsnNb4cHyCbAEMkq51qk4";
+
+// ================= SETTING =================
+const sheetId="GANTI_DENGAN_SHEETID_KAMU";
+
+// ================= DATA TAGIHAN =================
 const tabLaporan="DATA TAGIHAN";
 
 fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?sheet=${encodeURIComponent(tabLaporan)}`)
@@ -54,60 +49,60 @@ fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?sheet=${encodeU
  const json=JSON.parse(t.substring(47).slice(0,-2));
  const rows=json.table.rows;
 
- let om=0;
+ let tagihan=0;
+ let bayar=0;
 
  rows.forEach(r=>{
-   let bayar=Number(r.c[2]?.v||0); // kolom C = Pembayaran
-   om+=bayar;
+  tagihan+=Number(r.c[1]?.v||0); // kolom TAGIHAN
+  bayar+=Number(r.c[2]?.v||0);   // kolom PEMBAYARAN
  });
 
- omset.innerText="Rp "+om.toLocaleString("id-ID");
- keluar.innerText="Rp 0";
- laba.innerText="Rp "+om.toLocaleString("id-ID");
+ omset.innerText="Rp "+tagihan.toLocaleString("id-ID");
+ keluar.innerText="Rp "+bayar.toLocaleString("id-ID");
+ laba.innerText="Rp "+(tagihan-bayar).toLocaleString("id-ID");
 });
-</script>
 
-// ===== PRODUK =====
+// ================= PRODUK =================
 const tabProduk="Stock Konter";
 
 fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?sheet=${encodeURIComponent(tabProduk)}`)
 .then(r=>r.text())
 .then(t=>{
-const json=JSON.parse(t.substring(47).slice(0,-2));
-const rows=json.table.rows;
+ const json=JSON.parse(t.substring(47).slice(0,-2));
+ const rows=json.table.rows;
 
-// A=0 B=1 E=4 G=6
-window.dataProduk=rows.map(r=>({
-kode:r.c[0]?.v||"",
-nama:r.c[1]?.v||"",
-harga:r.c[4]?.v||"",
-stok:r.c[6]?.v||""
-}));
+ window.dataProduk=rows.map(r=>({
+  kode:r.c[0]?.v||"",
+  nama:r.c[1]?.v||"",
+  harga:r.c[4]?.v||"",
+  stok:r.c[6]?.v||""
+ }));
 
-tampilProduk(dataProduk);
+ tampilProduk(dataProduk);
 });
 
 function tampilProduk(d){
-hasil.innerHTML="";
-d.forEach(p=>{
-let status=p.stok>0?`Stok: ${p.stok}`:`<span style="color:red">Habis</span>`;
-hasil.innerHTML+=`
-<div class="card">
-<b>${p.kode}</b><br>
-${p.nama}<br>
-<span class="harga">Rp ${p.harga}</span><br>
-${status}
-</div>`;
-});
+ hasil.innerHTML="";
+ d.forEach(p=>{
+  let status=p.stok>0?`Stok: ${p.stok}`:`<span style="color:red">Habis</span>`;
+  hasil.innerHTML+=`
+  <div class="card">
+   <b>${p.kode}</b><br>
+   ${p.nama}<br>
+   <span class="harga">Rp ${p.harga}</span><br>
+   ${status}
+  </div>`;
+ });
 }
 
 function filterProduk(){
-let q=cari.value.toLowerCase();
-tampilProduk(dataProduk.filter(x=>
-x.nama.toLowerCase().includes(q)||
-x.kode.toLowerCase().includes(q)
-));
+ let q=cari.value.toLowerCase();
+ tampilProduk(dataProduk.filter(x=>
+  x.nama.toLowerCase().includes(q)||
+  x.kode.toLowerCase().includes(q)
+ ));
 }
+
 </script>
 
 </body>
