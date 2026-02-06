@@ -11,6 +11,11 @@ input{width:95%;margin:10px;padding:12px;font-size:16px}
 .card{background:white;margin:10px;padding:12px;border-radius:8px}
 .big{font-size:20px;font-weight:bold}
 .harga{color:red;font-weight:bold}
+
+table{width:100%;border-collapse:collapse;background:white;margin:10px}
+th,td{border:1px solid #ddd;padding:6px;font-size:14px}
+th{background:#0d47a1;color:white}
+.neg{color:red}
 </style>
 </head>
 
@@ -27,8 +32,10 @@ input{width:95%;margin:10px;padding:12px;font-size:16px}
 <div class="card">Total Pembayaran<div class="big" id="keluar">Rp 0</div></div>
 <div class="card">Sisa<div class="big" id="laba">Rp 0</div></div>
 
-<hr>
 <div id="tagihanTabel"></div>
+
+<hr>
+
 <h3>🔎 Cari Produk</h3>
 <input id="cari" placeholder="Cari nama / kode barang..." onkeyup="filterProduk()">
 
@@ -38,66 +45,88 @@ input{width:95%;margin:10px;padding:12px;font-size:16px}
 
 const sheetId="1iPbtRGldW5yz6tuUZ5oHzMGsnNb4cHyCbAEMkq51qK4";
 
-// ================= TAGIHAN =================
+// ===== TAGIHAN =====
 const tabTagihan="DATA TAGIHAN";
 
 fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?sheet=${encodeURIComponent(tabTagihan)}`)
 .then(r=>r.text())
 .then(t=>{
- const json=JSON.parse(t.substring(47).slice(0,-2));
- const rows=json.table.rows;
+const json=JSON.parse(t.substring(47).slice(0,-2));
+const rows=json.table.rows;
 
- let tagihan=0, bayar=0;
+let totalTagihan=0;
+let totalBayar=0;
 
- rows.forEach(r=>{
-  tagihan+=Number(r.c[1]?.v||0);
-  bayar+=Number(r.c[2]?.v||0);
- });
+let html=`<table>
+<tr><th>Nama</th><th>Tagihan</th><th>Pembayaran</th><th>Sisa</th></tr>`;
 
- omset.innerText="Rp "+tagihan.toLocaleString("id-ID");
- keluar.innerText="Rp "+bayar.toLocaleString("id-ID");
- laba.innerText="Rp "+(tagihan-bayar).toLocaleString("id-ID");
+rows.forEach(r=>{
+let nama=r.c[0]?.v||"";
+let tag=r.c[1]?.v||0;
+let byr=r.c[2]?.v||0;
+
+if(nama){
+let sisa=tag-byr;
+totalTagihan+=tag;
+totalBayar+=byr;
+
+html+=`<tr>
+<td>${nama}</td>
+<td>Rp ${tag.toLocaleString()}</td>
+<td>Rp ${byr.toLocaleString()}</td>
+<td class="${sisa<0?'neg':''}">Rp ${sisa.toLocaleString()}</td>
+</tr>`;
+}
 });
 
-// ================= PRODUK =================
+html+="</table>";
+
+tagihanTabel.innerHTML=html;
+omset.innerText="Rp "+totalTagihan.toLocaleString();
+keluar.innerText="Rp "+totalBayar.toLocaleString();
+laba.innerText="Rp "+(totalTagihan-totalBayar).toLocaleString();
+
+});
+
+// ===== PRODUK =====
 const tabProduk="Stock Konter";
 
 fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?sheet=${encodeURIComponent(tabProduk)}`)
 .then(r=>r.text())
 .then(t=>{
- const json=JSON.parse(t.substring(47).slice(0,-2));
- const rows=json.table.rows;
+const json=JSON.parse(t.substring(47).slice(0,-2));
+const rows=json.table.rows;
 
- window.dataProduk=rows.map(r=>({
-  kode:r.c[0]?.v||"",
-  nama:r.c[1]?.v||"",
-  harga:r.c[4]?.v||"",
-  stok:r.c[6]?.v||""
- }));
+window.dataProduk=rows.map(r=>({
+kode:r.c[0]?.v||"",
+nama:r.c[1]?.v||"",
+harga:r.c[4]?.v||"",
+stok:r.c[6]?.v||0
+}));
 
- tampilProduk(dataProduk);
+tampilProduk(dataProduk);
 });
 
 function tampilProduk(d){
- hasil.innerHTML="";
- d.forEach(p=>{
-  let status=p.stok>0?`Stok: ${p.stok}`:`<span style="color:red">Habis</span>`;
-  hasil.innerHTML+=`
-  <div class="card">
-  <b>${p.kode}</b><br>
-  ${p.nama}<br>
-  <span class="harga">Rp ${p.harga}</span><br>
-  ${status}
-  </div>`;
- });
+hasil.innerHTML="";
+d.forEach(p=>{
+let status=p.stok>0?`Stok: ${p.stok}`:`<span style="color:red">Habis</span>`;
+hasil.innerHTML+=`
+<div class="card">
+<b>${p.kode}</b><br>
+${p.nama}<br>
+<span class="harga">Rp ${p.harga}</span><br>
+${status}
+</div>`;
+});
 }
 
 function filterProduk(){
- let q=cari.value.toLowerCase();
- tampilProduk(dataProduk.filter(x=>
-  x.nama.toLowerCase().includes(q) ||
-  x.kode.toLowerCase().includes(q)
- ));
+let q=cari.value.toLowerCase();
+tampilProduk(dataProduk.filter(x=>
+x.nama.toLowerCase().includes(q) ||
+x.kode.toLowerCase().includes(q)
+));
 }
 
 </script>
