@@ -65,7 +65,7 @@ let nama=r.c[0]?.v||"";
 let tag=r.c[1]?.v||0;
 let byr=r.c[2]?.v||0;
 
-if(nama){
+if(nama && nama.toLowerCase()!="jumlah"){
 let sisa=tag-byr;
 totalTagihan+=tag;
 totalBayar+=byr;
