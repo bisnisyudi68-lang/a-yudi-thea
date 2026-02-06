@@ -45,28 +45,27 @@ input{width:95%;margin:10px;padding:12px;font-size:16px}
 
 <script>
 // ===== DASHBOARD =====
-const sheetId="1iPbtRGldW5yz6tuUZ5oHzMGsnNb4cHyCbAEMkq51qK4";
+const sheetId="1iPbtRG1dW5yz6tuUZ5oHzMGsnNb4cHyCbAEMkq51qk4";
 const tabLaporan="DATA TAGIHAN";
 
 fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?sheet=${encodeURIComponent(tabLaporan)}`)
 .then(r=>r.text())
 .then(t=>{
-const json=JSON.parse(t.substring(47).slice(0,-2));
-window.rowsLaporan=json.table.rows;
+ const json=JSON.parse(t.substring(47).slice(0,-2));
+ const rows=json.table.rows;
+
+ let om=0;
+
+ rows.forEach(r=>{
+   let bayar=Number(r.c[2]?.v||0); // kolom C = Pembayaran
+   om+=bayar;
+ });
+
+ omset.innerText="Rp "+om.toLocaleString("id-ID");
+ keluar.innerText="Rp 0";
+ laba.innerText="Rp "+om.toLocaleString("id-ID");
 });
-
-window.rowsLaporan=json.table.rows;
-filterTanggal();
-
-rowsLaporan.forEach(r=>{
-  let bayar = Number(r.c[2]?.v||0); // kolom C = Pembayaran
-  om += bayar;
-});
-
-omset.innerText="Rp "+om.toLocaleString("id-ID");
-keluar.innerText="Rp 0";
-laba.innerText="Rp "+om.toLocaleString("id-ID");
-}
+</script>
 
 // ===== PRODUK =====
 const tabProduk="Stock Konter";
