@@ -35,28 +35,30 @@ input{width:95%;margin:10px;padding:12px;font-size:16px}
 <div id="hasil"></div>
 
 <script>
-// ===== TAGIHAN DASHBOARD =====
+
+const sheetId="1iPbtRGldW5yz6tuUZ5oHzMGsnNb4cHyCbAEMkq51qK4";
+
+// ================= TAGIHAN =================
 const tabTagihan="DATA TAGIHAN";
 
 fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?sheet=${encodeURIComponent(tabTagihan)}`)
 .then(r=>r.text())
 .then(t=>{
-const json=JSON.parse(t.substring(47).slice(0,-2));
-const rows=json.table.rows;
+ const json=JSON.parse(t.substring(47).slice(0,-2));
+ const rows=json.table.rows;
 
-let tagihan=0;
-let bayar=0;
+ let tagihan=0, bayar=0;
 
-rows.forEach(r=>{
-tagihan+=Number(r.c[1]?.v||0); // kolom B
-bayar+=Number(r.c[2]?.v||0);   // kolom C
+ rows.forEach(r=>{
+  tagihan+=Number(r.c[1]?.v||0);
+  bayar+=Number(r.c[2]?.v||0);
+ });
+
+ omset.innerText="Rp "+tagihan.toLocaleString("id-ID");
+ keluar.innerText="Rp "+bayar.toLocaleString("id-ID");
+ laba.innerText="Rp "+(tagihan-bayar).toLocaleString("id-ID");
 });
 
-omset.innerText="Rp "+tagihan.toLocaleString("id-ID");
-keluar.innerText="Rp "+bayar.toLocaleString("id-ID");
-laba.innerText="Rp "+(tagihan-bayar).toLocaleString("id-ID");
-});
-</script>
 // ================= PRODUK =================
 const tabProduk="Stock Konter";
 
