@@ -46,7 +46,7 @@ input{width:95%;margin:10px;padding:12px;font-size:16px}
 <script>
 // ===== DASHBOARD =====
 const sheetId="1iPbtRGldW5yz6tuUZ5oHzMGsnNb4cHyCbAEMkq51qK4";
-const tabLaporan="FIX RUMUS";
+const tabLaporan="DATA TAGIHAN";
 
 fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?sheet=${encodeURIComponent(tabLaporan)}`)
 .then(r=>r.text())
@@ -56,24 +56,16 @@ window.rowsLaporan=json.table.rows;
 });
 
 function filterTanggal(){
-let pilih=tgl.value;
-let om=0, ke=0;
+let om=0;
 
 rowsLaporan.forEach(r=>{
-let d=r.c[0]?.f||r.c[0]?.v||"";
-if(d.includes("/")){
-let p=d.split("/");
-d=`${p[2]}-${p[1]}-${p[0]}`;
-}
-if(d===pilih){
-om+=Number(r.c[11]?.v||0);
-ke+=Number(r.c[12]?.v||0);
-}
+  let bayar = Number(r.c[2]?.v||0); // kolom C = Pembayaran
+  om += bayar;
 });
 
-omset.innerText="Rp "+om;
-keluar.innerText="Rp "+ke;
-laba.innerText="Rp "+(om-ke);
+omset.innerText="Rp "+om.toLocaleString("id-ID");
+keluar.innerText="Rp 0";
+laba.innerText="Rp "+om.toLocaleString("id-ID");
 }
 
 // ===== PRODUK =====
