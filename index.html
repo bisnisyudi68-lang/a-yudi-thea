@@ -28,7 +28,7 @@ input{width:95%;margin:10px;padding:12px;font-size:16px}
 </header>
 
 <!-- DASHBOARD -->
-<h3>📅 Data Harian</h3>
+<h3>📅 Data Tagihan</h3>
 <input type="date" id=" onchange="filterTanggal()">
 
 <div class="card">Omset<div class="big" id="omset">Rp 0</div></div>
@@ -55,8 +55,8 @@ const json=JSON.parse(t.substring(47).slice(0,-2));
 window.rowsLaporan=json.table.rows;
 });
 
-function filterTanggal(){
-let om=0;
+window.rowsLaporan=json.table.rows;
+filterTanggal();
 
 rowsLaporan.forEach(r=>{
   let bayar = Number(r.c[2]?.v||0); // kolom C = Pembayaran
