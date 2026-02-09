@@ -44,3 +44,95 @@ h3{
 <hr>
 <h3 class="judul-tagihan">DAFTAR TAGIHAN</h3>
 <div id="tagihanTabel"></div>
+<script>
+
+const sheetId="1iPbtRGldW5yz6tuUZ5oHzMGsnNb4cHyCbAEMkq51qK4";
+
+// ===== TAGIHAN =====
+const tabTagihan="DATA TAGIHAN";
+
+fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?sheet=${encodeURIComponent(tabTagihan)}`)
+.then(r=>r.text())
+.then(t=>{
+const json=JSON.parse(t.substring(47).slice(0,-2));
+const rows=json.table.rows;
+
+let totalTagihan=0;
+let totalBayar=0;
+
+let html=`<table>
+<tr><th>Nama</th><th>Tagihan</th><th>Pembayaran</th><th>Sisa</th></tr>`;
+
+rows.forEach(r=>{
+let nama=r.c[0]?.v||"";
+let tag=r.c[1]?.v||0;
+let byr=r.c[2]?.v||0;
+
+if(nama && nama.toLowerCase()!="jumlah"){
+let sisa=tag-byr;
+totalTagihan+=tag;
+totalBayar+=byr;
+
+html+=`<tr>
+<td>${nama}</td>
+<td>Rp ${tag.toLocaleString()}</td>
+<td>Rp ${byr.toLocaleString()}</td>
+<td class="${sisa<0?'neg':''}">Rp ${sisa.toLocaleString()}</td>
+</tr>`;
+}
+});
+
+html+="</table>";
+
+tagihanTabel.innerHTML=html;
+omset.innerText="Rp "+totalTagihan.toLocaleString();
+keluar.innerText="Rp "+totalBayar.toLocaleString();
+laba.innerText="Rp "+(totalTagihan-totalBayar).toLocaleString();
+
+});
+
+// ===== PRODUK =====
+const tabProduk="Stock Konter";
+
+fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?sheet=${encodeURIComponent(tabProduk)}`)
+.then(r=>r.text())
+.then(t=>{
+const json=JSON.parse(t.substring(47).slice(0,-2));
+const rows=json.table.rows;
+
+window.dataProduk=rows.map(r=>({
+kode:r.c[0]?.v||"",
+nama:r.c[1]?.v||"",
+harga:r.c[4]?.v||"",
+stok:r.c[6]?.v||0
+}));
+
+tampilProduk(dataProduk);
+});
+
+function tampilProduk(d){
+hasil.innerHTML="";
+d.forEach(p=>{
+let status=p.stok>0?`Stok: ${p.stok}`:`<span style="color:red">Habis</span>`;
+hasil.innerHTML+=`
+<div class="card">
+<b>${p.kode}</b><br>
+${p.nama}<br>
+<span class="harga">Rp ${p.harga}</span><br>
+${status}
+</div>`;
+});
+}
+
+function filterProduk(){
+let q=cari.value.toLowerCase();
+tampilProduk(dataProduk.filter(x=>
+x.nama.toLowerCase().includes(q) ||
+x.kode.toLowerCase().includes(q)
+));
+}
+
+</script>
+
+</body>
+</html>
