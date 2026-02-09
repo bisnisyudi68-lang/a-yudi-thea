@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>A-Yudi-Thea</title>
+</head>
+
+<body>
+
+<header>
+<h2>A-Yudi-Thea</h2>
+<p>Data Tagihan & Stok Produk</p>
+</header>
+
+<h3> 👉Tarik layar ke bawah untuk Refresh Halaman<br><br>🔎 Cari Produk</h3>
+<input id="cari" placeholder="Cari nama / kode barang..." onkeyup="filterProduk()">
+
+<div id="hasil"></div>
+
+<script>
+
+
+// ===== PRODUK =====
+const tabProduk="Stock Konter";
+
+fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?sheet=${encodeURIComponent(tabProduk)}`)
+.then(r=>r.text())
+.then(t=>{
+const json=JSON.parse(t.substring(47).slice(0,-2));
+const rows=json.table.rows;
+
+window.dataProduk=rows.map(r=>({
+kode:r.c[0]?.v||"",
+nama:r.c[1]?.v||"",
+harga:r.c[4]?.v||"",
+stok:r.c[6]?.v||0
+}));
+
+tampilProduk(dataProduk);
+});
+
+function tampilProduk(d){
+hasil.innerHTML="";
+d.forEach(p=>{
+let status=p.stok>0?`Stok: ${p.stok}`:`<span style="color:red">Habis</span>`;
+hasil.innerHTML+=`
+<div class="card">
+<b>${p.kode}</b><br>
+${p.nama}<br>
+<span class="harga">Rp ${p.harga}</span><br>
+${status}
+</div>`;
+});
+}
+
+function filterProduk(){
+let q=cari.value.toLowerCase();
+tampilProduk(dataProduk.filter(x=>
+x.nama.toLowerCase().includes(q) ||
+x.kode.toLowerCase().includes(q)
+));
+}
+
+</script>
+
+</body>
+</html>
