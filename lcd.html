@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Produk LCD</title>
+
+<style>
+body{
+  font-family: Arial, sans-serif;
+  background:#f4f6f8;
+  margin:0;
+  padding:15px;
+}
+
+h2{
+  text-align:center;
+  margin-bottom:10px;
+}
+
+/* SEARCH */
+.search-box{
+  margin-bottom:15px;
+}
+.search-box input{
+  width:100%;
+  padding:12px;
+  border-radius:8px;
+  border:1px solid #ccc;
+  font-size:15px;
+}
+
+/* PRODUK */
+.produk{
+  background:#fff;
+  padding:12px;
+  margin-bottom:10px;
+  border-radius:8px;
+  box-shadow:0 1px 4px rgba(0,0,0,.1);
+}
+
+.nama{
+  font-weight:bold;
+}
+
+.harga{
+  font-size:14px;
+  color:#555;
+  margin-top:4px;
+}
+
+/* BUTTON WA */
+.wa{
+  width:100%;
+  margin-top:20px;
+  padding:15px;
+  background:#25D366;
+  color:#fff;
+  border:none;
+  border-radius:10px;
+  font-size:16px;
+  font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<h2>📱 DAFTAR LCD</h2>
+
+<!-- SEARCH -->
+<div class="search-box">
+  <input type="text" id="search" placeholder="Cari LCD (contoh: Samsung A10)">
+</div>
+
+<div id="list">Loading data...</div>
+
+<button class="wa" onclick="kirimWA()">📩 Kirim ke WhatsApp</button>
+
+<script>
+// =======================================
+// LINK CSV (PUBLISH TO WEB - SHEET LCD)
+// =======================================
+const CSV_URL = "https://docs.google.com/spreadsheets/d/19AfachAS9ZyNuut61RB1wqyI_AI6BsmNT1SIWhmSIn8/edit?usp=drivesdk";
+
+// =======================================
+// LOAD DATA DARI GOOGLE SHEETS
+// =======================================
+let semuaProduk = [];
+
+fetch(CSV_URL)
+  .then(r => r.text())
+  .then(text => {
+    const rows = text.split("\n").slice(3); // mulai baris ke-4
+    semuaProduk = rows.map(r => r.split(",")).filter(c => c[0]);
+    tampilkan(semuaProduk);
+  })
+  .catch(()=>{
+    document.getElementById("list").innerHTML =
+      "<p>❌ Gagal mengambil data</p>";
+  });
+
+// =======================================
+// TAMPILKAN PRODUK
+// =======================================
+function tampilkan(data){
+  let html = "";
+  data.forEach(col=>{
+    html += `
+      <div class="produk">
+        <label>
+          <input type="checkbox" value="${col[0]}">
+          <div class="nama">${col[0]}</div>
+          <div class="harga">
+            Program: ${col[1] || "-"}<br>
+            Tempo: ${col[2] || "-"}
+          </div>
+        </label>
+      </div>
+    `;
+  });
+  document.getElementById("list").innerHTML = html;
+}
+
+// =======================================
+// SEARCH PRODUK
+// =======================================
+document.getElementById("search").addEventListener("keyup", function(){
+  const key = this.value.toLowerCase();
+  const filter = semuaProduk.filter(c =>
+    c[0].toLowerCase().includes(key)
+  );
+  tampilkan(filter);
+});
+
+// =======================================
+// KIRIM KE WHATSAPP
+// =======================================
+function kirimWA(){
+  const cek = document.querySelectorAll("input[type=checkbox]:checked");
+
+  if(!cek.length){
+    alert("Pilih LCD dulu");
+    return;
+  }
+
+  let pesan = "Halo, saya mau pesan LCD:\n\n";
+  cek.forEach((c,i)=>{
+    const box = c.closest(".produk");
+    pesan += (i+1)+". "+c.value+"\n";
+    pesan += box.querySelector(".harga").innerText+"\n\n";
+  });
+
+  const noWA = "6282319264646"; // 082319264646
+  window.open(
+    "https://wa.me/"+noWA+"?text="+encodeURIComponent(pesan),
+    "_blank"
+  );
+}
+</script>
+
+</body>
+</html>
