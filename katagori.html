@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kategori Produk</title>
+
+<style>
+body{
+  font-family: Arial, sans-serif;
+  background:#fff;
+  margin:0;
+  padding:15px;
+}
+
+h2{
+  text-align:center;
+  margin-bottom:20px;
+}
+
+.btn{
+  width:100%;
+  padding:14px;
+  margin-bottom:12px;
+  border:2px solid #2aa84a;
+  background:#fff;
+  color:#2aa84a;
+  font-size:16px;
+  font-weight:bold;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+.btn.active{
+  background:#2aa84a;
+  color:#fff;
+}
+
+.produk{
+  border:1px solid #ddd;
+  padding:12px;
+  border-radius:6px;
+  margin-bottom:10px;
+}
+
+.hidden{display:none}
+
+.back{
+  margin-bottom:15px;
+  background:#555;
+  color:#fff;
+  border:none;
+  padding:10px;
+  border-radius:6px;
+  width:100%;
+}
+</style>
+</head>
+
+<body>
+
+<!-- HALAMAN KATEGORI -->
+<div id="kategoriPage">
+  <h2>Kategori Produk</h2>
+
+<button class="btn" onclick="openProduk('LCD')">LCD</button>
+<button class="btn" onclick="openProduk('BATTERY')">BATTERY</button>
+<button class="btn" onclick="openProduk('FLEXI')">FLEXI</button>
+<button class="btn" onclick="openProduk('EM LCD')">EM LCD</button>
+<button class="btn" onclick="openProduk('PEMBERSIH')">PEMBERSIH</button>
+  <button class="btn" onclick="openProduk('ACC')">ACC</button>
+  <button class="btn" onclick="openProduk('ALL IC')">ALL IC</button>
+  <button class="btn" onclick="openProduk('ALL KONEKTOR')">ALL KONEKTOR</button>
+  <button class="btn" onclick="openProduk('ANTENA KABEL')">ANTENA KABEL</button>
+  <button class="btn" onclick="openProduk('BATRE')">BATRE</button>
+  <button class="btn active" onclick="openProduk('BAUT')">BAUT</button>
+  <button class="btn" onclick="openProduk('BEZEL')">BEZEL</button>
+  <button class="btn" onclick="openProduk('BLUETOOTH')">BLUETOOTH</button>
+  <button class="btn" onclick="openProduk('BUZZER')">BUZZER</button>
+  <button class="btn" onclick="openProduk('CAMERA')">CAMERA</button>
+  <button class="btn" onclick="openProduk('CASING')">CASING</button>
+  <button class="btn" onclick="openProduk('CHARGER')">CHARGER</button>
+  <button class="btn" onclick="openProduk('FLASHDISK')">FLASHDISK / MICRO SD</button>
+</div>
+
+<!-- HALAMAN PRODUK -->
+<div id="produkPage" class="hidden">
+  <button class="back" onclick="backKategori()">⬅ Kembali</button>
+  <h2 id="judulKategori"></h2>
+
+  <div id="listProduk"></div>
+</div>
+
+<script>
+function openProduk(kategori){
+  document.getElementById("kategoriPage").classList.add("hidden");
+  document.getElementById("produkPage").classList.remove("hidden");
+  document.getElementById("judulKategori").innerText = kategori;
+
+  let produk = {
+    "BATRE": [
+      "Batre Samsung A10",
+      "Batre Oppo A3s",
+      "Batre Vivo Y12"
+    ],
+    "BAUT": [
+      "Baut iPhone Set",
+      "Baut Samsung Original",
+      "Baut Universal HP"
+    ],
+    "CHARGER": [
+      "Charger Samsung 25W",
+      "Charger Oppo VOOC",
+      "Charger Universal"
+    ]
+  };
+
+  let html = "";
+  if(produk[kategori]){
+    produk[kategori].forEach(p=>{
+      html += `<div class="produk">${p}</div>`;
+    });
+  }else{
+    html = "<p>Produk belum tersedia</p>";
+  }
+
+  document.getElementById("listProduk").innerHTML = html;
+}
+
+function backKategori(){
+  document.getElementById("produkPage").classList.add("hidden");
+  document.getElementById("kategoriPage").classList.remove("hidden");
+}
+</script>
+
+</body>
+</html>
