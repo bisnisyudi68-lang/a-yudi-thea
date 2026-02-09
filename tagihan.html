@@ -1,0 +1,46 @@
+<style>
+body{font-family:Arial;background:#f2f2f2;margin:0}
+header{background:#0d47a1;color:white;padding:15px;text-align:center}
+input{width:95%;margin:10px;padding:12px;font-size:16px}
+.card{background:white;margin:10px;padding:12px;border-radius:8px}
+.big{font-size:20px;font-weight:bold}
+.harga{color:red;font-weight:bold}
+
+table{width:100%;border-collapse:collapse;background:white;margin:10px}
+th,td{border:1px solid #ddd;padding:6px;font-size:14px}
+th{background:#0d47a1;color:white}
+.neg{color:red}
+h3{
+  text-align: center;
+  font-weight: bold;
+  margin-top: 15px;
+}
+.judul-tagihan{
+  text-align: center;
+  font-weight: bold;
+  margin: 10px 0;
+}
+#tagihanTabel table td{
+  font-weight: bold;
+}
+#tagihanTabel th{
+  font-weight: bold;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h2>A-Yudi-Thea</h2>
+<p>Data Tagihan & Stok Produk</p>
+</header>
+
+<h3>📄 Data Tagihan</h3>
+
+<div class="card">Total Tagihan<div class="big" id="omset">Rp 0</div></div>
+<div class="card">Total Pembayaran<div class="big" id="keluar">Rp 0</div></div>
+<div class="card">Sisa<div class="big" id="laba">Rp 0</div></div>
+<hr>
+<h3 class="judul-tagihan">DAFTAR TAGIHAN</h3>
+<div id="tagihanTabel"></div>
