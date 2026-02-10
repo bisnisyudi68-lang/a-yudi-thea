@@ -89,28 +89,35 @@ body{
 const CSV_URL =
 "https://docs.google.com/spreadsheets/d/e/2PACX-1vR-bDX_S5Cwma6e7vlf8Of4XVwccJ9ukNFZODZg08gqRgjaK7gCN5xMIFIgMgAbgXw44dz8BrinQBBR/pub?gid=15483237&single=true&output=csv";
 
-let data = [];
-
-fetch(CSV_URL)
-.then(r=>r.text())
-.then(t=>{
-const rows = t.split("\n").slice(1);
-data = rows.map(r=>r.split(",")).filter(r=>r[0]);
-render(data);
-});
-
-function render(arr){
-let html="";
-arr.forEach((r,i)=>{
-html+=   <div class="item">   <input type="checkbox" value="${r[0]} - ${r[1]}">   <div>   <div class="nama">${r[0]}</div>   <div class="harga">${r[1]}</div>   </div>   </div>;
-});
-document.getElementById("list").innerHTML=html;
-}
-
-function filter(){
-const q=document.getElementById("cari").value.toLowerCase();
-render(data.filter(r=>r[0].toLowerCase().includes(q)));
-}
+let data = [];  
+  
+fetch(CSV_URL)  
+.then(r=>r.text())  
+.then(t=>{  
+  const rows = t.split("\n").slice(1);  
+  data = rows.map(r=>r.split(",")).filter(r=>r[0]);  
+  render(data);  
+});  
+  
+function render(arr){  
+  let html="";  
+  arr.forEach((r,i)=>{  
+    html+=`  
+    <div class="item">  
+      <input type="checkbox" value="${r[0]} - ${r[1]}">  
+      <div>  
+        <div class="nama">${r[0]}</div>  
+        <div class="harga">${r[1]}</div>  
+      </div>  
+    </div>`;  
+  });  
+  document.getElementById("list").innerHTML=html;  
+}  
+  
+function filter(){  
+  const q=document.getElementById("cari").value.toLowerCase();  
+  render(data.filter(r=>r[0].toLowerCase().includes(q)));  
+}  
 
 function kirimWA(){
 const c=[...document.querySelectorAll("input:checked")]
