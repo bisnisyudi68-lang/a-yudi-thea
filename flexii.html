@@ -90,28 +90,39 @@ const CSV_URL =
 "https://docs.google.com/spreadsheets/d/e/2PACX-1vR-bDX_S5Cwma6e7vlf8Of4XVwccJ9ukNFZODZg08gqRgjaK7gCN5xMIFIgMgAbgXw44dz8BrinQBBR/pub?gid=15483237&single=true&output=csv";
 
 let data = [];
-let checked = {}; // simpan checklist berdasarkan index asli
+let checkedItems = {}; // PENYIMPAN UTAMA
 
 fetch(CSV_URL)
 .then(r => r.text())
 .then(t => {
   const rows = t.trim().split("\n").slice(1);
-  data = rows.map((r, i) => {
+  data = rows.map(r => {
     const c = r.split(",");
-    return { id: i, nama: c[0], harga: c[1] };
+    return {
+      key: c[0] + " - " + c[1],
+      nama: c[0],
+      harga: c[1]
+    };
   });
   render(data);
 });
 
+function simpanSementara(){
+  document.querySelectorAll("input[type=checkbox]").forEach(cb=>{
+    if(cb.checked){
+      checkedItems[cb.value] = true;
+    }
+  });
+}
+
 function render(arr){
   let html = "";
-  arr.forEach(item => {
+  arr.forEach(item=>{
     html += `
     <div class="item">
       <input type="checkbox"
-        data-id="${item.id}"
-        ${checked[item.id] ? "checked" : ""}
-        onchange="toggle(this)">
+        value="${item.key}"
+        ${checkedItems[item.key] ? "checked" : ""}>
       <div>
         <div class="nama">${item.nama}</div>
         <div class="harga">${item.harga}</div>
@@ -121,28 +132,19 @@ function render(arr){
   document.getElementById("list").innerHTML = html;
 }
 
-function toggle(el){
-  const id = el.getAttribute("data-id");
-  if(el.checked){
-    checked[id] = true;
-  } else {
-    delete checked[id];
-  }
-}
-
 function filter(){
+  simpanSementara(); // ⬅️ INI KUNCINYA
   const q = document.getElementById("cari").value.toLowerCase();
-  const hasil = data.filter(d => d.nama.toLowerCase().includes(q));
+  const hasil = data.filter(d =>
+    d.nama.toLowerCase().includes(q)
+  );
   render(hasil);
 }
 
 function kirimWA(){
-  let pesan = "";
-  Object.keys(checked).forEach(id => {
-    const d = data.find(x => x.id == id);
-    if(d) pesan += `${d.nama} - ${d.harga}%0A`;
-  });
+  simpanSementara(); // pastikan semua tersimpan
 
+  const pesan = Object.keys(checkedItems).join("%0A");
   if(!pesan) return alert("Pilih battery dulu");
 
   location.href =
