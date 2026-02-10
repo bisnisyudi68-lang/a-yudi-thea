@@ -94,44 +94,45 @@ fetch(SHEET_URL)
     const lokasi = c[10] || c[6] || "";
 
     box.innerHTML += `
-      <div class="bg-white rounded shadow p-3">
-        ${img ? `
-          <img src="${img}" class="w-full h-40 object-cover rounded mb-2">
-        ` : `
-          <div class="w-full h-40 bg-gray-200 flex items-center justify-center rounded mb-2 text-gray-500">
-            Tidak ada foto
-          </div>
-        `}
-        <h3 class="font-bold">${nama}</h3>
-        <p class="text-xs text-gray-600">${deskripsi}</p>
-        <p class="text-xs mt-1">📍 ${lokasi}</p>
-        <p class="text-green-600 font-bold mt-1">
-          Rp ${harga.toLocaleString("id-ID")}
-        </p>
+      box.innerHTML += `
+  <div class="bg-white rounded shadow p-3">
 
-        ${wa ? `
-          <a href="https://wa.me/${wa}?text=Halo kak, saya tertarik produk ${nama}"
-             target="_blank"
-             class="block bg-green-600 hover:bg-green-700 text-white text-center py-2 rounded mt-2">
-             WhatsApp Penjual
-          </a>
-        ` : `
-          <div class="text-center text-xs text-gray-400 mt-2">
-            Nomor WhatsApp tidak tersedia
-          </div>
-        `}
+    ${img ? `
+      <a href="${img}" target="_blank"
+         class="text-blue-600 underline font-semibold">
+        Lihat Foto Produk
+      </a>
+    ` : `
+      <div class="text-gray-400 text-sm">
+        Tidak ada foto
       </div>
-    `;
-  });
+    `}
 
-  if (box.innerHTML.trim() === "") {
-    box.innerHTML = `
-      <div class="col-span-full text-center text-gray-500">
-        Belum ada produk aktif
+    <h3 class="font-bold mt-2">${nama}</h3>
+
+    <p class="text-sm text-gray-600">${deskripsi}</p>
+
+    <p class="text-xs mt-1">📍 ${lokasi}</p>
+
+    <p class="text-green-600 font-bold mt-1">
+      Rp ${harga.toLocaleString("id-ID")}
+    </p>
+
+    ${wa ? `
+      <a href="https://wa.me/${wa}?text=Halo kak, saya tertarik produk ${nama}"
+         target="_blank"
+         class="block bg-green-600 hover:bg-green-700
+                text-white text-center py-2 rounded mt-2">
+        WhatsApp Penjual
+      </a>
+    ` : `
+      <div class="text-center text-xs text-gray-400 mt-2">
+        Nomor WhatsApp tidak tersedia
       </div>
-    `;
-  }
-});
+    `}
+
+  </div>
+`;
 </script>
 
 </body>
