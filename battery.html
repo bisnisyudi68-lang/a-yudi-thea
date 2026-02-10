@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Katalog LCD</title>
+
+<style>
+:root{
+  --primary:#2aa84a;
+  --bg:#f4f6f8;
+  --card:#ffffff;
+  --text:#222;
+  --muted:#666;
+}
+
+*{box-sizing:border-box}
+
+body{
+  font-family: Arial, sans-serif;
+  background:var(--bg);
+  margin:0;
+  padding-bottom:80px;
+  color:var(--text);
+}
+
+/* HEADER */
+.header{
+  background:var(--primary);
+  color:#fff;
+  padding:16px;
+  text-align:center;
+  font-size:18px;
+  font-weight:bold;
+}
+
+/* SEARCH */
+.search-box{
+  padding:12px;
+}
+.search-box input{
+  width:100%;
+  padding:12px 14px;
+  border-radius:10px;
+  border:1px solid #ddd;
+  font-size:15px;
+}
+
+/* LIST */
+.list{
+  padding:12px;
+}
+
+/* CARD PRODUK */
+.produk{
+  background:var(--card);
+  border-radius:12px;
+  padding:14px;
+  margin-bottom:12px;
+  box-shadow:0 2px 6px rgba(0,0,0,.08);
+}
+
+.produk label{
+  display:flex;
+  gap:12px;
+  cursor:pointer;
+}
+
+.produk input{
+  transform:scale(1.3);
+  margin-top:4px;
+}
+
+.nama{
+  font-weight:bold;
+  font-size:15px;
+}
+
+.harga{
+  font-size:14px;
+  color:var(--muted);
+  margin-top:4px;
+}
+
+/* FLOATING WA BUTTON */
+.wa{
+  position:fixed;
+  left:12px;
+  right:12px;
+  bottom:12px;
+  padding:16px;
+  background:#25D366;
+  color:#fff;
+  border:none;
+  border-radius:14px;
+  font-size:16px;
+  font-weight:bold;
+  box-shadow:0 4px 10px rgba(0,0,0,.25);
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+  📱 Katalog LCD Profesional
+</div>
+
+<div class="search-box">
+  <input type="text" id="search" placeholder="Cari LCD (contoh: Samsung A10)">
+</div>
+
+<div id="list" class="list">Loading data...</div>
+
+<button class="wa" onclick="kirimWA()">🛒 Kirim ke WhatsApp</button>
+
+<script>
+// ===============================
+// LINK CSV (PUBLISH TO WEB)
+// ===============================
+const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR-bDX_S5Cwma6e7vlf8Of4XVwccJ9ukNFZODZg08gqRgjaK7gCN5xMIFIgMgAbgXw44dz8BrinQBBR/pubhtml?gid=15483237&single=true&output=csv";
+
+// ===============================
+let semuaProduk = [];
+
+// LOAD DATA
+fetch(CSV_URL)
+  .then(r => r.text())
+  .then(text => {
+    const rows = text.split("\n").slice(3);
+    semuaProduk = rows.map(r => r.split(",")).filter(c => c[0]);
+    render(semuaProduk);
+  })
+  .catch(()=>{
+    document.getElementById("list").innerHTML =
+      "<p>❌ Gagal mengambil data</p>";
+  });
+
+// RENDER
+function render(data){
+  let html="";
+  data.forEach(col=>{
+    html+=`
+      <div class="produk">
+        <label>
+          <input type="checkbox" value="${col[0]}">
+          <div>
+            <div class="nama">${col[0]}</div>
+            <div class="harga">
+              Program: ${col[1] || "-"}<br>
+              Tempo: ${col[2] || "-"}
+            </div>
+          </div>
+        </label>
+      </div>
+    `;
+  });
+  document.getElementById("list").innerHTML = html;
+}
+
+// SEARCH
+document.getElementById("search").addEventListener("input", function(){
+  const key = this.value.toLowerCase();
+  const hasil = semuaProduk.filter(c =>
+    c[0].toLowerCase().includes(key)
+  );
+  render(hasil);
+});
+
+// WA
+function kirimWA(){
+  const cek = document.querySelectorAll("input:checked");
+  if(!cek.length){
+    alert("Pilih LCD dulu");
+    return;
+  }
+
+  let pesan = "Halo, saya mau pesan LCD:\n\n";
+  cek.forEach((c,i)=>{
+    const box = c.closest(".produk");
+    pesan += (i+1)+". "+c.value+"\n";
+    pesan += box.querySelector(".harga").innerText+"\n\n";
+  });
+
+  const noWA = "6282319264646";
+  window.open(
+    "https://wa.me/"+noWA+"?text="+encodeURIComponent(pesan),
+    "_blank"
+  );
+}
+</script>
+
+</body>
+</html>
