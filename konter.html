@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stock Konter</title>
+
+<style>
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:#f4f6f8;
+}
+
+.header{
+  background:#2eaf55;
+  color:#fff;
+  text-align:center;
+  padding:14px;
+  font-weight:bold;
+}
+
+.search{
+  padding:10px;
+  background:#fff;
+}
+
+.search input{
+  width:100%;
+  padding:12px;
+  border-radius:8px;
+  border:1px solid #ccc;
+}
+
+.list{
+  padding:10px;
+  padding-bottom:90px;
+}
+
+.item{
+  background:#fff;
+  border-radius:8px;
+  padding:10px;
+  margin-bottom:8px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.item input{
+  transform:scale(1.2);
+}
+
+.nama{
+  font-weight:bold;
+}
+
+.harga{
+  color:#2eaf55;
+  font-size:14px;
+}
+
+.sisa{
+  font-size:12px;
+  color:#666;
+}
+
+.wa{
+  position:fixed;
+  bottom:0;
+  left:0;
+  width:100%;
+  padding:14px;
+  border:none;
+  background:#25d366;
+  color:#fff;
+  font-size:16px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+📦 Stock Konter
+</div>
+
+<div class="search">
+<input type="text" id="cari" placeholder="Cari barang..." onkeyup="filter()">
+</div>
+
+<div id="list" class="list">
+Loading data...
+</div>
+
+<button class="wa" onclick="kirimWA()">
+🛒 Kirim ke WhatsApp
+</button>
+
+<script>
+// ✅ CSV MURNI (BUKAN pubhtml)
+const CSV_URL =
+"https://docs.google.com/spreadsheets/d/e/2PACX-1vTAP_R50frV13whqx54ctjplc-8xhcN53rHEVk5mkhLeZE283xWnr6TdTBFr-KFymEiaYE_NWgGthpo/pub?gid=2070671735&single=true&output=csv";
+
+let data = [];
+
+fetch(CSV_URL)
+.then(r => r.text())
+.then(t => {
+  const rows = t.trim().split("\n").slice(1);
+
+  data = rows.map(r => {
+    // ambil kolom B (nama), E (harga), G (sisa)
+    const c = r.split(",");
+    return {
+      nama: c[1],
+      harga: c[4],
+      sisa: c[6]
+    };
+  }).filter(x => x.nama && Number(x.sisa) > 0);
+
+  render(data);
+});
+
+function render(arr){
+  let html = "";
+  arr.forEach(r => {
+    html += `
+      <div class="item">
+        <input type="checkbox" value="${r.nama} - Rp ${r.harga}">
+        <div>
+          <div class="nama">${r.nama}</div>
+          <div class="harga">Rp ${r.harga}</div>
+          <div class="sisa">Sisa: ${r.sisa}</div>
+        </div>
+      </div>
+    `;
+  });
+  document.getElementById("list").innerHTML =
+    html || "Stok kosong";
+}
+
+function filter(){
+  const q = document.getElementById("cari").value.toLowerCase();
+  render(data.filter(r => r.nama.toLowerCase().includes(q)));
+}
+
+function kirimWA(){
+  const c = [...document.querySelectorAll("input:checked")]
+    .map(x => x.value)
+    .join("%0A");
+
+  if(!c){
+    alert("Pilih barang dulu");
+    return;
+  }
+
+  location.href =
+    "https://wa.me/6282319264646?text=Order%20Stock:%0A" + c;
+}
+</script>
+
+</body>
+</html>
