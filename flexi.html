@@ -82,49 +82,129 @@ body{
 </div>
 
 <div id="list" class="list">Loading data...</div>
-
+<div id="total" style="
+  padding:10px;
+  background:#fff;
+  font-weight:bold;
+  text-align:right;
+">
+Total: Rp0
+</div>
 <button class="wa" onclick="kirimWA()">🛒 Kirim ke WhatsApp</button>
 
-<script>  
-const CSV_URL =  
-"https://docs.google.com/spreadsheets/d/e/2PACX-1vR-bDX_S5Cwma6e7vlf8Of4XVwccJ9ukNFZODZg08gqRgjaK7gCN5xMIFIgMgAbgXw44dz8BrinQBBR/pub?gid=53235460&single=true&output=csv";  
-  
-let data = [];  
-  
-fetch(CSV_URL)  
-.then(r=>r.text())  
-.then(t=>{  
-  const rows = t.split("\n").slice(1);  
-  data = rows.map(r=>r.split(",")).filter(r=>r[0]);  
-  render(data);  
-});  
-  
-function render(arr){  
-  let html="";  
-  arr.forEach((r,i)=>{  
-    html+=`  
-    <div class="item">  
-      <input type="checkbox" value="${r[0]} - ${r[1]}">  
-      <div>  
-        <div class="nama">${r[0]}</div>  
-        <div class="harga">${r[1]}</div>  
-      </div>  
-    </div>`;  
-  });  
-  document.getElementById("list").innerHTML=html;  
-}  
-  
-function filter(){  
-  const q=document.getElementById("cari").value.toLowerCase();  
-  render(data.filter(r=>r[0].toLowerCase().includes(q)));  
-}  
-  
-function kirimWA(){  
-  const c=[...document.querySelectorAll("input:checked")]  
-  .map(x=>x.value).join("%0A");  
-  if(!c) return alert("Pilih Flexi dulu");  
-  location.href="https://wa.me/6282319264646?text=Order Flexi:%0A"+c;  
-}  
+<script>
+/* =============================
+   KONFIGURASI
+============================= */
+const JUDUL_NOTA = "Order Sparepart";
+const CSV_URL =
+"https://docs.google.com/spreadsheets/d/e/2PACX-1vR-bDX_S5Cwma6e7vlf8Of4XVwccJ9ukNFZODZg08gqRgjaK7gCN5xMIFIgMgAbgXw44dz8BrinQBBR/pub?gid=53235460&single=true&output=csv";
+
+/* =============================
+   DATA & STATE
+============================= */
+let data = [];
+let checked = {};
+
+/* =============================
+   LOAD DATA
+============================= */
+fetch(CSV_URL)
+.then(r => r.text())
+.then(t => {
+  const rows = t.trim().split("\n").slice(1);
+  data = rows.map((r, i) => {
+    const c = r.split(",");
+    return {
+      id: i,
+      nama: c[0],
+      harga: parseInt(c[1].replace(/\D/g,"")) || 0
+    };
+  });
+  render(data);
+  updateTotal();
+});
+
+/* =============================
+   RENDER LIST
+============================= */
+function render(arr){
+  let html = "";
+  arr.forEach(d => {
+    html += `
+    <div class="item">
+      <input type="checkbox"
+        data-id="${d.id}"
+        ${checked[d.id] ? "checked" : ""}>
+      <div>
+        <div class="nama">${d.nama}</div>
+        <div class="harga">Rp${d.harga.toLocaleString("id-ID")}</div>
+      </div>
+    </div>`;
+  });
+  document.getElementById("list").innerHTML = html;
+}
+
+/* =============================
+   CHECKLIST (EVENT DELEGATION)
+============================= */
+document.addEventListener("change", e => {
+  if(e.target.type === "checkbox"){
+    const id = e.target.dataset.id;
+    if(e.target.checked){
+      checked[id] = true;
+    } else {
+      delete checked[id];
+    }
+    updateTotal();
+  }
+});
+
+/* =============================
+   SEARCH
+============================= */
+document.getElementById("cari").addEventListener("input", function(){
+  const q = this.value.toLowerCase();
+  render(data.filter(d =>
+    d.nama.toLowerCase().includes(q)
+  ));
+});
+
+/* =============================
+   TOTAL HARGA
+============================= */
+function updateTotal(){
+  let total = 0;
+  Object.keys(checked).forEach(id=>{
+    total += data[id].harga;
+  });
+  document.getElementById("total").innerText =
+    "Total: Rp" + total.toLocaleString("id-ID");
+}
+
+/* =============================
+   KIRIM NOTA WA
+============================= */
+function kirimWA(){
+  let teks = `🧾 *${JUDUL_NOTA}*%0A%0A`;
+  let total = 0;
+
+  Object.keys(checked).forEach((id, i)=>{
+    const d = data[id];
+    teks += `${i+1}. ${d.nama}%0ARp${d.harga.toLocaleString("id-ID")}%0A%0A`;
+    total += d.harga;
+  });
+
+  if(total === 0){
+    alert("Pilih produk dulu");
+    return;
+  }
+
+  teks += `*TOTAL: Rp${total.toLocaleString("id-ID")}*`;
+
+  location.href =
+    "https://wa.me/6282319264646?text=" + teks;
+}
 </script>
 </body>
 </html>
