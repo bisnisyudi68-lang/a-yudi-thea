@@ -4,111 +4,129 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Marketplace Barang Baru & Bekas</title>
-
-<!-- Tailwind CDN -->
 <script src="https://cdn.tailwindcss.com"></script>
-
 </head>
+
 <body class="bg-gray-100">
 
 <!-- HEADER -->
 <div class="bg-white shadow p-4 text-center">
   <h1 class="text-xl font-bold">🛒 Marketplace Barang Baru & Bekas</h1>
-  <p class="text-sm text-gray-600">Produk akan otomatis hilang setelah 7 hari</p>
+  <p class="text-sm text-gray-600">
+    Produk akan otomatis hilang setelah 7 hari
+  </p>
 </div>
 
 <!-- KONTEN -->
-<div class="max-w-4xl mx-auto p-4">
+<div class="max-w-5xl mx-auto p-4">
 
+  <!-- INFO UPLOAD -->
   <div class="bg-white rounded shadow p-4 mb-4">
     <h2 class="font-bold text-lg mb-1">🤝 Jual Produk Anda Bersama Kami</h2>
     <p class="text-sm text-gray-600 mb-3">
-      Punya barang atau usaha sendiri? Upload produk Anda dan biarkan kami membantu memasarkannya.
+      Upload produk Anda dan biarkan kami membantu memasarkannya.
     </p>
 
-    <a href="FORM_LINK_KAMU"
+    <!-- GANTI LINK FORM JIKA PERLU -->
+    <a href="#"
        class="block bg-green-500 hover:bg-green-600 text-white text-center py-2 rounded font-bold">
        ➕ Upload Produk Anda di Sini
     </a>
   </div>
 
-  <!-- PRODUK -->
+  <!-- LIST PRODUK -->
   <div id="produkMember" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
 
   <div class="text-center mt-6">
     <a href="index.html" class="text-blue-600 underline">← Kembali ke Beranda</a>
   </div>
-
 </div>
 
 <!-- SCRIPT -->
 <script>
-const sheetUrl = "PASTE_LINK_CSV_GOOGLE_SHEET_DI_SINI";
+/*
+URUTAN KOLOM SHEET (WAJIB SESUAI INI)
+c[0] Timestamp
+c[1] Produk
+c[2] Deskripsi
+c[3] Harga
+c[4] Nomor WhatsApp
+c[5] Upload Foto
+c[6] Alamat
+c[7] Harga_fix
+c[8] no whatsapp
+c[9] Foto_fix
+c[10] alamat_fix
+*/
 
-fetch(sheetUrl)
-  .then(res => res.text())
-  .then(text => {
-    const rows = text.trim().split(/\r?\n/).slice(1);
-    const box = document.getElementById("produkMember");
+const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR-bDX_S5Cwma6e7vlf8Of4XVwccJ9ukNFZODZg08gqRgjaK7gCN5xMIFIgMgAbgXw44dz8BrinQBBR/pubhtml?gid=833555455&single=true";
 
-    rows.forEach(r => {
-      const c = r.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/);
+fetch(https://docs.google.com/spreadsheets/d/e/2PACX-1vR-bDX_S5Cwma6e7vlf8Of4XVwccJ9ukNFZODZg08gqRgjaK7gCN5xMIFIgMgAbgXw44dz8BrinQBBR/pubhtml?gid=833555455&single=true)
+.then(res => res.text())
+.then(text => {
+  const rows = text.trim().split(/\r?\n/).slice(1);
+  const box = document.getElementById("produkMember");
 
-      if (!c[0] || !c[1]) return;
+  rows.forEach(r => {
+    const c = r.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/);
 
-      const upload = new Date(c[0]);
-      const now = new Date();
-      const diffDay = (now - upload) / (1000 * 60 * 60 * 24);
+    // WAJIB ADA TIMESTAMP & NAMA
+    if (!c[0] || !c[1]) return;
 
-      // 🔥 AUTO HILANG 7 HARI
-      if (diffDay > 7) return;
+    // FILTER 7 HARI (INI SAJA YANG MENENTUKAN HILANG)
+    const upload = new Date(c[0]);
+    const now = new Date();
+    const diffDay = (now - upload) / (1000 * 60 * 60 * 24);
+    if (diffDay > 7) return;
 
-      const nama = c[1];
-      const deskripsi = c[2] || "";
-      const harga = c[7] || c[3] || "0";
-      const wa = (c[8] || c[4] || "").replace(/[^0-9]/g,"");
-      const img = c[9] || c[5] || "";
-      const lokasi = c[10] || c[6] || "";
+    // AMBIL DATA AMAN
+    const nama = c[1];
+    const deskripsi = c[2] || "";
+    const hargaRaw = c[7] || c[3] || "0";
+    const harga = parseInt(hargaRaw.toString().replace(/[^0-9]/g,"")) || 0;
+    const wa = (c[8] || c[4] || "").replace(/[^0-9]/g,"");
+    const img = c[9] || c[5] || "";
+    const lokasi = c[10] || c[6] || "";
 
-      box.innerHTML += `
-        <div class="bg-white rounded shadow p-3">
-          ${img ? `
-            <img src="${img}" class="w-full h-40 object-cover rounded mb-2">
-          ` : `
-            <div class="w-full h-40 bg-gray-200 flex items-center justify-center rounded mb-2 text-gray-500">
-              Tidak ada foto
-            </div>
-          `}
-          <h3 class="font-bold">${nama}</h3>
-          <p class="text-xs text-gray-600">${deskripsi}</p>
-          <p class="text-xs mt-1">📍 ${lokasi}</p>
-          <p class="text-green-600 font-bold mt-1">
-            Rp ${Number(harga).toLocaleString("id-ID")}
-          </p>
+    box.innerHTML += `
+      <div class="bg-white rounded shadow p-3">
+        ${img ? `
+          <img src="${img}" class="w-full h-40 object-cover rounded mb-2">
+        ` : `
+          <div class="w-full h-40 bg-gray-200 flex items-center justify-center rounded mb-2 text-gray-500">
+            Tidak ada foto
+          </div>
+        `}
+        <h3 class="font-bold">${nama}</h3>
+        <p class="text-xs text-gray-600">${deskripsi}</p>
+        <p class="text-xs mt-1">📍 ${lokasi}</p>
+        <p class="text-green-600 font-bold mt-1">
+          Rp ${harga.toLocaleString("id-ID")}
+        </p>
 
-          ${wa ? `
-            <a href="https://wa.me/${wa}?text=Halo kak, saya tertarik produk ${nama}"
-               target="_blank"
-               class="block bg-green-600 hover:bg-green-700 text-white text-center py-2 rounded mt-2">
-               WhatsApp Penjual
-            </a>
-          ` : `
-            <div class="text-center text-xs text-gray-400 mt-2">
-              Nomor WhatsApp tidak tersedia
-            </div>
-          `}
-        </div>
-      `;
-    });
-
-    if (box.innerHTML === "") {
-      box.innerHTML = `
-        <div class="col-span-full text-center text-gray-500">
-          Belum ada produk aktif
-        </div>
-      `;
-    }
+        ${wa ? `
+          <a href="https://wa.me/${wa}?text=Halo kak, saya tertarik produk ${nama}"
+             target="_blank"
+             class="block bg-green-600 hover:bg-green-700 text-white text-center py-2 rounded mt-2">
+             WhatsApp Penjual
+          </a>
+        ` : `
+          <div class="text-center text-xs text-gray-400 mt-2">
+            Nomor WhatsApp tidak tersedia
+          </div>
+        `}
+      </div>
+    `;
   });
+
+  if (box.innerHTML.trim() === "") {
+    box.innerHTML = `
+      <div class="col-span-full text-center text-gray-500">
+        Belum ada produk aktif
+      </div>
+    `;
+  }
+});
 </script>
 
 </body>
