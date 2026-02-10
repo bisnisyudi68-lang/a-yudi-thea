@@ -20,15 +20,16 @@
 <!-- KONTEN -->
 <div class="max-w-5xl mx-auto p-4">
 
-  <!-- INFO UPLOAD -->
+  <!-- UPLOAD PRODUK -->
   <div class="bg-white rounded shadow p-4 mb-4">
     <h2 class="font-bold text-lg mb-1">🤝 Jual Produk Anda Bersama Kami</h2>
     <p class="text-sm text-gray-600 mb-3">
       Upload produk Anda dan biarkan kami membantu memasarkannya.
     </p>
 
-    <!-- GANTI LINK FORM JIKA PERLU -->
-    <a href="#"
+    <!-- ✅ LINK FORM SUDAH DIPASANG -->
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLSeLx8p-MTKPJGmjMfPV0KyuhmpWIFc8Ad9TQOxjp0qsLdHk7w/viewform"
+       target="_blank"
        class="block bg-green-500 hover:bg-green-600 text-white text-center py-2 rounded font-bold">
        ➕ Upload Produk Anda di Sini
     </a>
@@ -45,7 +46,7 @@
 <!-- SCRIPT -->
 <script>
 /*
-URUTAN KOLOM SHEET (WAJIB SESUAI INI)
+URUTAN KOLOM SHEET MEMBER:
 c[0] Timestamp
 c[1] Produk
 c[2] Deskripsi
@@ -59,9 +60,14 @@ c[9] Foto_fix
 c[10] alamat_fix
 */
 
-const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR-bDX_S5Cwma6e7vlf8Of4XVwccJ9ukNFZODZg08gqRgjaK7gCN5xMIFIgMgAbgXw44dz8BrinQBBR/pubhtml?gid=833555455&single=true";
+/* ⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇
+   👉 TEMPEL LINK GOOGLE SHEETS CSV DI SINI
+   Contoh:
+   https://docs.google.com/spreadsheets/d/e/2PACX-xxxx/pub?output=csv
+*/
+const SHEET_URL = "PASTE_LINK_SHEET_CSV_DI_SINI";
 
-fetch(https://docs.google.com/spreadsheets/d/e/2PACX-1vR-bDX_S5Cwma6e7vlf8Of4XVwccJ9ukNFZODZg08gqRgjaK7gCN5xMIFIgMgAbgXw44dz8BrinQBBR/pubhtml?gid=833555455&single=true)
+fetch(SHEET_URL)
 .then(res => res.text())
 .then(text => {
   const rows = text.trim().split(/\r?\n/).slice(1);
@@ -70,16 +76,15 @@ fetch(https://docs.google.com/spreadsheets/d/e/2PACX-1vR-bDX_S5Cwma6e7vlf8Of4XVw
   rows.forEach(r => {
     const c = r.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/);
 
-    // WAJIB ADA TIMESTAMP & NAMA
     if (!c[0] || !c[1]) return;
 
-    // FILTER 7 HARI (INI SAJA YANG MENENTUKAN HILANG)
+    // 🔥 FILTER 7 HARI
     const upload = new Date(c[0]);
     const now = new Date();
     const diffDay = (now - upload) / (1000 * 60 * 60 * 24);
     if (diffDay > 7) return;
 
-    // AMBIL DATA AMAN
+    // DATA AMAN
     const nama = c[1];
     const deskripsi = c[2] || "";
     const hargaRaw = c[7] || c[3] || "0";
