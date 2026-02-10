@@ -10,32 +10,71 @@
   --primary:#2aa84a;
   --bg:#f4f6f8;
   --card:#ffffff;
+  --text:#222;
+  --muted:#666;
 }
+
+*{box-sizing:border-box}
+
 body{
   margin:0;
   font-family:Arial, sans-serif;
   background:var(--bg);
+  color:var(--text);
 }
+
+/* HEADER */
 .header{
   background:#fff;
+  padding:20px 16px;
   text-align:center;
-  padding:20px;
-  box-shadow:0 2px 6px rgba(0,0,0,.1);
+  box-shadow:0 2px 6px rgba(0,0,0,.08);
 }
-.header h2{margin:10px 0 5px}
-.header p{margin:0;color:#666;font-size:14px}
+.logo{
+  width:90px;
+  height:90px;
+  margin:0 auto 10px;
+  border-radius:50%;
+  background:#e8f5ee;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:36px;
+}
+.header h2{
+  margin:5px 0;
+}
+.header p{
+  margin:0;
+  font-size:14px;
+  color:var(--muted);
+}
 
-.menu{
+/* SECTION */
+.section{
+  background:#fff;
+  margin:14px;
   padding:16px;
+  border-radius:14px;
+  box-shadow:0 2px 6px rgba(0,0,0,.08);
+}
+.section h3{
+  margin-top:0;
+  margin-bottom:10px;
+}
+
+/* MENU */
+.menu{
+  margin-top:10px;
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:12px;
 }
 
-.item{
+.menu-item{
   background:#fff;
   border-radius:14px;
-  padding:16px;
+  padding:14px;
   box-shadow:0 3px 8px rgba(0,0,0,.12);
   display:flex;
   align-items:center;
@@ -43,16 +82,20 @@ body{
   cursor:pointer;
   font-weight:bold;
 }
+
 .icon{
-  width:40px;
-  height:40px;
-  border-radius:12px;
+  width:38px;
+  height:38px;
+  border-radius:10px;
   background:var(--primary);
   color:#fff;
   display:flex;
   align-items:center;
   justify-content:center;
+  font-size:18px;
 }
+
+/* FOOTER */
 .footer{
   text-align:center;
   font-size:12px;
@@ -64,32 +107,71 @@ body{
 
 <body>
 
+<!-- HEADER + LOGO -->
 <div class="header">
+  <div class="logo">🔧</div>
   <h2>TEKNISI PONSEL MAJA</h2>
   <p>Pusat Kolaborasi & Distribusi Produk</p>
 </div>
 
-<div class="menu">
-  <div class="item" onclick="go('brand.html')">
-    <div class="icon">🧰</div>Kategori Produk
-  </div>
-  <div class="item">
-    <div class="icon">🛒</div>Jual Beli Produk
-  </div>
-  <div class="item">
-    <div class="icon">📘</div>SOP Teknisi
-  </div>
-  <div class="item">
-    <div class="icon">💬</div>Chat
+<!-- TENTANG KAMI -->
+<div class="section">
+  <h3>📖 Tentang Kami</h3>
+  <p>
+    Teknisi Ponsel Maja adalah wadah kolaborasi teknisi handphone di wilayah
+    Majalengka. Platform ini dibuat untuk memudahkan distribusi produk,
+    transaksi, serta berbagi informasi teknis secara cepat, rapi, dan transparan.
+  </p>
+</div>
+
+<!-- LAYANAN -->
+<div class="section">
+  <h3>🧰 Layanan & Produk</h3>
+  <ul>
+    <li>Sparepart HP & Aksesoris</li>
+    <li>Peralatan & Mesin Teknisi</li>
+    <li>Distribusi Produk Teknisi</li>
+    <li>Informasi & SOP Perbaikan</li>
+    <li>Kolaborasi Komunitas Teknisi</li>
+  </ul>
+</div>
+
+<!-- MENU -->
+<div class="section">
+  <h3>📱 Menu Utama</h3>
+
+  <div class="menu">
+    <div class="menu-item" onclick="go('katagori.html')">
+      <div class="icon">🧰</div>
+      Kategori Produk
+    </div>
+
+    <div class="menu-item">
+      <div class="icon">🛒</div>
+      Jual Beli Produk
+    </div>
+
+    <div class="menu-item">
+      <div class="icon">📘</div>
+      SOP Teknisi
+    </div>
+
+    <div class="menu-item">
+      <div class="icon">💬</div>
+      Chat
+    </div>
   </div>
 </div>
 
+<!-- FOOTER -->
 <div class="footer">
   © Komunitas Teknisi Majalengka
 </div>
 
 <script>
-function go(p){ location.href=p }
+function go(p){
+  location.href = p;
+}
 </script>
 
 </body>
