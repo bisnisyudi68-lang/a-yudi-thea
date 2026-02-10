@@ -7,7 +7,7 @@
 
 <style>
 body{
-  font-family:Arial, sans-serif;
+  font-family: Arial, sans-serif;
   margin:0;
   background:#f4f6f8;
 }
@@ -34,6 +34,7 @@ body{
 
 .list{
   padding:10px;
+  padding-bottom:80px;
 }
 
 .item{
@@ -75,55 +76,70 @@ body{
 
 <body>
 
-<div class="header">🔋 Katalog Flexi Profesional</div>
-
-<div class="search">
-  <input type="text" id="cari" placeholder="Cari Flexi (contoh: flexi oppo)" onkeyup="filter()">
+<div class="header">
+📱 Katalog Flexi Profesional
 </div>
 
-<div id="list" class="list">Loading data...</div>
+<div class="search">
+<input type="text" id="cari" placeholder="Cari Flexi (contoh: flexi oppo)" onkeyup="filter()">
+</div>
 
-<button class="wa" onclick="kirimWA()">🛒 Kirim ke WhatsApp</button>
+<div id="list" class="list">
+Loading data...
+</div>
+
+<button class="wa" onclick="kirimWA()">
+🛒 Kirim ke WhatsApp
+</button>
 
 <script>
+// ✅ CSV MURNI (BUKAN pubhtml)
 const CSV_URL =
 "https://docs.google.com/spreadsheets/d/e/2PACX-1vR-bDX_S5Cwma6e7vlf80f4XVwccJ9ukNFZODZg08gqRgjaK7gCN5xMIFIgMgAbgXw44dz8BrinQBBR/pub?gid=53235460&single=true&output=csv";
 
 let data = [];
 
 fetch(CSV_URL)
-.then(r=>r.text())
-.then(t=>{
-  const rows = t.split("\n").slice(1);
-  data = rows.map(r=>r.split(",")).filter(r=>r[0]);
+.then(r => r.text())
+.then(t => {
+  const rows = t.trim().split("\n").slice(1);
+  data = rows.map(r => r.split(",")).filter(r => r[0]);
   render(data);
 });
 
 function render(arr){
-  let html="";
-  arr.forEach((r,i)=>{
-    html+=`
-    <div class="item">
-      <input type="checkbox" value="${r[0]} - ${r[1]}">
-      <div>
-        <div class="nama">${r[0]}</div>
-        <div class="harga">${r[1]}</div>
+  let html = "";
+  arr.forEach(r => {
+    html += `
+      <div class="item">
+        <input type="checkbox" value="${r[0]} - ${r[1]}">
+        <div>
+          <div class="nama">${r[0]}</div>
+          <div class="harga">${r[1]}</div>
+        </div>
       </div>
-    </div>`;
+    `;
   });
-  document.getElementById("list").innerHTML=html;
+  document.getElementById("list").innerHTML = html || "Data kosong";
 }
 
 function filter(){
-  const q=document.getElementById("cari").value.toLowerCase();
-  render(data.filter(r=>r[0].toLowerCase().includes(q)));
+  const q = document.getElementById("cari").value.toLowerCase();
+  render(data.filter(r => r[0].toLowerCase().includes(q)));
 }
 
 function kirimWA(){
-  const c=[...document.querySelectorAll("input:checked")]
-  .map(x=>x.value).join("%0A");
-  if(!c) return alert("Pilih battery dulu");
-  location.href="https://wa.me/6282319264646?text=Order Battery:%0A"+c;
+  const c = [...document.querySelectorAll("input:checked")]
+    .map(x => x.value)
+    .join("%0A");
+
+  if(!c){
+    alert("Pilih flexi dulu");
+    return;
+  }
+
+  location.href =
+  "https://wa.me/6282319264646?text=Order%20Flexi:%0A" + c;
 }
 </script>
 
