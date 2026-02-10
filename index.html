@@ -189,14 +189,23 @@ function go(p){
 }
 </script>
 <audio id="bgMusic" loop>
-  <source src="music/maja.mp3" type="audio/mpeg">
+  <source src="maja.mp3" type="audio/mpeg">
 </audio>
 
 <button id="musicBtn"
-  style="position:fixed;bottom:20px;right:20px;
-  border:none;border-radius:50%;
-  width:50px;height:50px;
-  background:#25d366;color:#fff;font-size:20px;">
+  style="
+    position:fixed;
+    bottom:20px;
+    right:20px;
+    border:none;
+    border-radius:50%;
+    width:50px;
+    height:50px;
+    background:#25d366;
+    color:white;
+    font-size:20px;
+    z-index:9999;
+  ">
   ▶️
 </button>
 
@@ -204,7 +213,7 @@ function go(p){
 const music = document.getElementById("bgMusic");
 const btn = document.getElementById("musicBtn");
 
-btn.onclick = () => {
+btn.addEventListener("click", function () {
   if (music.paused) {
     music.play();
     btn.innerHTML = "⏸️";
@@ -212,7 +221,7 @@ btn.onclick = () => {
     music.pause();
     btn.innerHTML = "▶️";
   }
-};
+});
 </script>
 </body>
 </html>
