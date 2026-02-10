@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Data Teknisi Kabupaten Majalengka</title>
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+
+<div class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-4">
+  <p class="text-center font-bold text-gray-800 mb-2">
+    📢 INFORMASI DATA TEKNISI
+  </p>
+
+  <p class="text-center font-semibold text-gray-700">
+    Silakan masukkan data usaha Anda melalui tombol  
+    <span class="text-green-600">Daftar / Tambah Data Teknisi</span>  
+    agar sesama teknisi dan calon pelanggan dapat mengenal Anda lebih dekat.
+  </p>
+
+  <p class="text-center text-gray-600 mt-2">
+    Data yang ditampilkan meliputi <b>Nama</b>, <b>Alamat</b>, <b>Bidang Usaha</b>,  
+    <b>Nomor WhatsApp</b>, dan <b>Akun Media Sosial</b>.
+  </p>
+
+  <p class="text-center font-semibold text-gray-700 mt-2">
+    Mari saling terhubung, saling mendukung, dan berkembang bersama  
+    dalam komunitas <b>DPD TESPOIN Majalengka</b>.
+  </p>
+</div>
+<h1 class="text-2xl font-bold text-center mb-4">Klik tombol hijau di bawah ini untuk menampilkan data anda
+</h1>
+
+<div class="text-center mb-4">
+<a href="https://forms.gle/tk4sr2RgfRaoBaQS9" target="_blank"
+class="bg-green-500 text-white px-4 py-2 rounded-lg">
+➕ Daftar / Tambah Data Teknisi
+</a>
+</div>
+<h1 class="text-2xl font-bold text-center mb-4">
+📋 Data Teknisi Kabupaten Majalengka
+</h1>
+<div id="list" class="grid md:grid-cols-2 gap-4"></div>
+
+</div>
+
+<script>
+const csvUrl = "https://docs.google.com/spreadsheets/d/19AfachAS9ZyNuut61RB1wqyI_AI6BsmNT1SIWhmSIn8/export?format=csv&gid=50601069";
+
+fetch(csvUrl)
+  .then(r => r.text())
+  .then(t => {
+    const rows = t.trim().split(/\r?\n/).slice(1);
+
+    rows.forEach(r => {
+      const c = r.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/);
+
+      if (!c[1]) return;
+
+      const nama   = c[1];
+      const alamat = c[2];
+      const bidang = c[3];
+      const wa     = c[4];
+      const medsos = c[5] || "-";
+
+      document.getElementById("list").innerHTML += `
+        <div class="bg-white rounded-xl shadow p-4 mb-3">
+          <p class="font-bold text-lg">${nama}</p>
+          <p class="text-sm text-gray-600">${alamat}</p>
+          <p class="mt-1"><b>Bidang:</b> ${bidang}</p>
+          <p class="mt-1"><b>WA:</b>
+            <a class="text-green-600"
+               href="https://wa.me/62${wa.replace(/^0/,'')}"
+               target="_blank">${wa}</a>
+          </p>
+          <p class="text-sm mt-1"><b>Medsos:</b> ${medsos}</p>
+        </div>
+      `;
+    });
+  });
+</script>
+
+</body>
+</html>
