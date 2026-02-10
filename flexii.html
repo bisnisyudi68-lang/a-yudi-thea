@@ -3,111 +3,82 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Katalog LCD</title>
+<title>Katalog Battery Profesional</title>
 
 <style>
-:root{
-  --primary:#2aa84a;
-  --bg:#f4f6f8;
-  --card:#ffffff;
-  --text:#222;
-  --muted:#666;
-}
-
-*{box-sizing:border-box}
-
 body{
-  font-family: Arial, sans-serif;
-  background:var(--bg);
+  font-family:Arial, sans-serif;
   margin:0;
-  padding-bottom:80px;
-  color:var(--text);
+  background:#f4f6f8;
 }
 
-/* HEADER */
 .header{
-  background:var(--primary);
+  background:#2eaf55;
   color:#fff;
-  padding:16px;
   text-align:center;
-  font-size:18px;
+  padding:14px;
   font-weight:bold;
 }
 
-/* SEARCH */
-.search-box{
-  padding:12px;
+.search{
+  padding:10px;
+  background:#fff;
 }
-.search-box input{
+
+.search input{
   width:100%;
-  padding:12px 14px;
-  border-radius:10px;
-  border:1px solid #ddd;
-  font-size:15px;
-}
-
-/* LIST */
-.list{
   padding:12px;
+  border-radius:8px;
+  border:1px solid #ccc;
 }
 
-/* CARD PRODUK */
-.produk{
-  background:var(--card);
-  border-radius:12px;
-  padding:14px;
-  margin-bottom:12px;
-  box-shadow:0 2px 6px rgba(0,0,0,.08);
+.list{
+  padding:10px;
 }
 
-.produk label{
+.item{
+  background:#fff;
+  border-radius:8px;
+  padding:10px;
+  margin-bottom:8px;
   display:flex;
-  gap:12px;
-  cursor:pointer;
+  align-items:center;
+  gap:10px;
 }
 
-.produk input{
-  transform:scale(1.3);
-  margin-top:4px;
+.item input{
+  transform:scale(1.2);
 }
 
 .nama{
   font-weight:bold;
-  font-size:15px;
 }
 
 .harga{
+  color:#2eaf55;
   font-size:14px;
-  color:var(--muted);
-  margin-top:4px;
 }
 
-/* FLOATING WA BUTTON */
 .wa{
   position:fixed;
-  left:12px;
-  right:12px;
-  bottom:12px;
-  padding:16px;
-  background:#25D366;
-  color:#fff;
+  bottom:0;
+  left:0;
+  width:100%;
+  padding:14px;
   border:none;
-  border-radius:14px;
+  background:#25d366;
+  color:#fff;
   font-size:16px;
-  font-weight:bold;
-  box-shadow:0 4px 10px rgba(0,0,0,.25);
 }
 </style>
 </head>
 
 <body>
 
-<div class="header">
-  📱 Katalog LCD Profesional
-</div>
+<div class="header">🔋 Katalog Battery Profesional</div>
 
-<div class="search-box">
-  <input type="text" id="search" placeholder="Cari LCD (contoh: Samsung A10)">
+<div class="search">
+  <input type="text" id="cari" placeholder="Cari Battery (contoh: iPhone X)" onkeyup="filter()">
 </div>
 
 <div id="list" class="list">Loading data...</div>
@@ -115,80 +86,45 @@ body{
 <button class="wa" onclick="kirimWA()">🛒 Kirim ke WhatsApp</button>
 
 <script>
-// ===============================
-// LINK CSV (PUBLISH TO WEB)
-// ===============================
-const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR-bDX_S5Cwma6e7vlf8Of4XVwccJ9ukNFZODZg08gqRgjaK7gCN5xMIFIgMgAbgXw44dz8BrinQBBR/pubhtml?gid=53235460&single=true";
+const CSV_URL =
+"https://docs.google.com/spreadsheets/d/e/2PACX-1vR-bDX_S5Cwma6e7vlf8Of4XVwccJ9ukNFZODZg08gqRgjaK7gCN5xMIFIgMgAbgXw44dz8BrinQBBR/pub?gid=15483237&single=true&output=csv";
 
-// ===============================
-let semuaProduk = [];
+let data = [];  
+  
+fetch(CSV_URL)  
+.then(r=>r.text())  
+.then(t=>{  
+  const rows = t.split("\n").slice(1);  
+  data = rows.map(r=>r.split(",")).filter(r=>r[0]);  
+  render(data);  
+});  
+  
+function render(arr){  
+  let html="";  
+  arr.forEach((r,i)=>{  
+    html+=`  
+    <div class="item">  
+      <input type="checkbox" value="${r[0]} - ${r[1]}">  
+      <div>  
+        <div class="nama">${r[0]}</div>  
+        <div class="harga">${r[1]}</div>  
+      </div>  
+    </div>`;  
+  });  
+  document.getElementById("list").innerHTML=html;  
+}  
+  
+function filter(){  
+  const q=document.getElementById("cari").value.toLowerCase();  
+  render(data.filter(r=>r[0].toLowerCase().includes(q)));  
+}  
 
-// LOAD DATA
-fetch(CSV_URL)
-  .then(r => r.text())
-  .then(text => {
-    const rows = text.split("\n").slice(3);
-    semuaProduk = rows.map(r => r.split(",")).filter(c => c[0]);
-    render(semuaProduk);
-  })
-  .catch(()=>{
-    document.getElementById("list").innerHTML =
-      "<p>❌ Gagal mengambil data</p>";
-  });
-
-// RENDER
-function render(data){
-  let html="";
-  data.forEach(col=>{
-    html+=`
-      <div class="produk">
-        <label>
-          <input type="checkbox" value="${col[0]}">
-          <div>
-            <div class="nama">${col[0]}</div>
-            <div class="harga">
-              Program: ${col[1] || "-"}<br>
-              Tempo: ${col[2] || "-"}
-            </div>
-          </div>
-        </label>
-      </div>
-    `;
-  });
-  document.getElementById("list").innerHTML = html;
-}
-
-// SEARCH
-document.getElementById("search").addEventListener("input", function(){
-  const key = this.value.toLowerCase();
-  const hasil = semuaProduk.filter(c =>
-    c[0].toLowerCase().includes(key)
-  );
-  render(hasil);
-});
-
-// WA
 function kirimWA(){
-  const cek = document.querySelectorAll("input:checked");
-  if(!cek.length){
-    alert("Pilih LCD dulu");
-    return;
-  }
-
-  let pesan = "Halo, saya mau pesan LCD:\n\n";
-  cek.forEach((c,i)=>{
-    const box = c.closest(".produk");
-    pesan += (i+1)+". "+c.value+"\n";
-    pesan += box.querySelector(".harga").innerText+"\n\n";
-  });
-
-  const noWA = "6282319264646";
-  window.open(
-    "https://wa.me/"+noWA+"?text="+encodeURIComponent(pesan),
-    "_blank"
-  );
+const c=[...document.querySelectorAll("input:checked")]
+.map(x=>x.value).join("%0A");
+if(!c) return alert("Pilih battery dulu");
+location.href="https://wa.me/6282319264646?text=Order Battery:%0A"+c;
 }
 </script>
-
 </body>
 </html>
