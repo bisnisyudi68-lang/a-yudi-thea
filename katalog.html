@@ -116,87 +116,99 @@ Pengambilan 20pcs tempo 30 hari
 <button class="wa" onclick="kirimWA()">🛒 Kirim ke WhatsApp</button>
 
 <script>
-/* ===============================
-   SIMPAN CEKLIST (MEMORY SAJA)
-================================ */
-const selectedLCD = new Set();
-
-/* ===============================
-   LINK CSV LCD
-================================ */
-const CSV_URL =
-"https://docs.google.com/spreadsheets/d/e/2PACX-1vR-bDX_S5Cwma6e7vlf8Of4XVwccJ9ukNFZODZg08gqRgjaK7gCN5xMIFIgMgAbgXw44dz8BrinQBBR/pub?gid=1950799771&single=true&output=csv";
-
-let data = [];
-
-/* ===============================
-   LOAD DATA
-================================ */
-fetch(CSV_URL)
-.then(r => r.text())
-.then(t => {
-  const rows = t.split("\n").slice(3);
-  data = rows.map(r => r.split(",")).filter(r => r[0]);
-  render(data);
-});
-
-/* ===============================
-   RENDER LCD
-================================ */
-function render(arr){
-  let html = "";
-
-  arr.forEach(r => {
-    const nama = r[0];
-    const program = r[1] || "-";
-    const tempo = r[2] || "-";
-    const key = nama + " | " + program + " | " + tempo;
-
-    html += `
-      <div class="item">
-        <input type="checkbox"
-          ${selectedLCD.has(key) ? "checked" : ""}
-          onchange="
-            this.checked
-              ? selectedLCD.add('${key}')
-              : selectedLCD.delete('${key}')
-          "
-        >
-        <div>
-          <div class="nama">${nama}</div>
-          <div class="harga">
-            Program: ${program}<br>
-            Tempo: ${tempo}
-          </div>
-        </div>
-      </div>
-    `;
-  });
-
-  document.getElementById("list").innerHTML = html;
-}
-
-/* ===============================
-   SEARCH LCD
-================================ */
-function filter(){
-  const q = document.getElementById("cari").value.toLowerCase();
-  render(data.filter(r => r[0].toLowerCase().includes(q)));
-}
-
-/* ===============================
-   KIRIM WA
-================================ */
-function kirimWA(){
-  if(!selectedLCD.size){
-    alert("Pilih LCD dulu");
-    return;
-  }
-
-  const pesan = [...selectedLCD].join("%0A");
-  location.href =
-    "https://wa.me/6282319264646?text=Order LCD:%0A" + pesan;
-}
+const selectedProduk = new Set(  
+  JSON.parse(localStorage.getItem("selectedProduk") || "[]")  
+);  
+  
+function saveSelected() {  
+  localStorage.setItem(  
+    "selectedProduk",  
+    JSON.stringify([...selectedProduk])  
+  );  
+}  
+// ===============================  
+// LINK CSV (PUBLISH TO WEB)  
+// ===============================  
+const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR-bDX_S5Cwma6e7vlf8Of4XVwccJ9ukNFZODZg08gqRgjaK7gCN5xMIFIgMgAbgXw44dz8BrinQBBR/pub?gid=1950799771&single=true&output=csv";  
+  
+// ===============================  
+let semuaProduk = [];  
+  
+// LOAD DATA  
+fetch(CSV_URL)  
+  .then(r => r.text())  
+  .then(text => {  
+    const rows = text.split("\n").slice(3);  
+    semuaProduk = rows.map(r => r.split(",")).filter(c => c[0]);  
+    render(semuaProduk);  
+  })  
+  .catch(()=>{  
+    document.getElementById("list").innerHTML =  
+      "<p>❌ Gagal mengambil data</p>";  
+  });  
+  
+// RENDER  
+function render(data){  
+  let html="";  
+  data.forEach(col=>{  
+    html+=`  
+      <div class="produk">  
+        <label>  
+     <input type="checkbox"  
+  ${selectedProduk.has(nama) ? "checked" : ""}  
+  onchange="  
+    if(this.checked){  
+      selectedProduk.add('${nama}');  
+    }else{  
+      selectedProduk.delete('${nama}');  
+    }  
+    saveSelected();  
+  "  
+>  
+          <div>  
+            <div class="nama">${col[0]}</div>  
+            <div class="harga">  
+              Program: ${col[1] || "-"}<br>  
+              Tempo: ${col[2] || "-"}  
+            </div>  
+          </div>  
+        </label>  
+      </div>  
+    `;  
+  });  
+  document.getElementById("list").innerHTML = html;  
+}  
+  
+// SEARCH  
+document.getElementById("search").addEventListener("input", function(){  
+  const key = this.value.toLowerCase();  
+  const hasil = semuaProduk.filter(c =>  
+    c[0].toLowerCase().includes(key)  
+  );  
+  render(hasil);  
+});  
+  
+// WA  
+function kirimWA(){  
+  const cek = document.querySelectorAll("input:checked");  
+  if(!cek.length){  
+    alert("Pilih LCD dulu");  
+    return;  
+  }  
+  
+  let pesan = "Halo, saya mau pesan LCD:\n\n";  
+  cek.forEach((c,i)=>{  
+    const box = c.closest(".produk");  
+    pesan += (i+1)+". "+c.value+"\n";  
+    pesan += box.querySelector(".harga").innerText+"\n\n";  
+  });  
+  
+  const noWA = "6282319264646";  
+  window.open(  
+    "https://wa.me/"+noWA+"?text="+encodeURIComponent(pesan),  
+    "_blank"  
+  );  
+}  
 </script>
 </body>
 </html>
