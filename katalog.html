@@ -116,6 +116,9 @@ Pengambilan 20pcs tempo 30 hari
 <button class="wa" onclick="kirimWA()">🛒 Kirim ke WhatsApp</button>
 
 <script>
+/* ===============================
+   SIMPAN PILIHAN (ANTI HILANG)
+================================ */
 const selectedProduk = new Set(
   JSON.parse(localStorage.getItem("selectedProduk") || "[]")
 );
@@ -126,47 +129,58 @@ function saveSelected() {
     JSON.stringify([...selectedProduk])
   );
 }
-// ===============================
-// LINK CSV (PUBLISH TO WEB)
-// ===============================
+
+/* ===============================
+   LINK CSV GOOGLE SHEET
+================================ */
 const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR-bDX_S5Cwma6e7vlf8Of4XVwccJ9ukNFZODZg08gqRgjaK7gCN5xMIFIgMgAbgXw44dz8BrinQBBR/pub?gid=1950799771&single=true&output=csv";
 
-// ===============================
 let semuaProduk = [];
 
-// LOAD DATA
+/* ===============================
+   LOAD DATA
+================================ */
 fetch(CSV_URL)
   .then(r => r.text())
   .then(text => {
     const rows = text.split("\n").slice(3);
-    semuaProduk = rows.map(r => r.split(",")).filter(c => c[0]);
+    semuaProduk = rows
+      .map(r => r.split(","))
+      .filter(c => c[0]);
     render(semuaProduk);
   })
-  .catch(()=>{
+  .catch(() => {
     document.getElementById("list").innerHTML =
       "<p>❌ Gagal mengambil data</p>";
   });
 
-// RENDER
+/* ===============================
+   RENDER PRODUK
+================================ */
 function render(data){
-  let html="";
-  data.forEach(col=>{
-    html+=`
+  let html = "";
+
+  data.forEach(col => {
+    const namaProduk = col[0]; // 🔑 INI KUNCINYA
+
+    html += `
       <div class="produk">
-        <label>
-     <input type="checkbox"
-  ${selectedProduk.has(nama) ? "checked" : ""}
-  onchange="
-    if(this.checked){
-      selectedProduk.add('${nama}');
-    }else{
-      selectedProduk.delete('${nama}');
-    }
-    saveSelected();
-  "
->
+        <label style="display:flex; gap:10px; align-items:flex-start;">
+          <input type="checkbox"
+            value="${namaProduk}"
+            ${selectedProduk.has(namaProduk) ? "checked" : ""}
+            onchange="
+              if(this.checked){
+                selectedProduk.add('${namaProduk}');
+              }else{
+                selectedProduk.delete('${namaProduk}');
+              }
+              saveSelected();
+            "
+          >
+
           <div>
-            <div class="nama">${col[0]}</div>
+            <div class="nama">${namaProduk}</div>
             <div class="harga">
               Program: ${col[1] || "-"}<br>
               Tempo: ${col[2] || "-"}
@@ -176,10 +190,13 @@ function render(data){
       </div>
     `;
   });
+
   document.getElementById("list").innerHTML = html;
 }
 
-// SEARCH
+/* ===============================
+   SEARCH
+================================ */
 document.getElementById("search").addEventListener("input", function(){
   const key = this.value.toLowerCase();
   const hasil = semuaProduk.filter(c =>
@@ -188,19 +205,26 @@ document.getElementById("search").addEventListener("input", function(){
   render(hasil);
 });
 
-// WA
+/* ===============================
+   KIRIM KE WHATSAPP
+================================ */
 function kirimWA(){
-  const cek = document.querySelectorAll("input:checked");
-  if(!cek.length){
-    alert("Pilih LCD dulu");
+  if (!selectedProduk.size) {
+    alert("Pilih produk dulu");
     return;
   }
 
-  let pesan = "Halo, saya mau pesan LCD:\n\n";
-  cek.forEach((c,i)=>{
-    const box = c.closest(".produk");
-    pesan += (i+1)+". "+c.value+"\n";
-    pesan += box.querySelector(".harga").innerText+"\n\n";
+  let pesan = "Halo, saya mau pesan:\n\n";
+  let i = 1;
+
+  selectedProduk.forEach(nama => {
+    const produk = semuaProduk.find(p => p[0] === nama);
+    if(produk){
+      pesan += i+". "+nama+"\n";
+      pesan += "Program: "+(produk[1]||"-")+"\n";
+      pesan += "Tempo: "+(produk[2]||"-")+"\n\n";
+      i++;
+    }
   });
 
   const noWA = "6282319264646";
@@ -210,6 +234,5 @@ function kirimWA(){
   );
 }
 </script>
-
 </body>
 </html>
