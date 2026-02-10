@@ -90,16 +90,16 @@ const CSV_URL =
 "https://docs.google.com/spreadsheets/d/e/2PACX-1vR-bDX_S5Cwma6e7vlf8Of4XVwccJ9ukNFZODZg08gqRgjaK7gCN5xMIFIgMgAbgXw44dz8BrinQBBR/pub?gid=15483237&single=true&output=csv";
 
 let data = [];
-let checkedItems = {}; // PENYIMPAN UTAMA
+let checked = {};
 
 fetch(CSV_URL)
 .then(r => r.text())
 .then(t => {
   const rows = t.trim().split("\n").slice(1);
-  data = rows.map(r => {
+  data = rows.map((r, i) => {
     const c = r.split(",");
     return {
-      key: c[0] + " - " + c[1],
+      id: i,
       nama: c[0],
       harga: c[1]
     };
@@ -107,44 +107,52 @@ fetch(CSV_URL)
   render(data);
 });
 
-function simpanSementara(){
-  document.querySelectorAll("input[type=checkbox]").forEach(cb=>{
-    if(cb.checked){
-      checkedItems[cb.value] = true;
-    }
-  });
-}
-
+// ⬇️ RENDER MEMBACA STATE
 function render(arr){
   let html = "";
-  arr.forEach(item=>{
+  arr.forEach(d => {
     html += `
     <div class="item">
       <input type="checkbox"
-        value="${item.key}"
-        ${checkedItems[item.key] ? "checked" : ""}>
+        data-id="${d.id}"
+        ${checked[d.id] ? "checked" : ""}>
       <div>
-        <div class="nama">${item.nama}</div>
-        <div class="harga">${item.harga}</div>
+        <div class="nama">${d.nama}</div>
+        <div class="harga">${d.harga}</div>
       </div>
     </div>`;
   });
   document.getElementById("list").innerHTML = html;
 }
 
-function filter(){
-  simpanSementara(); // ⬅️ INI KUNCINYA
-  const q = document.getElementById("cari").value.toLowerCase();
+// ⬇️ EVENT DELEGATION (INI PENTING)
+document.addEventListener("change", function(e){
+  if(e.target.type === "checkbox"){
+    const id = e.target.dataset.id;
+    if(e.target.checked){
+      checked[id] = true;
+    } else {
+      delete checked[id];
+    }
+  }
+});
+
+// ⬇️ SEARCH TANPA MERUSAK CHECKLIST
+document.getElementById("cari").addEventListener("input", function(){
+  const q = this.value.toLowerCase();
   const hasil = data.filter(d =>
     d.nama.toLowerCase().includes(q)
   );
   render(hasil);
-}
+});
 
 function kirimWA(){
-  simpanSementara(); // pastikan semua tersimpan
+  let pesan = "";
+  Object.keys(checked).forEach(id => {
+    const d = data[id];
+    if(d) pesan += `${d.nama} - ${d.harga}%0A`;
+  });
 
-  const pesan = Object.keys(checkedItems).join("%0A");
   if(!pesan) return alert("Pilih battery dulu");
 
   location.href =
