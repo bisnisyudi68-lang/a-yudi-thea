@@ -90,54 +90,59 @@ const CSV_URL =
 "https://docs.google.com/spreadsheets/d/e/2PACX-1vR-bDX_S5Cwma6e7vlf8Of4XVwccJ9ukNFZODZg08gqRgjaK7gCN5xMIFIgMgAbgXw44dz8BrinQBBR/pub?gid=15483237&single=true&output=csv";
 
 let data = [];
-let checkedItems = {}; // ⬅️ penyimpan checklist sementara (reset saat refresh)
+let checked = {}; // simpan checklist berdasarkan index asli
 
 fetch(CSV_URL)
 .then(r => r.text())
 .then(t => {
-  const rows = t.split("\n").slice(1);
-  data = rows.map(r => r.split(",")).filter(r => r[0]);
+  const rows = t.trim().split("\n").slice(1);
+  data = rows.map((r, i) => {
+    const c = r.split(",");
+    return { id: i, nama: c[0], harga: c[1] };
+  });
   render(data);
 });
 
 function render(arr){
   let html = "";
-  arr.forEach((r, i) => {
-    const key = r[0] + " - " + r[1];
-    const checked = checkedItems[key] ? "checked" : "";
-
+  arr.forEach(item => {
     html += `
     <div class="item">
       <input type="checkbox"
-        value="${key}"
-        ${checked}
-        onchange="simpanChecklist(this)">
+        data-id="${item.id}"
+        ${checked[item.id] ? "checked" : ""}
+        onchange="toggle(this)">
       <div>
-        <div class="nama">${r[0]}</div>
-        <div class="harga">${r[1]}</div>
+        <div class="nama">${item.nama}</div>
+        <div class="harga">${item.harga}</div>
       </div>
     </div>`;
   });
-
   document.getElementById("list").innerHTML = html;
 }
 
-function simpanChecklist(el){
+function toggle(el){
+  const id = el.getAttribute("data-id");
   if(el.checked){
-    checkedItems[el.value] = true;
+    checked[id] = true;
   } else {
-    delete checkedItems[el.value];
+    delete checked[id];
   }
 }
 
 function filter(){
   const q = document.getElementById("cari").value.toLowerCase();
-  const hasil = data.filter(r => r[0].toLowerCase().includes(q));
+  const hasil = data.filter(d => d.nama.toLowerCase().includes(q));
   render(hasil);
 }
 
 function kirimWA(){
-  const pesan = Object.keys(checkedItems).join("%0A");
+  let pesan = "";
+  Object.keys(checked).forEach(id => {
+    const d = data.find(x => x.id == id);
+    if(d) pesan += `${d.nama} - ${d.harga}%0A`;
+  });
+
   if(!pesan) return alert("Pilih battery dulu");
 
   location.href =
