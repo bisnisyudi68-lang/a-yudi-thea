@@ -116,6 +116,16 @@ Pengambilan 20pcs tempo 30 hari
 <button class="wa" onclick="kirimWA()">🛒 Kirim ke WhatsApp</button>
 
 <script>
+const selectedProduk = new Set(
+  JSON.parse(localStorage.getItem("selectedProduk") || "[]")
+);
+
+function saveSelected() {
+  localStorage.setItem(
+    "selectedProduk",
+    JSON.stringify([...selectedProduk])
+  );
+}
 // ===============================
 // LINK CSV (PUBLISH TO WEB)
 // ===============================
@@ -144,7 +154,17 @@ function render(data){
     html+=`
       <div class="produk">
         <label>
-          <input type="checkbox" value="${col[0]}">
+     <input type="checkbox"
+  ${selectedProduk.has(nama) ? "checked" : ""}
+  onchange="
+    if(this.checked){
+      selectedProduk.add('${nama}');
+    }else{
+      selectedProduk.delete('${nama}');
+    }
+    saveSelected();
+  "
+>
           <div>
             <div class="nama">${col[0]}</div>
             <div class="harga">
