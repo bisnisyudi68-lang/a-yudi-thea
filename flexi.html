@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Katalog Battery Profesional</title>
+<title>Katalog Felxi Profesional</title>
 
 <style>
 body{
@@ -75,10 +75,10 @@ body{
 
 <body>
 
-<div class="header">🔋 Katalog Battery Profesional</div>
+<div class="header">🔋 Katalog Flexi Profesional</div>
 
 <div class="search">
-  <input type="text" id="cari" placeholder="Cari Battery (contoh: iPhone X)" onkeyup="filter()">
+  <input type="text" id="cari" placeholder="Cari Flexi (contoh: iPhone X)" onkeyup="filter()">
 </div>
 
 <div id="list" class="list">Loading data...</div>
@@ -122,8 +122,8 @@ function filter(){
 function kirimWA(){
   const c=[...document.querySelectorAll("input:checked")]
   .map(x=>x.value).join("%0A");
-  if(!c) return alert("Pilih battery dulu");
-  location.href="https://wa.me/6282319264646?text=Order Battery:%0A"+c;
+  if(!c) return alert("Pilih Flexi dulu");
+  location.href="https://wa.me/6282319264646?text=Order Flexi:%0A"+c;
 }
 </script>
 
