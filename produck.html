@@ -3,109 +3,113 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Marketplace besar untuk barang baru & bekas</title>
+<title>Marketplace Barang Baru & Bekas</title>
 
+<!-- Tailwind CDN -->
 <script src="https://cdn.tailwindcss.com"></script>
+
 </head>
+<body class="bg-gray-100">
 
-<body class="bg-gray-100 p-4">
-<marquee behavior="scroll" direction="left" scrollamount="8"
-style="background:#f3f4f6;padding:20px;font-weight:bold;font-size:28px;">
-🛒 Halaman Jual Beli Produck. Anda juga dapat meng-upload produk jualan Anda di sini • Mari tumbuh bersama • Berkembang bersama dan Sukses bersama
-</marquee>
+<!-- HEADER -->
+<div class="bg-white shadow p-4 text-center">
+  <h1 class="text-xl font-bold">🛒 Marketplace Barang Baru & Bekas</h1>
+  <p class="text-sm text-gray-600">Produk akan otomatis hilang setelah 7 hari</p>
+</div>
 
-<div class="max-w-3xl mx-auto bg-white rounded shadow p-4">
+<!-- KONTEN -->
+<div class="max-w-4xl mx-auto p-4">
 
-<h1 class="text-xl font-bold text-center mb-4">Marketplace besar untuk barang baru & bekas.</h1>
+  <div class="bg-white rounded shadow p-4 mb-4">
+    <h2 class="font-bold text-lg mb-1">🤝 Jual Produk Anda Bersama Kami</h2>
+    <p class="text-sm text-gray-600 mb-3">
+      Punya barang atau usaha sendiri? Upload produk Anda dan biarkan kami membantu memasarkannya.
+    </p>
 
-<
-<!-- PRODUK MEMBER -->
-<h2 class="text-lg font-semibold mt-6 mb-2 text-orange-600">🟡 Produk Member (7 Hari)</h2>
+    <a href="FORM_LINK_KAMU"
+       class="block bg-green-500 hover:bg-green-600 text-white text-center py-2 rounded font-bold">
+       ➕ Upload Produk Anda di Sini
+    </a>
+  </div>
 
+  <!-- PRODUK -->
+  <div id="produkMember" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
 
- <div class="max-w-6xl mx-auto px-4 py-10">
-    <h3 class="text-2xl font-bold mb-6">
-      🤝 Jual Produk Anda Bersama Kami<br>
-Anda juga dapat memasukkan produk jualan Anda di sini untuk dijual.
-Punya barang atau usaha sendiri? Daftarkan produk Anda, dan biarkan kami membantu memasarkannya.
-</p>
-<a href="https://forms.gle/iCPE6H5YbxjWzkpN9"
-target="_blank"
-class="block text-center mt-3 bg-green-500 hover:bg-green-600 text-white py-3 px-4 rounded-xl font-semibold">
-➕ Upload Produk Anda Di Sini
-</a>
-<div id="produkMember" class="grid grid-cols-2 gap-3"></div>
-<a href="index.html" class="block text-center text-blue-600 mt-6">← Kembali ke Beranda</a>
+  <div class="text-center mt-6">
+    <a href="index.html" class="text-blue-600 underline">← Kembali ke Beranda</a>
+  </div>
 
 </div>
+
+<!-- SCRIPT -->
 <script>
-const sheetUrl = "https://docs.google.com/spreadsheets/d/19AfachAS9ZyNuut61RB1wqyI_AI6BsmNT1SIWhmSIn8/export?format=csv&gid=833555455";
+const sheetUrl = "PASTE_LINK_CSV_GOOGLE_SHEET_DI_SINI";
 
 fetch(sheetUrl)
-.then(r=>r.text())
-.then(t=>{
-  const rows=t.trim().split(/\r?\n/).slice(1);
-  const box = document.getElementById("produkMember");
+  .then(res => res.text())
+  .then(text => {
+    const rows = text.trim().split(/\r?\n/).slice(1);
+    const box = document.getElementById("produkMember");
 
-  rows.forEach(r=>{
-  const c = r.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/);
+    rows.forEach(r => {
+      const c = r.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/);
 
-  if(!c[1] || !c[7] || !c[8] || !c[9]) return;
+      if (!c[0] || !c[1]) return;
 
-const nama = c[1];
-const deskripsi = c[2];
-const harga = c[7];          // harga_fix
-const wa = c[8].replace(/[^0-9]/g,"").trim(); // wa_fix
-const img = c[9];            // foto_fix
-const lokasi = c[10];        // alamat_fix
+      const upload = new Date(c[0]);
+      const now = new Date();
+      const diffDay = (now - upload) / (1000 * 60 * 60 * 24);
 
-    box.innerHTML+=`
-    <div class="bg-white rounded shadow p-2">
+      // 🔥 AUTO HILANG 7 HARI
+      if (diffDay > 7) return;
 
-<button onclick="window.open('${img}','_blank')"
-class="block w-full text-blue-600 underline font-bold text-base mt-2 text-left">
-Lihat Foto Produk
-</button>
+      const nama = c[1];
+      const deskripsi = c[2] || "";
+      const harga = c[7] || c[3] || "0";
+      const wa = (c[8] || c[4] || "").replace(/[^0-9]/g,"");
+      const img = c[9] || c[5] || "";
+      const lokasi = c[10] || c[6] || "";
 
-      <h3 class="text-lg font-bold mt-2">${nama}</h3>
+      box.innerHTML += `
+        <div class="bg-white rounded shadow p-3">
+          ${img ? `
+            <img src="${img}" class="w-full h-40 object-cover rounded mb-2">
+          ` : `
+            <div class="w-full h-40 bg-gray-200 flex items-center justify-center rounded mb-2 text-gray-500">
+              Tidak ada foto
+            </div>
+          `}
+          <h3 class="font-bold">${nama}</h3>
+          <p class="text-xs text-gray-600">${deskripsi}</p>
+          <p class="text-xs mt-1">📍 ${lokasi}</p>
+          <p class="text-green-600 font-bold mt-1">
+            Rp ${Number(harga).toLocaleString("id-ID")}
+          </p>
 
-<p class="text-xs text-gray-600 mt-1">${deskripsi}</p>
+          ${wa ? `
+            <a href="https://wa.me/${wa}?text=Halo kak, saya tertarik produk ${nama}"
+               target="_blank"
+               class="block bg-green-600 hover:bg-green-700 text-white text-center py-2 rounded mt-2">
+               WhatsApp Penjual
+            </a>
+          ` : `
+            <div class="text-center text-xs text-gray-400 mt-2">
+              Nomor WhatsApp tidak tersedia
+            </div>
+          `}
+        </div>
+      `;
+    });
 
-<p class="text-xs text-gray-500 mt-1">
-📍 ${lokasi}
-</p>
-
-      <p class="text-green-600 font-bold mt-1">
-Rp&nbsp;${harga}
-</p>
-
-      <a href="https://wa.me/${wa}?text=${encodeURIComponent('Halo kak, saya mau tanya produk ' + nama + ', apakah sudah laku?')}"
-target="_blank"
-class="block bg-green-600 hover:bg-green-700 text-white text-center py-2 rounded mt-2">
-WhatsApp Penjual
-</a>
-
-    </div>
-    `;
+    if (box.innerHTML === "") {
+      box.innerHTML = `
+        <div class="col-span-full text-center text-gray-500">
+          Belum ada produk aktif
+        </div>
+      `;
+    }
   });
-});
 </script>
-<script>
-function pilihWA() {
-  let p = prompt(
-    "Siapa yang mau anda hubungi? Tulis angka nya 1 2 atau 3:\n1 = Admin\n2 = pengelola\n3 = karyawan"
-  );
 
-  if (p == "1") {
-    window.open("https://wa.me/6282319264646?text=Halo%20kak,%20saya%20mau%20pesan%20LCD");
-  } 
-  else if (p == "2") {
-    window.open("https://wa.me/6282319264646?text=Halo%20kak,%20saya%20mau%20pesan%20LCD");
-  } 
-  else if (p == "3") {
-    window.open("https://wa.me/62823192646?text=Halo%20kak,%20saya%20mau%20pesan%20LCD");
-  }
-}
-</script>
 </body>
 </html>
