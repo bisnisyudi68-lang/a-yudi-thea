@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Katalog Flexi Profesional</title>
+
+<style>
+body{
+  font-family:Arial, sans-serif;
+  margin:0;
+  background:#f4f6f8;
+}
+
+.header{
+  background:#2eaf55;
+  color:#fff;
+  text-align:center;
+  padding:14px;
+  font-weight:bold;
+}
+
+.search{
+  padding:10px;
+  background:#fff;
+}
+
+.search input{
+  width:100%;
+  padding:12px;
+  border-radius:8px;
+  border:1px solid #ccc;
+}
+
+.list{
+  padding:10px;
+}
+
+.item{
+  background:#fff;
+  border-radius:8px;
+  padding:10px;
+  margin-bottom:8px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.item input{
+  transform:scale(1.2);
+}
+
+.nama{
+  font-weight:bold;
+}
+
+.harga{
+  color:#2eaf55;
+  font-size:14px;
+}
+
+.wa{
+  position:fixed;
+  bottom:0;
+  left:0;
+  width:100%;
+  padding:14px;
+  border:none;
+  background:#25d366;
+  color:#fff;
+  font-size:16px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">🔋 Katalog Flexi Profesional</div>
+
+<div class="search">
+  <input type="text" id="cari" placeholder="Cari Flexi (contoh: flexi oppo)" onkeyup="filter()">
+</div>
+
+<div id="list" class="list">Loading data...</div>
+
+<button class="wa" onclick="kirimWA()">🛒 Kirim ke WhatsApp</button>
+
+<script>
+const CSV_URL =
+"https://docs.google.com/spreadsheets/d/e/2PACX-1vR-bDX_S5Cwma6e7vlf8Of4XVwccJ9ukNFZODZg08gqRgjaK7gCN5xMIFIgMgAbgXw44dz8BrinQBBR/pubhtml?gid=53235460&single=true&output=csv";
+
+let data = [];
+
+fetch(CSV_URL)
+.then(r=>r.text())
+.then(t=>{
+  const rows = t.split("\n").slice(1);
+  data = rows.map(r=>r.split(",")).filter(r=>r[0]);
+  render(data);
+});
+
+function render(arr){
+  let html="";
+  arr.forEach((r,i)=>{
+    html+=`
+    <div class="item">
+      <input type="checkbox" value="${r[0]} - ${r[1]}">
+      <div>
+        <div class="nama">${r[0]}</div>
+        <div class="harga">${r[1]}</div>
+      </div>
+    </div>`;
+  });
+  document.getElementById("list").innerHTML=html;
+}
+
+function filter(){
+  const q=document.getElementById("cari").value.toLowerCase();
+  render(data.filter(r=>r[0].toLowerCase().includes(q)));
+}
+
+function kirimWA(){
+  const c=[...document.querySelectorAll("input:checked")]
+  .map(x=>x.value).join("%0A");
+  if(!c) return alert("Pilih battery dulu");
+  location.href="https://wa.me/6282319264646?text=Order Battery:%0A"+c;
+}
+</script>
+
+</body>
+</html>
