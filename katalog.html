@@ -132,76 +132,35 @@ function saveSelected() {
 const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR-bDX_S5Cwma6e7vlf8Of4XVwccJ9ukNFZODZg08gqRgjaK7gCN5xMIFIgMgAbgXw44dz8BrinQBBR/pub?gid=1950799771&single=true&output=csv";  
   
 // ===============================  
-let semuaProduk = [];  
+let data = [];  
   
-// LOAD DATA  
 fetch(CSV_URL)  
-  .then(r => r.text())  
-  .then(text => {  
-    const rows = text.split("\n").slice(3);  
-    semuaProduk = rows.map(r => r.split(",")).filter(c => c[0]);  
-    render(semuaProduk);  
-  })  
-  .catch(()=>{  
-    document.getElementById("list").innerHTML =  
-      "<p>❌ Gagal mengambil data</p>";  
-  });  
-  
-// RENDER  
-function render(data){  
-  let html="";  
-  data.forEach(col=>{  
-    html+=`  
-      <div class="produk">  
-        <label>  
-     <input type="checkbox"  
-  ${selectedProduk.has(nama) ? "checked" : ""}  
-  onchange="  
-    if(this.checked){  
-      selectedProduk.add('${nama}');  
-    }else{  
-      selectedProduk.delete('${nama}');  
-    }  
-    saveSelected();  
-  "  
->  
-          <div>  
-            <div class="nama">${col[0]}</div>  
-            <div class="harga">  
-              Program: ${col[1] || "-"}<br>  
-              Tempo: ${col[2] || "-"}  
-            </div>  
-          </div>  
-        </label>  
-      </div>  
-    `;  
-  });  
-  document.getElementById("list").innerHTML = html;  
-}  
-  
-// SEARCH  
-document.getElementById("search").addEventListener("input", function(){  
-  const key = this.value.toLowerCase();  
-  const hasil = semuaProduk.filter(c =>  
-    c[0].toLowerCase().includes(key)  
-  );  
-  render(hasil);  
+.then(r=>r.text())  
+.then(t=>{  
+  const rows = t.split("\n").slice(1);  
+  data = rows.map(r=>r.split(",")).filter(r=>r[0]);  
+  render(data);  
 });  
   
-// WA  
-function kirimWA(){  
-  const cek = document.querySelectorAll("input:checked");  
-  if(!cek.length){  
-    alert("Pilih LCD dulu");  
-    return;  
-  }  
-  
-  let pesan = "Halo, saya mau pesan LCD:\n\n";  
-  cek.forEach((c,i)=>{  
-    const box = c.closest(".produk");  
-    pesan += (i+1)+". "+c.value+"\n";  
-    pesan += box.querySelector(".harga").innerText+"\n\n";  
+function render(arr){  
+  let html="";  
+  arr.forEach((r,i)=>{  
+    html+=`  
+    <div class="item">  
+      <input type="checkbox" value="${r[0]} - ${r[1]}">  
+      <div>  
+        <div class="nama">${r[0]}</div>  
+        <div class="harga">${r[1]}</div>  
+      </div>  
+    </div>`;  
   });  
+  document.getElementById("list").innerHTML=html;  
+}  
+  
+function filter(){  
+  const q=document.getElementById("cari").value.toLowerCase();  
+  render(data.filter(r=>r[0].toLowerCase().includes(q)));  
+}  
   
   const noWA = "6282319264646";  
   window.open(  
