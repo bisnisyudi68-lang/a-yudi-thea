@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chat DPD TESPOIN</title>
+
+<style>
+body{
+ margin:0;
+ background:#999;
+ font-family:Arial;
+ display:flex;
+ justify-content:center;
+ align-items:center;
+ height:100vh;
+}
+
+.app{
+ width:420px;
+ height:700px;
+ background:#efeae2;
+ display:flex;
+ flex-direction:column;
+ border-radius:12px;
+ overflow:hidden;
+ box-shadow:0 0 10px rgba(0,0,0,.3);
+}
+
+.header{
+ background:#075e54;
+ color:white;
+ padding:10px;
+ text-align:center;
+ font-weight:bold;
+}
+
+.chat-box{
+ flex:1;
+ padding:10px;
+ overflow-y:auto;
+ display:flex;
+ flex-direction:column;
+ justify-content:flex-end;
+}
+
+.row{ display:flex; margin:4px 0; }
+.me-row{ justify-content:flex-end; }
+.other-row{ justify-content:flex-start; }
+
+.msg{
+ max-width:70%;
+ padding:8px 12px;
+ border-radius:10px;
+ font-size:14px;
+}
+
+.me{ background:#dcf8c6; }
+.other{ background:white; }
+
+.input-area{
+ display:flex;
+ padding:6px;
+ background:white;
+}
+
+input{
+ flex:1;
+ padding:8px;
+ border:1px solid #ccc;
+ border-radius:20px;
+}
+
+button{
+ margin-left:6px;
+ padding:8px 12px;
+ border:none;
+ background:#25d366;
+ color:white;
+ border-radius:50%;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<div class="header">Chat DPD TESPOIN</div>
+
+<div class="chat-box" id="chat"></div>
+
+<div class="input-area">
+<input id="text" placeholder="Ketik pesan...">
+<button onclick="send()">➤</button>
+</div>
+
+</div>
+
+<script>
+function send(){
+ let t=document.getElementById("text");
+ if(!t.value) return;
+
+ let row=document.createElement("div");
+ row.className="row me-row";
+
+ let msg=document.createElement("div");
+ msg.className="msg me";
+ msg.innerText=t.value;
+
+ row.appendChild(msg);
+ chat.appendChild(row);
+ chat.scrollTop=chat.scrollHeight;
+
+ t.value="";
+}
+</script>
+
+</body>
+</html>
