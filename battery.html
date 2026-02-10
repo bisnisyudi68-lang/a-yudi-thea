@@ -86,65 +86,37 @@ body{
 <button class="wa" onclick="kirimWA()">🛒 Kirim ke WhatsApp</button>
 
 <script>
-const batterySelected = new Set();
-let batteryData = [];
-
-const BATTERY_CSV =
+const CSV_URL =
 "https://docs.google.com/spreadsheets/d/e/2PACX-1vR-bDX_S5Cwma6e7vlf8Of4XVwccJ9ukNFZODZg08gqRgjaK7gCN5xMIFIgMgAbgXw44dz8BrinQBBR/pub?gid=15483237&single=true&output=csv";
 
-fetch(BATTERY_CSV)
+let data = [];
+
+fetch(CSV_URL)
 .then(r=>r.text())
 .then(t=>{
-  const rows = t.split("\n").slice(1);
-  batteryData = rows.map(r=>r.split(",")).filter(r=>r[0]);
-  renderBattery(batteryData);
+const rows = t.split("\n").slice(1);
+data = rows.map(r=>r.split(",")).filter(r=>r[0]);
+render(data);
 });
 
-function renderBattery(arr){
-  let html="";
-  arr.forEach(r=>{
-    const nama=r[0];
-    const harga=r[1]||"-";
-    const key=nama+"|"+harga;
-
-    html+=`
-    <div class="item">
-      <input type="checkbox"
-        ${batterySelected.has(key)?"checked":""}
-        onchange="
-          this.checked
-            ? batterySelected.add('${key}')
-            : batterySelected.delete('${key}')
-        "
-      >
-      <div>
-        <div class="nama">${nama}</div>
-        <div class="harga">${harga}</div>
-      </div>
-    </div>`;
-  });
-  document.getElementById("list").innerHTML=html;
+function render(arr){
+let html="";
+arr.forEach((r,i)=>{
+html+=   <div class="item">   <input type="checkbox" value="${r[0]} - ${r[1]}">   <div>   <div class="nama">${r[0]}</div>   <div class="harga">${r[1]}</div>   </div>   </div>;
+});
+document.getElementById("list").innerHTML=html;
 }
 
-function filterBattery(){
-  const q=document.getElementById("cari").value.toLowerCase();
-  renderBattery(batteryData.filter(r=>r[0].toLowerCase().includes(q)));
+function filter(){
+const q=document.getElementById("cari").value.toLowerCase();
+render(data.filter(r=>r[0].toLowerCase().includes(q)));
 }
 
-function kirimBattery(){
-  if(!batterySelected.size) return alert("Pilih battery dulu");
-  let total=0, pesan="🧾 *NOTA BATTERY*\n\n", i=1;
-
-  batterySelected.forEach(k=>{
-    const [n,h]=k.split("|");
-    const harga=parseInt(h.replace(/\D/g,""))||0;
-    total+=harga;
-    pesan+=`${i}. ${n}\n   Rp ${harga.toLocaleString("id-ID")}\n\n`;
-    i++;
-  });
-
-  pesan+=`TOTAL: Rp ${total.toLocaleString("id-ID")}`;
-  location.href="https://wa.me/6282319264646?text="+encodeURIComponent(pesan);
+function kirimWA(){
+const c=[...document.querySelectorAll("input:checked")]
+.map(x=>x.value).join("%0A");
+if(!c) return alert("Pilih battery dulu");
+location.href="https://wa.me/6282319264646?text=Order Battery:%0A"+c;
 }
 </script>
 </body>
