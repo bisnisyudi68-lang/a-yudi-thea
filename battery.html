@@ -86,44 +86,96 @@ body{
 <button class="wa" onclick="kirimWA()">🛒 Kirim ke WhatsApp</button>
 
 <script>
+/* ===============================
+   SIMPAN CHECKLIST (LOCALSTORAGE)
+================================ */
+const selectedBattery = new Set(
+  JSON.parse(localStorage.getItem("selectedBattery") || "[]")
+);
+
+function saveBattery(){
+  localStorage.setItem(
+    "selectedBattery",
+    JSON.stringify([...selectedBattery])
+  );
+}
+
+/* ===============================
+   LINK CSV GOOGLE SHEET (BATTERY)
+================================ */
 const CSV_URL =
 "https://docs.google.com/spreadsheets/d/e/2PACX-1vR-bDX_S5Cwma6e7vlf8Of4XVwccJ9ukNFZODZg08gqRgjaK7gCN5xMIFIgMgAbgXw44dz8BrinQBBR/pub?gid=15483237&single=true&output=csv";
 
 let data = [];
 
+/* ===============================
+   LOAD DATA
+================================ */
 fetch(CSV_URL)
-.then(r=>r.text())
-.then(t=>{
+.then(r => r.text())
+.then(t => {
   const rows = t.split("\n").slice(1);
-  data = rows.map(r=>r.split(",")).filter(r=>r[0]);
+  data = rows.map(r => r.split(",")).filter(r => r[0]);
   render(data);
 });
 
+/* ===============================
+   RENDER LIST
+================================ */
 function render(arr){
-  let html="";
-  arr.forEach((r,i)=>{
-    html+=`
-    <div class="item">
-      <input type="checkbox" value="${r[0]} - ${r[1]}">
-      <div>
-        <div class="nama">${r[0]}</div>
-        <div class="harga">${r[1]}</div>
+  let html = "";
+  arr.forEach(r => {
+    const nama = r[0];
+    const harga = r[1] || "-";
+    const key = nama + " | " + harga; // 🔑 ID unik
+
+    html += `
+      <div class="item">
+        <input type="checkbox"
+          value="${key}"
+          ${selectedBattery.has(key) ? "checked" : ""}
+          onchange="
+            if(this.checked){
+              selectedBattery.add('${key}');
+            }else{
+              selectedBattery.delete('${key}');
+            }
+            saveBattery();
+          "
+        >
+        <div>
+          <div class="nama">${nama}</div>
+          <div class="harga">${harga}</div>
+        </div>
       </div>
-    </div>`;
+    `;
   });
-  document.getElementById("list").innerHTML=html;
+
+  document.getElementById("list").innerHTML = html;
 }
 
+/* ===============================
+   SEARCH
+================================ */
 function filter(){
-  const q=document.getElementById("cari").value.toLowerCase();
-  render(data.filter(r=>r[0].toLowerCase().includes(q)));
+  const q = document.getElementById("cari").value.toLowerCase();
+  render(
+    data.filter(r => r[0].toLowerCase().includes(q))
+  );
 }
 
+/* ===============================
+   KIRIM KE WHATSAPP
+================================ */
 function kirimWA(){
-  const c=[...document.querySelectorAll("input:checked")]
-  .map(x=>x.value).join("%0A");
-  if(!c) return alert("Pilih battery dulu");
-  location.href="https://wa.me/6282319264646?text=Order Battery:%0A"+c;
+  if(!selectedBattery.size){
+    alert("Pilih battery dulu");
+    return;
+  }
+
+  const pesan = [...selectedBattery].join("%0A");
+  location.href =
+    "https://wa.me/6282319264646?text=Order Battery:%0A" + pesan;
 }
 </script>
 
