@@ -87,21 +87,13 @@ body{
 
 <script>
 /* ===============================
-   SIMPAN CHECKLIST FLEXI
+   SIMPAN CEKLIST (HANYA MEMORY)
+   ➜ refresh = reset
 ================================ */
-const selectedFlexi = new Set(
-  JSON.parse(localStorage.getItem("selectedFlexi") || "[]")
-);
-
-function saveFlexi(){
-  localStorage.setItem(
-    "selectedFlexi",
-    JSON.stringify([...selectedFlexi])
-  );
-}
+const selectedFlexi = new Set();
 
 /* ===============================
-   LINK CSV GOOGLE SHEET (FLEXI)
+   LINK CSV GOOGLE SHEET
 ================================ */
 const CSV_URL =
 "https://docs.google.com/spreadsheets/d/e/2PACX-1vR-bDX_S5Cwma6e7vlf8Of4XVwccJ9ukNFZODZg08gqRgjaK7gCN5xMIFIgMgAbgXw44dz8BrinQBBR/pub?gid=53235460&single=true&output=csv";
@@ -120,7 +112,7 @@ fetch(CSV_URL)
 });
 
 /* ===============================
-   RENDER LIST FLEXI
+   RENDER LIST
 ================================ */
 function render(arr){
   let html = "";
@@ -128,12 +120,11 @@ function render(arr){
   arr.forEach(r => {
     const nama = r[0];
     const harga = r[1] || "-";
-    const key = nama + " | " + harga; // 🔑 ID unik
+    const key = nama + " | " + harga;
 
     html += `
       <div class="item">
         <input type="checkbox"
-          value="${key}"
           ${selectedFlexi.has(key) ? "checked" : ""}
           onchange="
             if(this.checked){
@@ -141,7 +132,6 @@ function render(arr){
             }else{
               selectedFlexi.delete('${key}');
             }
-            saveFlexi();
           "
         >
         <div>
@@ -156,7 +146,7 @@ function render(arr){
 }
 
 /* ===============================
-   SEARCH FLEXI
+   SEARCH (CEKLIST AMAN)
 ================================ */
 function filter(){
   const q = document.getElementById("cari").value.toLowerCase();
@@ -179,6 +169,5 @@ function kirimWA(){
     "https://wa.me/6282319264646?text=Order Flexi:%0A" + pesan;
 }
 </script>
-
 </body>
 </html>
