@@ -116,16 +116,7 @@ Pengambilan 20pcs tempo 30 hari
 <button class="wa" onclick="kirimWA()">🛒 Kirim ke WhatsApp</button>
 
 <script>
-const selectedProduk = new Set(  
-  JSON.parse(localStorage.getItem("selectedProduk") || "[]")  
-);  
-  
-function saveSelected() {  
-  localStorage.setItem(  
-    "selectedProduk",  
-    JSON.stringify([...selectedProduk])  
-  );  
-}  
+
 // ===============================  
 // LINK CSV (PUBLISH TO WEB)  
 // ===============================  
