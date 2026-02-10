@@ -50,16 +50,14 @@ fetch(sheetUrl)
   rows.forEach(r=>{
   const c = r.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/);
 
-  if(!c[1] || !c[6] || !c[7]) return;
+  if(!c[1] || !c[7] || !c[8] || !c[9]) return;
 
 const nama = c[1];
 const deskripsi = c[2];
-const lokasi = c[10]; // kolom K alamat_fix
-const harga = c[7];
-const wa = c[8].replace(/[^0-9]/g,"").trim();
-let img = c[9]; // kolom I Foto.fix
-if(!img) img = "";
-img = img.replace(/"/g,"").trim();
+const harga = c[7];          // harga_fix
+const wa = c[8].replace(/[^0-9]/g,"").trim(); // wa_fix
+const img = c[9];            // foto_fix
+const lokasi = c[10];        // alamat_fix
 
     box.innerHTML+=`
     <div class="bg-white rounded shadow p-2">
