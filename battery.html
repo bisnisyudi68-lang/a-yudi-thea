@@ -159,9 +159,26 @@ function kirimWA(){
     return;
   }
 
-  const pesan = [...selectedBattery].join("%0A");
+  let total = 0;
+  let pesan = "🧾 *NOTA ORDER BATTERY*\n\n";
+  let i = 1;
+
+  selectedBattery.forEach(key => {
+    const [nama, hargaText] = key.split(" | ");
+    const harga = parseInt(hargaText.replace(/[^0-9]/g,"")) || 0;
+
+    total += harga;
+
+    pesan += i + ". " + nama + "\n";
+    pesan += "   Harga: Rp " + harga.toLocaleString("id-ID") + "\n\n";
+    i++;
+  });
+
+  pesan += "----------------------\n";
+  pesan += "*TOTAL: Rp " + total.toLocaleString("id-ID") + "*";
+
   location.href =
-    "https://wa.me/6282319264646?text=Order Battery:%0A" + pesan;
+    "https://wa.me/6282319264646?text=" + encodeURIComponent(pesan);
 }
 </script>
 </body>
