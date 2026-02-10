@@ -1,101 +1,192 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
 <meta charset="UTF-8">
-<title>A-Yudi-Thea</title>
-<style>
-body{font-family:Arial;background:#f2f2f2;margin:0}
-header{background:#0d47a1;color:white;padding:15px;text-align:center}
-input{width:95%;margin:10px;padding:12px;font-size:16px}
-.card{background:white;margin:10px;padding:12px;border-radius:8px}
-.big{font-size:20px;font-weight:bold}
-.harga{color:red;font-weight:bold}
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SOP Teknisi Handphone</title>
 
-table{width:100%;border-collapse:collapse;background:white;margin:10px}
-th,td{border:1px solid #ddd;padding:6px;font-size:14px}
-th{background:#0d47a1;color:white}
-.neg{color:red}
-h3{
-  text-align: center;
-  font-weight: bold;
-  margin-top: 15px;
-}
-.judul-tagihan{
-  text-align: center;
-  font-weight: bold;
-  margin: 10px 0;
-}
-#tagihanTabel table td{
-  font-weight: bold;
-}
-#tagihanTabel th{
-  font-weight: bold;
-}
+<style>
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+        background: #f4f6f8;
+        margin: 0;
+        padding: 20px;
+        color: #333;
+    }
+
+    .container {
+        max-width: 900px;
+        margin: auto;
+        background: #ffffff;
+        padding: 25px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+        text-align: center;
+        color: #0d47a1;
+        margin-bottom: 10px;
+    }
+
+    .desc {
+        text-align: center;
+        font-size: 14px;
+        margin-bottom: 25px;
+    }
+
+    .sop {
+        margin-bottom: 25px;
+    }
+
+    .sop h2 {
+        background: #0d47a1;
+        color: #fff;
+        padding: 10px;
+        border-radius: 5px;
+        font-size: 18px;
+    }
+
+    .tujuan {
+        font-weight: bold;
+        margin: 10px 0 5px;
+    }
+
+    ul {
+        margin-left: 20px;
+    }
+
+    ul li {
+        margin-bottom: 6px;
+        line-height: 1.6;
+    }
+
+    footer {
+        text-align: center;
+        font-size: 12px;
+        margin-top: 30px;
+        color: #777;
+    }
 </style>
 </head>
 
 <body>
 
-<header>
-<h2>A-Yudi-Thea</h2>
-<p>Stok Produk</p>
-</header>
+<div class="container">
+    <h1>SOP TEKNISI HANDPHONE</h1>
+    <p class="desc">
+        Standar Operasional Prosedur (SOP) ini digunakan sebagai pedoman kerja teknisi handphone
+        agar pelayanan dan perbaikan dilakukan secara profesional dan konsisten.
+    </p>
 
+    <div class="sop">
+        <h2>1. SOP Penerimaan Pelanggan</h2>
+        <p class="tujuan">Tujuan:</p>
+        <p>Mencatat data pelanggan dan kondisi awal handphone.</p>
+        <ul>
+            <li>Menyambut pelanggan dengan ramah.</li>
+            <li>Menanyakan keluhan handphone secara detail.</li>
+            <li>Mencatat data pelanggan (nama & nomor HP).</li>
+            <li>Mencatat merek dan tipe handphone.</li>
+            <li>Memeriksa kondisi fisik handphone.</li>
+            <li>Mendokumentasikan kondisi awal jika diperlukan.</li>
+            <li>Memberikan tanda terima servis.</li>
+        </ul>
+    </div>
 
-<hr>
+    <div class="sop">
+        <h2>2. SOP Diagnosa Awal</h2>
+        <p class="tujuan">Tujuan:</p>
+        <p>Menentukan penyebab kerusakan sebelum perbaikan.</p>
+        <ul>
+            <li>Melakukan pengecekan software dan hardware.</li>
+            <li>Menggunakan alat bantu teknisi.</li>
+            <li>Menentukan jenis kerusakan.</li>
+            <li>Mencatat hasil diagnosa.</li>
+            <li>Menyampaikan hasil ke pelanggan.</li>
+        </ul>
+    </div>
 
-<h3> 👉Tarik layar ke bawah untuk Refresh Halaman<br><br>🔎 Cari Produk</h3>
-<input id="cari" placeholder="Cari nama / kode barang..." onkeyup="filterProduk()">
+    <div class="sop">
+        <h2>3. SOP Pemberian Estimasi Biaya</h2>
+        <p class="tujuan">Tujuan:</p>
+        <p>Memberikan transparansi biaya dan waktu.</p>
+        <ul>
+            <li>Menentukan estimasi biaya jasa & sparepart.</li>
+            <li>Menentukan estimasi waktu pengerjaan.</li>
+            <li>Menjelaskan biaya dan risiko kepada pelanggan.</li>
+            <li>Meminta persetujuan pelanggan.</li>
+            <li>Tidak melakukan perbaikan tanpa izin.</li>
+        </ul>
+    </div>
 
-<div id="hasil"></div>
+    <div class="sop">
+        <h2>4. SOP Proses Perbaikan</h2>
+        <p class="tujuan">Tujuan:</p>
+        <p>Melakukan perbaikan sesuai standar teknisi.</p>
+        <ul>
+            <li>Menggunakan meja dan alat kerja yang bersih.</li>
+            <li>Melepas dan memasang komponen sesuai prosedur.</li>
+            <li>Mengganti atau memperbaiki komponen rusak.</li>
+            <li>Menggunakan sparepart berkualitas.</li>
+            <li>Mencatat proses perbaikan.</li>
+        </ul>
+    </div>
 
-<script>
+    <div class="sop">
+        <h2>5. SOP Pengetesan & Quality Control</h2>
+        <p class="tujuan">Tujuan:</p>
+        <p>Memastikan handphone berfungsi normal.</p>
+        <ul>
+            <li>Mengetes layar, sinyal, speaker, dan mic.</li>
+            <li>Mengetes kamera dan charger.</li>
+            <li>Memastikan tidak ada error.</li>
+            <li>Membersihkan unit handphone.</li>
+            <li>Update status servis selesai.</li>
+        </ul>
+    </div>
 
-const sheetId="1iPbtRGldW5yz6tuUZ5oHzMGsnNb4cHyCbAEMkq51qK4";
+    <div class="sop">
+        <h2>6. SOP Penanganan Keluhan Pelanggan</h2>
+        <p class="tujuan">Tujuan:</p>
+        <p>Menjaga kepuasan dan kepercayaan pelanggan.</p>
+        <ul>
+            <li>Mendengarkan keluhan dengan sopan.</li>
+            <li>Melakukan pengecekan ulang.</li>
+            <li>Memberikan perbaikan ulang sesuai garansi.</li>
+            <li>Menjelaskan kondisi di luar garansi.</li>
+            <li>Mencatat keluhan untuk evaluasi.</li>
+        </ul>
+    </div>
 
+    <div class="sop">
+        <h2>7. SOP Pengelolaan Stok Suku Cadang</h2>
+        <p class="tujuan">Tujuan:</p>
+        <p>Menjaga ketersediaan sparepart.</p>
+        <ul>
+            <li>Mencatat keluar masuk sparepart.</li>
+            <li>Memisahkan sparepart baru dan rusak.</li>
+            <li>Menyimpan sparepart dengan aman.</li>
+            <li>Melakukan stok opname rutin.</li>
+        </ul>
+    </div>
 
-// ===== PRODUK =====
-const tabProduk="Stock Konter";
+    <div class="sop">
+        <h2>8. SOP Garansi Servis</h2>
+        <p class="tujuan">Tujuan:</p>
+        <p>Memberikan jaminan kepada pelanggan.</p>
+        <ul>
+            <li>Garansi berlaku sesuai kesepakatan.</li>
+            <li>Garansi hanya untuk jasa & sparepart tertentu.</li>
+            <li>Garansi batal jika HP jatuh atau terkena air.</li>
+            <li>Garansi batal jika diservis di tempat lain.</li>
+        </ul>
+    </div>
 
-fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?sheet=${encodeURIComponent(tabProduk)}`)
-.then(r=>r.text())
-.then(t=>{
-const json=JSON.parse(t.substring(47).slice(0,-2));
-const rows=json.table.rows;
-
-window.dataProduk=rows.map(r=>({
-kode:r.c[0]?.v||"",
-nama:r.c[1]?.v||"",
-harga:r.c[4]?.v||"",
-stok:r.c[6]?.v||0
-}));
-
-tampilProduk(dataProduk);
-});
-
-function tampilProduk(d){
-hasil.innerHTML="";
-d.forEach(p=>{
-let status=p.stok>0?`Stok: ${p.stok}`:`<span style="color:red">Habis</span>`;
-hasil.innerHTML+=`
-<div class="card">
-<b>${p.kode}</b><br>
-${p.nama}<br>
-<span class="harga">Rp ${p.harga}</span><br>
-${status}
-</div>`;
-});
-}
-
-function filterProduk(){
-let q=cari.value.toLowerCase();
-tampilProduk(dataProduk.filter(x=>
-x.nama.toLowerCase().includes(q) ||
-x.kode.toLowerCase().includes(q)
-));
-}
-
-</script>
+    <footer>
+        © SOP Teknisi Handphone | Digunakan sebagai pedoman kerja
+    </footer>
+</div>
 
 </body>
 </html>
