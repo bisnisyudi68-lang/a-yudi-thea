@@ -103,10 +103,9 @@ fetch(CSV_URL)
 .then(r => r.text())
 .then(t => {
   const rows = t.trim().split("\n").slice(1);
-  data = rows.map(r => r.split(",")).filter(r => r[0]);
-  render(data);
-});
-
+  data = rows
+  .map(r => r.split(";"))   // ⬅️ ganti ke ;
+  .filter(r => r[0] && r[1]);
 function render(arr){
   let html = "";
   arr.forEach(r => {
