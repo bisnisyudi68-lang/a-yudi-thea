@@ -87,21 +87,12 @@ body{
 
 <script>
 /* ===============================
-   SIMPAN CHECKLIST (LOCALSTORAGE)
+   SIMPAN CEKLIST (MEMORY SAJA)
 ================================ */
-const selectedBattery = new Set(
-  JSON.parse(localStorage.getItem("selectedBattery") || "[]")
-);
-
-function saveBattery(){
-  localStorage.setItem(
-    "selectedBattery",
-    JSON.stringify([...selectedBattery])
-  );
-}
+const selectedBattery = new Set();
 
 /* ===============================
-   LINK CSV GOOGLE SHEET (BATTERY)
+   LINK CSV BATTERY
 ================================ */
 const CSV_URL =
 "https://docs.google.com/spreadsheets/d/e/2PACX-1vR-bDX_S5Cwma6e7vlf8Of4XVwccJ9ukNFZODZg08gqRgjaK7gCN5xMIFIgMgAbgXw44dz8BrinQBBR/pub?gid=15483237&single=true&output=csv";
@@ -120,27 +111,24 @@ fetch(CSV_URL)
 });
 
 /* ===============================
-   RENDER LIST
+   RENDER BATTERY
 ================================ */
 function render(arr){
   let html = "";
+
   arr.forEach(r => {
     const nama = r[0];
     const harga = r[1] || "-";
-    const key = nama + " | " + harga; // 🔑 ID unik
+    const key = nama + " | " + harga;
 
     html += `
       <div class="item">
         <input type="checkbox"
-          value="${key}"
           ${selectedBattery.has(key) ? "checked" : ""}
           onchange="
-            if(this.checked){
-              selectedBattery.add('${key}');
-            }else{
-              selectedBattery.delete('${key}');
-            }
-            saveBattery();
+            this.checked
+              ? selectedBattery.add('${key}')
+              : selectedBattery.delete('${key}')
           "
         >
         <div>
@@ -155,17 +143,15 @@ function render(arr){
 }
 
 /* ===============================
-   SEARCH
+   SEARCH BATTERY
 ================================ */
 function filter(){
   const q = document.getElementById("cari").value.toLowerCase();
-  render(
-    data.filter(r => r[0].toLowerCase().includes(q))
-  );
+  render(data.filter(r => r[0].toLowerCase().includes(q)));
 }
 
 /* ===============================
-   KIRIM KE WHATSAPP
+   KIRIM WA
 ================================ */
 function kirimWA(){
   if(!selectedBattery.size){
@@ -178,6 +164,5 @@ function kirimWA(){
     "https://wa.me/6282319264646?text=Order Battery:%0A" + pesan;
 }
 </script>
-
 </body>
 </html>
