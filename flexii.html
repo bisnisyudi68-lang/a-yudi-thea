@@ -82,16 +82,33 @@ body{
 </div>
 
 <div id="list" class="list">Loading data...</div>
-
+<div id="total" style="
+  padding:10px;
+  background:#fff;
+  font-weight:bold;
+  text-align:right;
+">
+Total: Rp0
+</div>
 <button class="wa" onclick="kirimWA()">🛒 Kirim ke WhatsApp</button>
 
 <script>
+/* =============================
+   KONFIGURASI
+============================= */
+const JUDUL_NOTA = "Order Sparepart";
 const CSV_URL =
 "https://docs.google.com/spreadsheets/d/e/2PACX-1vR-bDX_S5Cwma6e7vlf8Of4XVwccJ9ukNFZODZg08gqRgjaK7gCN5xMIFIgMgAbgXw44dz8BrinQBBR/pub?gid=15483237&single=true&output=csv";
 
+/* =============================
+   DATA & STATE
+============================= */
 let data = [];
 let checked = {};
 
+/* =============================
+   LOAD DATA
+============================= */
 fetch(CSV_URL)
 .then(r => r.text())
 .then(t => {
@@ -101,13 +118,16 @@ fetch(CSV_URL)
     return {
       id: i,
       nama: c[0],
-      harga: c[1]
+      harga: parseInt(c[1].replace(/\D/g,"")) || 0
     };
   });
   render(data);
+  updateTotal();
 });
 
-// ⬇️ RENDER MEMBACA STATE
+/* =============================
+   RENDER LIST
+============================= */
 function render(arr){
   let html = "";
   arr.forEach(d => {
@@ -118,15 +138,17 @@ function render(arr){
         ${checked[d.id] ? "checked" : ""}>
       <div>
         <div class="nama">${d.nama}</div>
-        <div class="harga">${d.harga}</div>
+        <div class="harga">Rp${d.harga.toLocaleString("id-ID")}</div>
       </div>
     </div>`;
   });
   document.getElementById("list").innerHTML = html;
 }
 
-// ⬇️ EVENT DELEGATION (INI PENTING)
-document.addEventListener("change", function(e){
+/* =============================
+   CHECKLIST (EVENT DELEGATION)
+============================= */
+document.addEventListener("change", e => {
   if(e.target.type === "checkbox"){
     const id = e.target.dataset.id;
     if(e.target.checked){
@@ -134,29 +156,54 @@ document.addEventListener("change", function(e){
     } else {
       delete checked[id];
     }
+    updateTotal();
   }
 });
 
-// ⬇️ SEARCH TANPA MERUSAK CHECKLIST
+/* =============================
+   SEARCH
+============================= */
 document.getElementById("cari").addEventListener("input", function(){
   const q = this.value.toLowerCase();
-  const hasil = data.filter(d =>
+  render(data.filter(d =>
     d.nama.toLowerCase().includes(q)
-  );
-  render(hasil);
+  ));
 });
 
+/* =============================
+   TOTAL HARGA
+============================= */
+function updateTotal(){
+  let total = 0;
+  Object.keys(checked).forEach(id=>{
+    total += data[id].harga;
+  });
+  document.getElementById("total").innerText =
+    "Total: Rp" + total.toLocaleString("id-ID");
+}
+
+/* =============================
+   KIRIM NOTA WA
+============================= */
 function kirimWA(){
-  let pesan = "";
-  Object.keys(checked).forEach(id => {
+  let teks = `🧾 *${JUDUL_NOTA}*%0A%0A`;
+  let total = 0;
+
+  Object.keys(checked).forEach((id, i)=>{
     const d = data[id];
-    if(d) pesan += `${d.nama} - ${d.harga}%0A`;
+    teks += `${i+1}. ${d.nama}%0ARp${d.harga.toLocaleString("id-ID")}%0A%0A`;
+    total += d.harga;
   });
 
-  if(!pesan) return alert("Pilih battery dulu");
+  if(total === 0){
+    alert("Pilih produk dulu");
+    return;
+  }
+
+  teks += `*TOTAL: Rp${total.toLocaleString("id-ID")}*`;
 
   location.href =
-    "https://wa.me/6282319264646?text=Order Battery:%0A" + pesan;
+    "https://wa.me/6282319264646?text=" + teks;
 }
 </script>
 </body>
