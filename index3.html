@@ -1,246 +1,96 @@
-.<meta charset="UTF-8">
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Profil Usaha & Toko Online</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+<title>Teknisi Ponsel Maja</title>
+
+<style>
+:root{
+  --primary:#2aa84a;
+  --bg:#f4f6f8;
+  --card:#ffffff;
+}
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:var(--bg);
+}
+.header{
+  background:#fff;
+  text-align:center;
+  padding:20px;
+  box-shadow:0 2px 6px rgba(0,0,0,.1);
+}
+.header h2{margin:10px 0 5px}
+.header p{margin:0;color:#666;font-size:14px}
+
+.menu{
+  padding:16px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+.item{
+  background:#fff;
+  border-radius:14px;
+  padding:16px;
+  box-shadow:0 3px 8px rgba(0,0,0,.12);
+  display:flex;
+  align-items:center;
+  gap:10px;
+  cursor:pointer;
+  font-weight:bold;
+}
+.icon{
+  width:40px;
+  height:40px;
+  border-radius:12px;
+  background:var(--primary);
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.footer{
+  text-align:center;
+  font-size:12px;
+  color:#777;
+  margin:20px 0;
+}
+</style>
 </head>
-<body class="bg-gray-50 text-gray-">  <!-- Header -->  <header class="bg-white shadow sticky top-0 z-10">
-    <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
-      <div>
-  <h1 class="text-xl font-bold">A_YUDI_THEA</h1>
-  <p class="text-sm font-semibold text-green-600">
-    Saldo: <span id="saldo">Loading...</span>
-  </p>
-</div>
-        <a href="#home" class="hover:underline">Home</a>
-        <a href="#tentang" class="hover:underline">Tentang</a>
-        <a href="#produk" class="hover:underline">Produk</a>
-        <a href="#kontak" class="hover:underline">Kontak</a>
-      </nav>
-    </div>
-  </header>  <!-- Hero -->  <section id="home" class="bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
-    <div class="max-w-6xl mx-auto px-4 py-20 grid md:grid-cols-2 gap-8 items-center">
-      <div>
-        <h2 class="text-4xl font-bold mb-4">Selamat Datang di A_YUDI_THEA</h2>
-        <p class="mb-6"><ul class="mb-4">
-  <li>Servis Handphone</li>
-  <li>Jual LCD & Baterai</li>
-  <li>Aksesoris & Sparepart</li>
-  <li>Jasa Aktivasi & Sewa Tool</li>
-  <li>Sistem Manajemen Usaha</li>
-</ul>
 
-<p class="mb-6">Order langsung via WhatsApp.</p>
-        <a href="#produk" class="bg-white text-blue-600 px-6 py-3 rounded-xl font-semibold shadow">Lihat Produk</a>
-      </div>
-      <img src="./baner.jpg" class="rounded-2xl w-full object-cover" />
-    </div>
-    
-    <section id="tentang">
-<h3 class="text-xl font-bold mb-10">Tentang Usaha</h3>
-</section>
-    <p>
-      Kami fokus di bidang servis handphone sejak tahun 2010 hingga saat ini, berpengalaman menangani berbagai permasalahan hardware maupun software.
-Selain layanan servis HP, kami juga menyediakan Sistem Manajemen Usaha Otomatis untuk membantu mengelola bisnis Anda dengan lebih mudah — mulai dari pencatatan penjualan, laporan harian, bulanan, hingga tahunan sampai perhitungan laba bersih. Semua cukup melalui input form, tanpa perlu edit data manual.
-Kami juga melayani aktivasi tools serta menyediakan jasa sewa tools untuk kebutuhan teknisi.
-Komitmen kami adalah memberikan layanan terbaik serta solusi lengkap untuk mendukung perkembangan usaha Anda. </a>
+<body>
 
-
-
-</section> <section id="produk" class="bg-white">
-  <div class="max-w-6xl mx-auto px-4 py-10">
-    <h3 class="text-2xl font-bold mb-6">Produk Utama kami</h3>
-    </p>
-  </section>  <!-- <!-- Promo Sistem -->
-<section class="bg-blue-50">
-  <div class="max-w-6xl mx-auto px-4 py-12 text-center">
-
-    <h2 class="text-2xl font-bold mb-3">
-      Sistem Manajemen Usaha Otomatis
-    </h2>
-
-    <p class="text-gray-700 mb-6">
-      Kelola bisnis lebih mudah tanpa ribet!
-    </p>
-
-    <div class="grid sm:grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-
-      <div class="bg-white rounded-xl p-4 shadow">
-        <p class="text-xl">📊</p>
-        <p class="font-semibold">Laporan Otomatis</p>
-        <p class="text-sm">Harian • Bulanan • Tahunan</p>
-      </div>
-
-      <div class="bg-white rounded-xl p-4 shadow">
-        <p class="text-xl">💰</p>
-        <p class="font-semibold">Laba Bersih</p>
-        <p class="text-sm">Hitung otomatis</p>
-      </div>
-
-      <div class="bg-white rounded-xl p-4 shadow">
-        <p class="text-xl">📝</p>
-        <p class="font-semibold">Input Form</p>
-        <p class="text-sm">Tanpa edit manual</p>
-      </div>
-
-      <div class="bg-white rounded-xl p-4 shadow">
-        <p class="text-xl">📦</p>
-        <p class="font-semibold">Lengkap</p>
-        <p class="text-sm">Penjualan • Stok • Tagihan</p>
-      </div>
-
-    </div>
-
-    <p class="mb-6">
-      Cukup isi form — semua laporan langsung tersusun rapi & real-time.<br>
-      Cocok untuk UMKM, konter HP, toko & usaha rumahan.
-    </p>
-
-<img src="manajemen.jpg"
-class="mx-auto mb-4 h-40 object-contain rounded-xl bg-white p-2 shadow">
-
-<p style="font-size:20px;font-weight:bold;margin-bottom:10px;">
-Rp 15.000 (3 bulan)<br>
-Rp 500.000 (full akses) 
-</p>
-
-<p class="mb-4">
-  <a href="https://drive.google.com/file/d/15IWb_g9eFur7Go5VZlJH4Ad7uHweUL_e/view?usp=drivesdk"
-     target="_blank"
-     class="text-blue-600 underline font-semibold">
-     Download panduan penggunaan (PDF)
-  </a>
-</p>
-
-<p class="mb-4">
-  <a href="https://docs.google.com/spreadsheets/d/1Lran4XBRfIxkRsbhA_-5OODcuY9Yt9FueHZsNfVX6AA/edit?usp=drivesdk"
-     target="_blank"
-     class="text-blue-600 underline font-semibold">
-     Lihat simulatornya di sini
-  </a>
-</p>
-
-<p class="mb-4">
-  <a href="https://forms.gle/pJDvBYYSupDzGcWi8"
-     target="_blank"
-     class="text-blue-600 underline font-semibold">
-     Lihat contoh form nya di sini <br>
-silahkan isi untuk demo dan lihat hasil nya di simulator
-  </a>
-<p onclick="pesanProduk('SISTEM MANAJEMEN USAHA (3 Bulan)',15000)"</p>
-
-<a href="https://forms.gle/iJ2Svs8UNjfAEUKK6"
-target="_blank"
-class="inline-block mt-3 bg-green-500 text-white py-2 px-6 rounded-xl">
-Tulis Pesanan
-</a>
-
-</div>
-</section> <section id="produk" class="bg-white">
-    <div class="max-w-6xl mx-auto px-4 py-16">
-      <h3 class="text-2xl font-bold mb-6">Produk Kami Lainnya</h3>
-
-<div class="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
-
-<!-- BORNEO -->
-<div class="bg-gray-50 rounded-xl shadow p-4 text-center">
-
-<img src="borneo.jpg" class="h-48 w-full object-contain bg-white rounded-xl mb-3 mx-auto">
-
-<h4 class="font-semibold mb-2">BORNEO SCHEMATIC 3 bulan</h4>
-
-<p class="text-sm">
-JASA AKTIVASI BORNEO SCHEMATIC<br>
-Tersedia paket aktivasi sesuai<br>
-kebutuhan teknisi<br><br>
-
-📌 Pilihan Durasi:<br>
-✅ 3 Bulan ✅ 6 Bulan ✅ 12 Bulan<br>
-
-📌 Pilihan User:<br>
-👤 1 User 👥 2 User<br><br>
-
-✔ Cocok untuk teknisi HP<br>
-✔ Support schematic + boardview<br>
-✔ Aktivasi resmi • Bisa langsung pakai
-</p>
-
-<p class="font-bold mt-2">Rp 180.000</p>
-
-<a href="https://wa.me/6282319264646?text=Halo%20kak,%20saya%20mau%20AKTIVASI%20BORNEO%20SCHEMATIC"
-target="_blank"
-class="inline-block mt-3 bg-green-500 text-white py-2 px-6 rounded-xl">
-Pesan WA
-</a>
-
+<div class="header">
+  <h2>TEKNISI PONSEL MAJA</h2>
+  <p>Pusat Kolaborasi & Distribusi Produk</p>
 </div>
 
-<!-- UNLOCKTOOL -->
-<div class="bg-gray-50 rounded-xl shadow p-4 text-center">
-
-<img src="unlocktools.jpg" class="h-48 w-full object-contain bg-white rounded-xl mb-3 mx-auto">
-
-<h4 class="font-semibold">SEWA UNLOCKTOOL</h4>
-
-<p class="text-sm">
-UnlockTool membantu teknisi menangani reset, flashing & manajemen sistem Android.
-</p>
-
-<p class="font-bold mt-2">Rp 10.000 (1 hari)</p>
-
-<a href="https://wa.me/6282319264646?text=Halo%20kak,%20saya%20mau%20SEWA%20UNLOCKTOOL"
-target="_blank"
-class="inline-block mt-3 bg-green-500 text-white py-2 px-6 rounded-xl">
-Pesan WA
-</a>
-
+<div class="menu">
+  <div class="item" onclick="go('brand.html')">
+    <div class="icon">🧰</div>Kategori Produk
+  </div>
+  <div class="item">
+    <div class="icon">🛒</div>Jual Beli Produk
+  </div>
+  <div class="item">
+    <div class="icon">📘</div>SOP Teknisi
+  </div>
+  <div class="item">
+    <div class="icon">💬</div>Chat
+  </div>
 </div>
 
-<!-- LCD -->
-<div class="bg-gray-50 rounded-xl shadow p-4 text-center">
-
-<img src="lcdhp.jpg" class="h-48 w-full object-contain bg-white rounded-xl mb-3 mx-auto">
-
-<h4 class="font-semibold">LCD HANDPHONE</h4>
-
-<p class="text-sm">
-Pengambilan LCD minimal 20 pcs dengan tempo pembayaran 20 hari.
-</p>
-
-<a href="https://docs.google.com/spreadsheets/d/1TOxWlR7NFizdp5etRrnvq9NkzLX-5IRQ9Wi4ETX6jAQ/edit?usp=drivesdk"
-target="_blank"
-class="block text-blue-600 underline mt-2 text-sm">
-Cek harga LCD, aksesoris & battery
-</a>
-
-<p class="font-bold mt-2">Rp 0</p>
-
-<a href="https://forms.gle/iJ2Svs8UNjfAEUKK6"
-target="_blank"
-class="inline-block mt-3 bg-green-500 text-white py-2 px-6 rounded-xl">
-Tulis Pesanan
-</a>
-
+<div class="footer">
+  © Komunitas Teknisi Majalengka
 </div>
 
-</div>
-
-  </section>  <!-- Kontak -->  <section id="kontak" class="max-w-6xl mx-auto px-4 py-16">
-    <h3 class="text-2xl font-bold mb-4">Kontak</h3>
-    <p>📞 WhatsApp:082319264646</p>
-    <p>📍 Alamat:Depan Pasar hewan Blok Jum'at Maja utara - Maja - Majalengka</p>
-  </section>  <!-- Footer -->  <footer class="bg-gray-800 text-white text-center py-6">
-    © 2026 A_YUDI_THEA. All rights reserved.
-  </footer>
 <script>
-fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vRU984eXIh3xMGx20Q_pJdr0GeiLOhbYjlARCPdTH3Y8QKEh86hcTDDAAI41LC_3iC54OeIDP_YUoOy/pub?output=csv&gid=962020107")
-.then(r => r.text())
-.then(t => {
-  let rws = t.split("\n");
-  let e2 = rws[1].split(",")[4]; // E6
-
-  document.getElementById("saldo").innerText =
-    "Rp " + Number(e2).toLocaleString("id-ID");
-});
+function go(p){ location.href=p }
 </script>
+
 </body>
 </html>
