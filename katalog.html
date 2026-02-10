@@ -117,76 +117,58 @@ Pengambilan 20pcs tempo 30 hari
 
 <script>
 /* ===============================
-   SIMPAN PILIHAN (ANTI HILANG)
+   SIMPAN CEKLIST (MEMORY SAJA)
 ================================ */
-const selectedProduk = new Set(
-  JSON.parse(localStorage.getItem("selectedProduk") || "[]")
-);
-
-function saveSelected() {
-  localStorage.setItem(
-    "selectedProduk",
-    JSON.stringify([...selectedProduk])
-  );
-}
+const selectedLCD = new Set();
 
 /* ===============================
-   LINK CSV GOOGLE SHEET
+   LINK CSV LCD
 ================================ */
-const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR-bDX_S5Cwma6e7vlf8Of4XVwccJ9ukNFZODZg08gqRgjaK7gCN5xMIFIgMgAbgXw44dz8BrinQBBR/pub?gid=1950799771&single=true&output=csv";
+const CSV_URL =
+"https://docs.google.com/spreadsheets/d/e/2PACX-1vR-bDX_S5Cwma6e7vlf8Of4XVwccJ9ukNFZODZg08gqRgjaK7gCN5xMIFIgMgAbgXw44dz8BrinQBBR/pub?gid=1950799771&single=true&output=csv";
 
-let semuaProduk = [];
+let data = [];
 
 /* ===============================
    LOAD DATA
 ================================ */
 fetch(CSV_URL)
-  .then(r => r.text())
-  .then(text => {
-    const rows = text.split("\n").slice(3);
-    semuaProduk = rows
-      .map(r => r.split(","))
-      .filter(c => c[0]);
-    render(semuaProduk);
-  })
-  .catch(() => {
-    document.getElementById("list").innerHTML =
-      "<p>❌ Gagal mengambil data</p>";
-  });
+.then(r => r.text())
+.then(t => {
+  const rows = t.split("\n").slice(3);
+  data = rows.map(r => r.split(",")).filter(r => r[0]);
+  render(data);
+});
 
 /* ===============================
-   RENDER PRODUK
+   RENDER LCD
 ================================ */
-function render(data){
+function render(arr){
   let html = "";
 
-  data.forEach(col => {
-    const namaProduk = col[0]; // 🔑 INI KUNCINYA
+  arr.forEach(r => {
+    const nama = r[0];
+    const program = r[1] || "-";
+    const tempo = r[2] || "-";
+    const key = nama + " | " + program + " | " + tempo;
 
     html += `
-      <div class="produk">
-        <label style="display:flex; gap:10px; align-items:flex-start;">
-          <input type="checkbox"
-            value="${namaProduk}"
-            ${selectedProduk.has(namaProduk) ? "checked" : ""}
-            onchange="
-              if(this.checked){
-                selectedProduk.add('${namaProduk}');
-              }else{
-                selectedProduk.delete('${namaProduk}');
-              }
-              saveSelected();
-            "
-          >
-
-          <div>
-            <div class="nama">${namaProduk}</div>
-            <div class="harga">
-              Program: ${col[1] || "-"}<br>
-              Tempo: ${col[2] || "-"}
-            </div>
+      <div class="item">
+        <input type="checkbox"
+          ${selectedLCD.has(key) ? "checked" : ""}
+          onchange="
+            this.checked
+              ? selectedLCD.add('${key}')
+              : selectedLCD.delete('${key}')
+          "
+        >
+        <div>
+          <div class="nama">${nama}</div>
+          <div class="harga">
+            Program: ${program}<br>
+            Tempo: ${tempo}
           </div>
-        </label>
+        </div>
       </div>
     `;
   });
@@ -195,43 +177,25 @@ function render(data){
 }
 
 /* ===============================
-   SEARCH
+   SEARCH LCD
 ================================ */
-document.getElementById("search").addEventListener("input", function(){
-  const key = this.value.toLowerCase();
-  const hasil = semuaProduk.filter(c =>
-    c[0].toLowerCase().includes(key)
-  );
-  render(hasil);
-});
+function filter(){
+  const q = document.getElementById("cari").value.toLowerCase();
+  render(data.filter(r => r[0].toLowerCase().includes(q)));
+}
 
 /* ===============================
-   KIRIM KE WHATSAPP
+   KIRIM WA
 ================================ */
 function kirimWA(){
-  if (!selectedProduk.size) {
-    alert("Pilih produk dulu");
+  if(!selectedLCD.size){
+    alert("Pilih LCD dulu");
     return;
   }
 
-  let pesan = "Halo, saya mau pesan:\n\n";
-  let i = 1;
-
-  selectedProduk.forEach(nama => {
-    const produk = semuaProduk.find(p => p[0] === nama);
-    if(produk){
-      pesan += i+". "+nama+"\n";
-      pesan += "Program: "+(produk[1]||"-")+"\n";
-      pesan += "Tempo: "+(produk[2]||"-")+"\n\n";
-      i++;
-    }
-  });
-
-  const noWA = "6282319264646";
-  window.open(
-    "https://wa.me/"+noWA+"?text="+encodeURIComponent(pesan),
-    "_blank"
-  );
+  const pesan = [...selectedLCD].join("%0A");
+  location.href =
+    "https://wa.me/6282319264646?text=Order LCD:%0A" + pesan;
 }
 </script>
 </body>
