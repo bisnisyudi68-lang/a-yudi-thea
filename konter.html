@@ -110,11 +110,11 @@ fetch(CSV_URL)
   const rows = t.trim().split("\n").slice(1);
 
   data = rows.map(r => {
-    // ambil kolom B (nama), E (harga), G (sisa)
+    // ambil kolom B (nama), D (harga), G (sisa)
     const c = r.split(",");
     return {
       nama: c[1],
-      harga: c[4],
+      harga: c[3],
       sisa: c[6]
     };
   }).filter(x => x.nama && Number(x.sisa) > 0);
