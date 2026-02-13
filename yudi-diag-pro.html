@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>YUDI DIAG PRO</title>
+<title>YUDI DIAG PRO - Senior Mode</title>
 
 <style>
 body{
@@ -15,7 +15,7 @@ body{
 
 .container{
     max-width:500px;
-    margin:40px auto;
+    margin:30px auto;
     background:rgba(255,255,255,0.08);
     padding:25px;
     border-radius:20px;
@@ -24,10 +24,15 @@ body{
 
 h2{text-align:center;margin-bottom:20px;}
 
+label{
+    font-size:13px;
+    opacity:0.8;
+}
+
 input,select,button{
     width:100%;
     padding:12px;
-    margin:10px 0;
+    margin:8px 0 15px 0;
     border-radius:12px;
     border:none;
     font-size:14px;
@@ -49,10 +54,10 @@ button{
 .sedang{background:#f9a825;color:black;}
 .berat{background:#b71c1c;}
 
-.history{
-    margin-top:20px;
-    font-size:13px;
-    opacity:0.9;
+.note{
+    font-size:12px;
+    opacity:0.7;
+    margin-bottom:10px;
 }
 </style>
 </head>
@@ -63,43 +68,43 @@ button{
 
 <h2>🔧 YUDI DIAG PRO</h2>
 
-<input type="text" id="nama" placeholder="Nama Customer">
+<div class="note">
+Isi semua parameter agar hasil lebih akurat. Salah satu boleh dikosongkan.
+</div>
 
-<!-- POWER SUPPLY -->
-<select id="arusPSU">
-<option value="">Reaksi Power Supply</option>
-<option value="mati">0.00A</option>
-<option value="short">Short 0.5A+</option>
-<option value="naikturun">Naik Turun</option>
-<option value="stabil">Stabil 0.5A+</option>
-</select>
+<label>1️⃣ Tipe HP</label>
+<input type="text" id="tipe" placeholder="Contoh: Redmi Note 8 / Vivo Y12">
 
-<!-- DETEKSI USB -->
-<select id="usbDetect">
-<option value="">Deteksi USB</option>
-<option value="none">Tidak Terdeteksi</option>
-<option value="preloader">Preloader (MTK)</option>
-<option value="9008">9008 (Qualcomm)</option>
-<option value="normal">Android Device</option>
-</select>
-
-<!-- USB DOCTOR -->
+<label>2️⃣ Cek USB Doctor</label>
 <select id="usbDoctor">
-<option value="">Arus USB Doctor</option>
+<option value="">-- Pilih --</option>
 <option value="0">0.00A</option>
 <option value="low">0.05–0.20A</option>
 <option value="mid">0.30–0.50A</option>
 <option value="high">1A+</option>
 </select>
 
-<button onclick="diagnosa()">ANALISA</button>
+<label>3️⃣ Cek Power Supply</label>
+<select id="psu">
+<option value="">-- Pilih --</option>
+<option value="mati">0.00A</option>
+<option value="short">Short 0.5A+</option>
+<option value="naikturun">Naik Turun</option>
+<option value="stabil">Stabil 0.5A+</option>
+</select>
+
+<label>4️⃣ Cek USB Device</label>
+<select id="usbDetect">
+<option value="">-- Pilih --</option>
+<option value="none">Tidak Terdeteksi</option>
+<option value="preloader">Preloader (MTK)</option>
+<option value="9008">9008 (Qualcomm)</option>
+<option value="normal">Android Device</option>
+</select>
+
+<button onclick="diagnosa()">ANALISA SENIOR</button>
 
 <div id="hasil"></div>
-
-<div class="history">
-<h4>Riwayat Diagnosa</h4>
-<div id="riwayat"></div>
-</div>
 
 </div>
 
@@ -107,62 +112,61 @@ button{
 
 function diagnosa(){
 
-let nama = document.getElementById("nama").value;
-let psu = document.getElementById("arusPSU").value;
-let usb = document.getElementById("usbDetect").value;
+let tipe = document.getElementById("tipe").value;
 let doctor = document.getElementById("usbDoctor").value;
+let psu = document.getElementById("psu").value;
+let usb = document.getElementById("usbDetect").value;
 
-/* SKOR SISTEM */
+/* SISTEM SKOR */
 let shortScore=0;
 let softScore=0;
 let displayScore=0;
 let chargeScore=0;
 
-/* ANALISA PSU */
-if(psu=="short") shortScore+=40;
-if(psu=="mati") chargeScore+=30;
-if(psu=="naikturun") softScore+=30;
-if(psu=="stabil") displayScore+=25;
-
-/* ANALISA USB DETECT */
-if(usb=="preloader" || usb=="9008") softScore+=40;
-if(usb=="none") shortScore+=20;
-if(usb=="normal") displayScore+=20;
-
-/* ANALISA USB DOCTOR */
+/* USB DOCTOR */
 if(doctor=="high") shortScore+=50;
 if(doctor=="0") chargeScore+=40;
 if(doctor=="low") chargeScore+=20;
 if(doctor=="mid") displayScore+=30;
 
-/* TENTUKAN HASIL */
-let maxScore = Math.max(shortScore,softScore,displayScore,chargeScore);
+/* POWER SUPPLY */
+if(psu=="short") shortScore+=40;
+if(psu=="mati") chargeScore+=30;
+if(psu=="naikturun") softScore+=35;
+if(psu=="stabil") displayScore+=25;
 
-let hasilText="";
-let level="";
-let persen=Math.min(maxScore,95); // max 95%
+/* USB DEVICE */
+if(usb=="preloader" || usb=="9008") softScore+=45;
+if(usb=="none") shortScore+=20;
+if(usb=="normal") displayScore+=20;
+
+/* HITUNG HASIL */
+let maxScore=Math.max(shortScore,softScore,displayScore,chargeScore);
+let persen=Math.min(maxScore,95);
+
+let hasil="";
+let level="sedang";
 
 if(maxScore==shortScore){
-    hasilText="🔴 SHORT IC Power / Jalur VBAT";
+    hasil="🔴 SHORT IC Power / Jalur VBAT";
     level="berat";
 }
 else if(maxScore==softScore){
-    hasilText="🟡 Software Rusak / EMMC Lemah";
+    hasil="🟡 Software Rusak / EMMC Lemah";
     level="sedang";
 }
 else if(maxScore==displayScore){
-    hasilText="🟢 Masalah Display / Backlight";
+    hasil="🟢 Masalah Display / Backlight";
     level="ringan";
 }
 else{
-    hasilText="🔴 IC Charger / Jalur Charging";
+    hasil="🔴 IC Charger / Jalur Charging";
     level="berat";
 }
 
-let box=document.getElementById("hasil");
-box.className="result "+level;
-box.innerHTML=`
-<b>${hasilText}</b><br>
+document.getElementById("hasil").className="result "+level;
+document.getElementById("hasil").innerHTML=`
+<b>${hasil}</b><br>
 Probabilitas: <b>${persen}%</b><br><br>
 Detail Skor:<br>
 SHORT: ${shortScore}<br>
@@ -171,32 +175,9 @@ DISPLAY: ${displayScore}<br>
 CHARGING: ${chargeScore}
 `;
 
-/* SIMPAN RIWAYAT */
-let data={
-    nama:nama,
-    hasil:hasilText,
-    persen:persen+"%",
-    waktu:new Date().toLocaleString()
-};
-
-let history=JSON.parse(localStorage.getItem("diagHistory"))||[];
-history.push(data);
-localStorage.setItem("diagHistory",JSON.stringify(history));
-
-loadHistory();
 }
-
-function loadHistory(){
-let history=JSON.parse(localStorage.getItem("diagHistory"))||[];
-let output="";
-history.slice(-5).reverse().forEach(h=>{
-    output+=`<div>${h.waktu} - ${h.nama} - ${h.hasil} (${h.persen})</div>`;
-});
-document.getElementById("riwayat").innerHTML=output;
-}
-
-loadHistory();
 
 </script>
+
 </body>
 </html>
