@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Scan Tipe HP dari Backdoor</title>
+  <title>Scan Backdoor HP Pro</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       font-family: Arial;
-      background: #f4f6f9;
+      background: #f2f4f8;
       text-align: center;
       padding: 20px;
     }
@@ -15,7 +15,7 @@
       padding: 20px;
       border-radius: 15px;
       box-shadow: 0 0 15px rgba(0,0,0,0.1);
-      max-width: 400px;
+      max-width: 420px;
       margin: auto;
     }
     img {
@@ -44,43 +44,46 @@
 </head>
 <body>
 
-  <div class="box">
-    <h2>📸 Scan Backdoor HP</h2>
+<div class="box">
+  <h2>📸 Scan Backdoor HP Pro</h2>
 
-    <input type="file" accept="image/*" onchange="previewImage(event)">
-    <img id="preview">
+  <input type="file" accept="image/*" onchange="previewImage(event)">
+  <img id="preview">
 
-    <select id="kamera">
-      <option value="">Jumlah Kamera?</option>
-      <option value="1">1 Kamera</option>
-      <option value="2">2 Kamera</option>
-      <option value="3">3 Kamera</option>
-      <option value="4">4 Kamera</option>
-    </select>
+  <select id="brand">
+    <option value="">Pilih Brand</option>
+    <option>Vivo</option>
+    <option>Samsung</option>
+    <option>Xiaomi</option>
+    <option>Oppo</option>
+    <option>Realme</option>
+  </select>
 
-    <select id="brand">
-      <option value="">Pilih Brand</option>
-      <option value="Samsung">Samsung</option>
-      <option value="Xiaomi">Xiaomi</option>
-      <option value="Oppo">Oppo</option>
-      <option value="Vivo">Vivo</option>
-      <option value="Realme">Realme</option>
-    </select>
+  <select id="kamera">
+    <option value="">Jumlah Kamera</option>
+    <option value="2">2 Kamera</option>
+    <option value="3">3 Kamera</option>
+    <option value="4">4 Kamera</option>
+  </select>
 
-    <button onclick="scanHP()">Analisa Sekarang</button>
+  <select id="flash">
+    <option value="">Posisi Flash</option>
+    <option value="bawah">Di bawah kamera</option>
+    <option value="samping">Di samping kamera</option>
+  </select>
 
-    <div class="hasil" id="hasil"></div>
-  </div>
+  <select id="finger">
+    <option value="">Fingerprint Belakang?</option>
+    <option value="tidak">Tidak Ada</option>
+    <option value="ada">Ada</option>
+  </select>
+
+  <button onclick="scanHP()">Analisa Sekarang</button>
+
+  <div class="hasil" id="hasil"></div>
+</div>
 
 <script>
-function previewImage(event) {
-  const reader = new FileReader();
-  reader.onload = function(){
-    document.getElementById('preview').src = reader.result;
-  }
-  reader.readAsDataURL(event.target.files[0]);
-}
-
 function scanHP() {
   let kamera = document.getElementById("kamera").value;
   let brand = document.getElementById("brand").value;
@@ -91,18 +94,39 @@ function scanHP() {
     return;
   }
 
-  // Simulasi logika sederhana
-  if (brand === "Samsung" && kamera == "2") {
-    hasil.innerHTML = "Kemungkinan: Samsung A05 / A04 (70%)";
-  } 
+  // LOGIKA KHUSUS VIVO
+  if (brand === "Vivo" && kamera == "3") {
+    hasil.innerHTML = `
+      🔍 Kemungkinan Besar:<br><br>
+      • Vivo Y20 Series (80%)<br>
+      • Vivo Y12s (15%)<br>
+      • Vivo Y15s (5%)<br><br>
+      ✅ Cek tambahan:<br>
+      - Tidak ada fingerprint belakang<br>
+      - Flash di bawah kamera terakhir
+    `;
+  }
+
+  // LOGIKA SAMSUNG
+  else if (brand === "Samsung" && kamera == "3") {
+    hasil.innerHTML = `
+      🔍 Kemungkinan:<br><br>
+      • Samsung A05s<br>
+      • Samsung A04s
+    `;
+  }
+
+  // LOGIKA XIAOMI
   else if (brand === "Xiaomi" && kamera == "3") {
-    hasil.innerHTML = "Kemungkinan: Redmi Note Series (75%)";
-  } 
-  else if (brand === "Oppo" && kamera == "3") {
-    hasil.innerHTML = "Kemungkinan: Oppo A Series (65%)";
-  } 
+    hasil.innerHTML = `
+      🔍 Kemungkinan:<br><br>
+      • Redmi Note Series<br>
+      • Redmi 10 Series
+    `;
+  }
+
   else {
-    hasil.innerHTML = "Model belum dikenali. Perlu database lebih lengkap.";
+    hasil.innerHTML = "Model belum ada di database sederhana.";
   }
 }
 </script>
