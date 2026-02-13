@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Scan Tipe HP dari Backdoor</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial;
+      background: #f4f6f9;
+      text-align: center;
+      padding: 20px;
+    }
+    .box {
+      background: white;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      max-width: 400px;
+      margin: auto;
+    }
+    img {
+      max-width: 100%;
+      margin-top: 10px;
+      border-radius: 10px;
+    }
+    select, button {
+      padding: 10px;
+      margin-top: 10px;
+      width: 100%;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background: #007bff;
+      color: white;
+      border: none;
+      font-weight: bold;
+    }
+    .hasil {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="box">
+    <h2>📸 Scan Backdoor HP</h2>
+
+    <input type="file" accept="image/*" onchange="previewImage(event)">
+    <img id="preview">
+
+    <select id="kamera">
+      <option value="">Jumlah Kamera?</option>
+      <option value="1">1 Kamera</option>
+      <option value="2">2 Kamera</option>
+      <option value="3">3 Kamera</option>
+      <option value="4">4 Kamera</option>
+    </select>
+
+    <select id="brand">
+      <option value="">Pilih Brand</option>
+      <option value="Samsung">Samsung</option>
+      <option value="Xiaomi">Xiaomi</option>
+      <option value="Oppo">Oppo</option>
+      <option value="Vivo">Vivo</option>
+      <option value="Realme">Realme</option>
+    </select>
+
+    <button onclick="scanHP()">Analisa Sekarang</button>
+
+    <div class="hasil" id="hasil"></div>
+  </div>
+
+<script>
+function previewImage(event) {
+  const reader = new FileReader();
+  reader.onload = function(){
+    document.getElementById('preview').src = reader.result;
+  }
+  reader.readAsDataURL(event.target.files[0]);
+}
+
+function scanHP() {
+  let kamera = document.getElementById("kamera").value;
+  let brand = document.getElementById("brand").value;
+  let hasil = document.getElementById("hasil");
+
+  if (!kamera || !brand) {
+    hasil.innerHTML = "⚠️ Lengkapi dulu brand & jumlah kamera.";
+    return;
+  }
+
+  // Simulasi logika sederhana
+  if (brand === "Samsung" && kamera == "2") {
+    hasil.innerHTML = "Kemungkinan: Samsung A05 / A04 (70%)";
+  } 
+  else if (brand === "Xiaomi" && kamera == "3") {
+    hasil.innerHTML = "Kemungkinan: Redmi Note Series (75%)";
+  } 
+  else if (brand === "Oppo" && kamera == "3") {
+    hasil.innerHTML = "Kemungkinan: Oppo A Series (65%)";
+  } 
+  else {
+    hasil.innerHTML = "Model belum dikenali. Perlu database lebih lengkap.";
+  }
+}
+</script>
+
+</body>
+</html>
