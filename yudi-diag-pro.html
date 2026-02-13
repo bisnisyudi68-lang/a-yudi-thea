@@ -112,44 +112,70 @@ let psu = document.getElementById("arusPSU").value;
 let usb = document.getElementById("usbDetect").value;
 let doctor = document.getElementById("usbDoctor").value;
 
-let text="Data belum cukup";
-let level="sedang";
+/* SKOR SISTEM */
+let shortScore=0;
+let softScore=0;
+let displayScore=0;
+let chargeScore=0;
 
-/* LOGIKA ANALISA */
+/* ANALISA PSU */
+if(psu=="short") shortScore+=40;
+if(psu=="mati") chargeScore+=30;
+if(psu=="naikturun") softScore+=30;
+if(psu=="stabil") displayScore+=25;
 
-// PRIORITAS SHORT
-if(psu=="short" || doctor=="high"){
-    text="🔴 SHORT jalur VBAT / IC Power (85%)";
+/* ANALISA USB DETECT */
+if(usb=="preloader" || usb=="9008") softScore+=40;
+if(usb=="none") shortScore+=20;
+if(usb=="normal") displayScore+=20;
+
+/* ANALISA USB DOCTOR */
+if(doctor=="high") shortScore+=50;
+if(doctor=="0") chargeScore+=40;
+if(doctor=="low") chargeScore+=20;
+if(doctor=="mid") displayScore+=30;
+
+/* TENTUKAN HASIL */
+let maxScore = Math.max(shortScore,softScore,displayScore,chargeScore);
+
+let hasilText="";
+let level="";
+let persen=Math.min(maxScore,95); // max 95%
+
+if(maxScore==shortScore){
+    hasilText="🔴 SHORT IC Power / Jalur VBAT";
     level="berat";
 }
-
-// MATI TOTAL
-else if(psu=="mati" && doctor=="0"){
-    text="🔴 Jalur baterai / IC Charger rusak (75%)";
-    level="berat";
-}
-
-// SOFTWARE / EMMC
-else if(psu=="naikturun" && (usb=="preloader" || usb=="9008")){
-    text="🟡 Kemungkinan Software / EMMC Lemah (70%)";
+else if(maxScore==softScore){
+    hasilText="🟡 Software Rusak / EMMC Lemah";
     level="sedang";
 }
-
-// DISPLAY
-else if(psu=="stabil" && doctor=="mid"){
-    text="🟢 CPU aktif. Cek LCD / Backlight (65%)";
+else if(maxScore==displayScore){
+    hasilText="🟢 Masalah Display / Backlight";
     level="ringan";
+}
+else{
+    hasilText="🔴 IC Charger / Jalur Charging";
+    level="berat";
 }
 
 let box=document.getElementById("hasil");
 box.className="result "+level;
-box.innerHTML="<b>"+text+"</b>";
+box.innerHTML=`
+<b>${hasilText}</b><br>
+Probabilitas: <b>${persen}%</b><br><br>
+Detail Skor:<br>
+SHORT: ${shortScore}<br>
+SOFTWARE: ${softScore}<br>
+DISPLAY: ${displayScore}<br>
+CHARGING: ${chargeScore}
+`;
 
 /* SIMPAN RIWAYAT */
-
 let data={
     nama:nama,
-    hasil:text,
+    hasil:hasilText,
+    persen:persen+"%",
     waktu:new Date().toLocaleString()
 };
 
@@ -164,7 +190,7 @@ function loadHistory(){
 let history=JSON.parse(localStorage.getItem("diagHistory"))||[];
 let output="";
 history.slice(-5).reverse().forEach(h=>{
-    output+=`<div>${h.waktu} - ${h.nama} - ${h.hasil}</div>`;
+    output+=`<div>${h.waktu} - ${h.nama} - ${h.hasil} (${h.persen})</div>`;
 });
 document.getElementById("riwayat").innerHTML=output;
 }
@@ -172,6 +198,5 @@ document.getElementById("riwayat").innerHTML=output;
 loadHistory();
 
 </script>
-
 </body>
 </html>
