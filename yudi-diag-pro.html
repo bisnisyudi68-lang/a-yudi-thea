@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>YUDI DIAG PRO</title>
+<style>
+body {
+    margin:0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+    color:white;
+}
+.container {
+    max-width:500px;
+    margin:40px auto;
+    background:rgba(255,255,255,0.08);
+    padding:25px;
+    border-radius:20px;
+    backdrop-filter: blur(10px);
+}
+h2 { text-align:center; }
+input, select, button {
+    width:100%;
+    padding:12px;
+    margin:8px 0;
+    border-radius:10px;
+    border:none;
+}
+button {
+    background:#00c6ff;
+    color:black;
+    font-weight:bold;
+    cursor:pointer;
+}
+.result {
+    margin-top:15px;
+    padding:15px;
+    border-radius:15px;
+}
+.ringan { background:#1b5e20; }
+.sedang { background:#f9a825; color:black; }
+.berat { background:#b71c1c; }
+.history {
+    margin-top:20px;
+    font-size:13px;
+    opacity:0.8;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+<h2>🔧 YUDI DIAG PRO</h2>
+
+<input type="text" id="nama" placeholder="Nama Customer">
+
+<select id="arus">
+<option value="">Reaksi Power Supply</option>
+<option value="mati">0.00A</option>
+<option value="short">Short 0.5A+</option>
+<option value="naikturun">Naik Turun</option>
+<option value="stabil">Stabil 0.5A+</option>
+</select>
+
+<select id="usb">
+<option value="">Deteksi USB</option>
+<option value="none">Tidak Terdeteksi</option>
+<option value="preloader">Preloader (MTK)</option>
+<option value="9008">9008 (Qualcomm)</option>
+<option value="normal">Android Device</option>
+</select>
+
+<button onclick="diagnosa()">ANALISA</button>
+
+<div id="hasil"></div>
+
+<div class="history">
+<h4>Riwayat Diagnosa</h4>
+<div id="riwayat"></div>
+</div>
+
+</div>
+
+<script>
+function diagnosa(){
+let nama = document.getElementById("nama").value;
+let arus = document.getElementById("arus").value;
+let usb = document.getElementById("usb").value;
+let hasilBox = document.getElementById("hasil");
+
+let text="", level="";
+
+if(arus=="short"){
+    text="Kemungkinan SHORT IC Power / Kapasitor (80%)";
+    level="berat";
+}
+else if(arus=="mati"){
+    text="Kemungkinan Jalur Baterai / IC Power Mati (70%)";
+    level="berat";
+}
+else if(arus=="naikturun" && usb!="none"){
+    text="Kemungkinan Software / EMMC Lemah (65%)";
+    level="sedang";
+}
+else if(arus=="stabil"){
+    text="CPU Aktif. Cek LCD / Backlight (60%)";
+    level="ringan";
+}
+else{
+    text="Data belum cukup";
+    level="sedang";
+}
+
+hasilBox.className="result "+level;
+hasilBox.innerHTML="<b>"+text+"</b>";
+
+let data = {
+    nama:nama,
+    hasil:text,
+    waktu:new Date().toLocaleString()
+};
+
+let history = JSON.parse(localStorage.getItem("diagHistory")) || [];
+history.push(data);
+localStorage.setItem("diagHistory", JSON.stringify(history));
+loadHistory();
+}
+
+function loadHistory(){
+let history = JSON.parse(localStorage.getItem("diagHistory")) || [];
+let output="";
+history.slice(-5).reverse().forEach(h=>{
+    output+=`<div>${h.waktu} - ${h.nama} - ${h.hasil}</div>`;
+});
+document.getElementById("riwayat").innerHTML=output;
+}
+
+loadHistory();
+</script>
+
+</body>
+</html>
