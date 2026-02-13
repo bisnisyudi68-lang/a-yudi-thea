@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>HP Diagnostic Pro - Yudi Service</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body{
+    font-family:Arial;
+    background:#111;
+    color:#fff;
+    text-align:center;
+}
+button{
+    padding:10px 20px;
+    margin:5px;
+    border:none;
+    border-radius:8px;
+    font-size:14px;
+}
+.section{
+    margin:20px 0;
+    padding:15px;
+    background:#1e1e1e;
+    border-radius:10px;
+}
+#touchArea{
+    width:100%;
+    height:200px;
+    background:#000;
+    margin-top:10px;
+}
+canvas{
+    background:#000;
+}
+</style>
+</head>
+<body>
+
+<h2>🔧 HP Diagnostic Pro</h2>
+
+<div class="section">
+<h3>📺 Test Warna Layar</h3>
+<button onclick="setColor('red')">Merah</button>
+<button onclick="setColor('green')">Hijau</button>
+<button onclick="setColor('blue')">Biru</button>
+<button onclick="setColor('white')">Putih</button>
+<button onclick="setColor('black')">Hitam</button>
+</div>
+
+<div class="section">
+<h3>👆 Test Touchscreen</h3>
+<canvas id="canvas" width="350" height="200"></canvas>
+<br>
+<button onclick="clearCanvas()">Clear</button>
+</div>
+
+<div class="section">
+<h3>🔊 Test Speaker</h3>
+<button onclick="playSound()">Putar Suara</button>
+</div>
+
+<div class="section">
+<h3>🎤 Test Microphone</h3>
+<button onclick="startMic()">Rekam 3 Detik</button>
+<p id="micStatus"></p>
+</div>
+
+<div class="section">
+<h3>📳 Test Getar</h3>
+<button onclick="vibratePhone()">Getar</button>
+</div>
+
+<div class="section">
+<h3>🔋 Status Baterai</h3>
+<p id="batteryInfo">Tidak tersedia</p>
+</div>
+
+<script>
+function setColor(color){
+    document.body.style.background = color;
+}
+
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+canvas.addEventListener("touchmove", function(e){
+    let rect = canvas.getBoundingClientRect();
+    let x = e.touches[0].clientX - rect.left;
+    let y = e.touches[0].clientY - rect.top;
+    ctx.fillStyle="lime";
+    ctx.fillRect(x,y,5,5);
+});
+
+function clearCanvas(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+}
+
+function playSound(){
+    let audio = new Audio("https://www.soundjay.com/button/beep-07.wav");
+    audio.play();
+}
+
+function vibratePhone(){
+    if(navigator.vibrate){
+        navigator.vibrate(500);
+    }else{
+        alert("Getar tidak didukung browser");
+    }
+}
+
+function startMic(){
+navigator.mediaDevices.getUserMedia({audio:true})
+.then(function(stream){
+document.getElementById("micStatus").innerText="Mic terdeteksi ✅";
+setTimeout(()=>{
+stream.getTracks().forEach(track=>track.stop());
+},3000);
+})
+.catch(()=>{
+document.getElementById("micStatus").innerText="Mic tidak terdeteksi ❌";
+});
+}
+
+if('getBattery' in navigator){
+navigator.getBattery().then(function(battery){
+document.getElementById("batteryInfo").innerText =
+"Level: "+(battery.level*100)+"% | Charging: "+battery.charging;
+});
+}
+</script>
+
+</body>
+</html>
