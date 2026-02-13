@@ -2,59 +2,71 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>YUDI DIAG PRO</title>
+
 <style>
-body {
+body{
     margin:0;
-    font-family: 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+    font-family:'Segoe UI',sans-serif;
+    background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
     color:white;
 }
-.container {
+
+.container{
     max-width:500px;
     margin:40px auto;
     background:rgba(255,255,255,0.08);
     padding:25px;
     border-radius:20px;
-    backdrop-filter: blur(10px);
+    backdrop-filter:blur(15px);
 }
-h2 { text-align:center; }
-input, select, button {
+
+h2{text-align:center;margin-bottom:20px;}
+
+input,select,button{
     width:100%;
     padding:12px;
-    margin:8px 0;
-    border-radius:10px;
+    margin:10px 0;
+    border-radius:12px;
     border:none;
+    font-size:14px;
 }
-button {
+
+button{
     background:#00c6ff;
-    color:black;
     font-weight:bold;
     cursor:pointer;
 }
-.result {
+
+.result{
     margin-top:15px;
     padding:15px;
     border-radius:15px;
 }
-.ringan { background:#1b5e20; }
-.sedang { background:#f9a825; color:black; }
-.berat { background:#b71c1c; }
-.history {
+
+.ringan{background:#1b5e20;}
+.sedang{background:#f9a825;color:black;}
+.berat{background:#b71c1c;}
+
+.history{
     margin-top:20px;
     font-size:13px;
-    opacity:0.8;
+    opacity:0.9;
 }
 </style>
 </head>
+
 <body>
 
 <div class="container">
+
 <h2>🔧 YUDI DIAG PRO</h2>
 
 <input type="text" id="nama" placeholder="Nama Customer">
 
-<select id="arus">
+<!-- POWER SUPPLY -->
+<select id="arusPSU">
 <option value="">Reaksi Power Supply</option>
 <option value="mati">0.00A</option>
 <option value="short">Short 0.5A+</option>
@@ -62,19 +74,22 @@ button {
 <option value="stabil">Stabil 0.5A+</option>
 </select>
 
-<select id="usb">
+<!-- DETEKSI USB -->
+<select id="usbDetect">
 <option value="">Deteksi USB</option>
+<option value="none">Tidak Terdeteksi</option>
+<option value="preloader">Preloader (MTK)</option>
+<option value="9008">9008 (Qualcomm)</option>
+<option value="normal">Android Device</option>
+</select>
+
+<!-- USB DOCTOR -->
 <select id="usbDoctor">
 <option value="">Arus USB Doctor</option>
 <option value="0">0.00A</option>
 <option value="low">0.05–0.20A</option>
 <option value="mid">0.30–0.50A</option>
 <option value="high">1A+</option>
-</select>
-<option value="none">Tidak Terdeteksi</option>
-<option value="preloader">Preloader (MTK)</option>
-<option value="9008">9008 (Qualcomm)</option>
-<option value="normal">Android Device</option>
 </select>
 
 <button onclick="diagnosa()">ANALISA</button>
@@ -89,70 +104,64 @@ button {
 </div>
 
 <script>
-let usbDoctor = document.getElementById("usbDoctor").value;
 
-if(usbDoctor=="high"){
-    text="SHORT jalur Vbat / IC Power (85%)";
-    level="berat";
-}
-else if(usbDoctor=="0"){
-    text="Jalur cas putus / IC Charger rusak (70%)";
-    level="berat";
-}
-else if(usbDoctor=="low"){
-    text="IC Power tidak start / proteksi baterai (60%)";
-    level="sedang";
-}
-else if(usbDoctor=="mid"){
-    text="CPU aktif. Cek display / backlight (65%)";
-    level="ringan";
-}
 function diagnosa(){
+
 let nama = document.getElementById("nama").value;
-let arus = document.getElementById("arus").value;
-let usb = document.getElementById("usb").value;
-let hasilBox = document.getElementById("hasil");
+let psu = document.getElementById("arusPSU").value;
+let usb = document.getElementById("usbDetect").value;
+let doctor = document.getElementById("usbDoctor").value;
 
-let text="", level="";
+let text="Data belum cukup";
+let level="sedang";
 
-if(arus=="short"){
-    text="Kemungkinan SHORT IC Power / Kapasitor (80%)";
+/* LOGIKA ANALISA */
+
+// PRIORITAS SHORT
+if(psu=="short" || doctor=="high"){
+    text="🔴 SHORT jalur VBAT / IC Power (85%)";
     level="berat";
 }
-else if(arus=="mati"){
-    text="Kemungkinan Jalur Baterai / IC Power Mati (70%)";
+
+// MATI TOTAL
+else if(psu=="mati" && doctor=="0"){
+    text="🔴 Jalur baterai / IC Charger rusak (75%)";
     level="berat";
 }
-else if(arus=="naikturun" && usb!="none"){
-    text="Kemungkinan Software / EMMC Lemah (65%)";
+
+// SOFTWARE / EMMC
+else if(psu=="naikturun" && (usb=="preloader" || usb=="9008")){
+    text="🟡 Kemungkinan Software / EMMC Lemah (70%)";
     level="sedang";
 }
-else if(arus=="stabil"){
-    text="CPU Aktif. Cek LCD / Backlight (60%)";
+
+// DISPLAY
+else if(psu=="stabil" && doctor=="mid"){
+    text="🟢 CPU aktif. Cek LCD / Backlight (65%)";
     level="ringan";
 }
-else{
-    text="Data belum cukup";
-    level="sedang";
-}
 
-hasilBox.className="result "+level;
-hasilBox.innerHTML="<b>"+text+"</b>";
+let box=document.getElementById("hasil");
+box.className="result "+level;
+box.innerHTML="<b>"+text+"</b>";
 
-let data = {
+/* SIMPAN RIWAYAT */
+
+let data={
     nama:nama,
     hasil:text,
     waktu:new Date().toLocaleString()
 };
 
-let history = JSON.parse(localStorage.getItem("diagHistory")) || [];
+let history=JSON.parse(localStorage.getItem("diagHistory"))||[];
 history.push(data);
-localStorage.setItem("diagHistory", JSON.stringify(history));
+localStorage.setItem("diagHistory",JSON.stringify(history));
+
 loadHistory();
 }
 
 function loadHistory(){
-let history = JSON.parse(localStorage.getItem("diagHistory")) || [];
+let history=JSON.parse(localStorage.getItem("diagHistory"))||[];
 let output="";
 history.slice(-5).reverse().forEach(h=>{
     output+=`<div>${h.waktu} - ${h.nama} - ${h.hasil}</div>`;
@@ -161,6 +170,7 @@ document.getElementById("riwayat").innerHTML=output;
 }
 
 loadHistory();
+
 </script>
 
 </body>
