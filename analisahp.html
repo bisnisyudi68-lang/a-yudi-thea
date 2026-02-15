@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Analisa HP Mati - Mode Teknisi Pro</title>
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+    color:white;
+    margin:0;
+    padding:0;
+}
+header{
+    text-align:center;
+    padding:25px;
+    background:rgba(0,0,0,0.3);
+}
+h1{
+    margin:0;
+}
+.container{
+    max-width:900px;
+    margin:20px auto;
+    background:rgba(255,255,255,0.05);
+    padding:25px;
+    border-radius:12px;
+    box-shadow:0 0 15px rgba(0,0,0,0.4);
+}
+label{
+    font-weight:bold;
+}
+input, select{
+    width:100%;
+    padding:10px;
+    margin:8px 0 15px;
+    border-radius:6px;
+    border:none;
+}
+button{
+    padding:12px;
+    width:100%;
+    border:none;
+    border-radius:8px;
+    background:#00c6ff;
+    color:black;
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.3s;
+}
+button:hover{
+    background:#00ffcc;
+}
+.result{
+    margin-top:20px;
+    padding:15px;
+    background:rgba(0,0,0,0.4);
+    border-radius:10px;
+}
+footer{
+    text-align:center;
+    padding:15px;
+    font-size:13px;
+    opacity:0.7;
+}
+</style>
+</head>
+<body>
+
+<header>
+<h1>🔧 ANALISA HP MATI</h1>
+<p>Mode Teknisi Senior - Diagnosa Awal Kerusakan</p>
+</header>
+
+<div class="container">
+
+<label>Tipe HP</label>
+<input type="text" id="tipe" placeholder="Contoh: Vivo Y12, Oppo A16, Samsung A12">
+
+<label>Cek USB Doctor (Ampere Saat Dicas)</label>
+<select id="usbdoctor">
+<option value="">-- Pilih Hasil --</option>
+<option value="0">0.00A (Tidak Ada Arus)</option>
+<option value="short">Naik Turun / Short</option>
+<option value="normal">0.5A - 1A Normal</option>
+</select>
+
+<label>Cek Power Supply</label>
+<select id="ps">
+<option value="">-- Pilih Hasil --</option>
+<option value="0">0.00A</option>
+<option value="short">Langsung 1A / Short</option>
+<option value="standby">0.01A - 0.05A Standby</option>
+</select>
+
+<label>Terdeteksi di USB Device?</label>
+<select id="usbdevice">
+<option value="">-- Pilih --</option>
+<option value="tidak">Tidak Terdeteksi</option>
+<option value="mtk">MTK USB Port</option>
+<option value="qualcomm">Qualcomm 9008</option>
+</select>
+
+<button onclick="analisa()">ANALISA SEKARANG</button>
+
+<div class="result" id="hasil"></div>
+
+</div>
+
+<footer>
+© 2026 Teknisi Mode Pro | Sistem Analisa Awal HP Mati
+</footer>
+
+<script>
+function analisa(){
+    let usbdoctor = document.getElementById("usbdoctor").value;
+    let ps = document.getElementById("ps").value;
+    let usbdevice = document.getElementById("usbdevice").value;
+    let hasil = "";
+
+    if(usbdoctor=="0" && ps=="0"){
+        hasil = "Kemungkinan: IC Power / Jalur Putus / Baterai Putus.";
+    }
+    else if(ps=="short"){
+        hasil = "Kemungkinan: Konsleting Jalur Vbat / IC Power Short / Kapasitor Short.";
+    }
+    else if(usbdevice=="mtk"){
+        hasil = "HP Masuk Mode MTK. Kemungkinan Bootloop / Firmware Rusak.";
+    }
+    else if(usbdevice=="qualcomm"){
+        hasil = "HP Masuk EDL 9008. Kemungkinan Emmc / UFS / Software Error.";
+    }
+    else if(usbdoctor=="normal" && ps=="standby"){
+        hasil = "Arus Normal. Cek Tombol Power / LCD / Fleksibel.";
+    }
+    else{
+        hasil = "Data belum lengkap. Isi semua kolom agar analisa lebih akurat.";
+    }
+
+    document.getElementById("hasil").innerHTML = "<b>Hasil Analisa:</b><br><br>"+hasil;
+}
+</script>
+
+</body>
+</html>
