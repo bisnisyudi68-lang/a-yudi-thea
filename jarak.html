@@ -4,9 +4,6 @@
 <meta charset="UTF-8">
 <title>Toko Siap Antar</title>
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-
 <style>
 body{font-family:Arial;background:#f4f4f4;padding:20px;}
 .card{
@@ -40,55 +37,59 @@ button{
 <label><input type="checkbox" value="60000"> Beras 5kg - Rp60.000</label><br>
 <label><input type="checkbox" value="14000"> Gula 1kg - Rp14.000</label><br>
 
-<h3>Pilih Lokasi Rumah (Klik Map)</h3>
+<h3>Pilih Lokasi Rumah (Satelit)</h3>
 <div id="map"></div>
 
 <button onclick="proses()">Setuju & Kirim ke WhatsApp</button>
 </div>
 
 <script>
-const tokoLat = -6.883831;
-const tokoLng = 108.302788;
+const toko = { lat: -6.883831, lng: 108.302788 };
 
 const kmPerLiter = 50;
-const hargaPerLiter = 10000;
+const hargaPerLiter = 15000;
 const biayaJasa = 3000;
 const biayaPerawatan = 2000;
 const minimumOngkir = 7000;
 
-let tujuanLat = null;
-let tujuanLng = null;
+let tujuan = null;
+let map;
+let marker;
 
-// Setup map
-var map = L.map('map').setView([tokoLat, tokoLng], 13);
+function initMap() {
 
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
- attribution: '© OpenStreetMap'
-}).addTo(map);
+ map = new google.maps.Map(document.getElementById("map"), {
+   center: toko,
+   zoom: 15,
+   mapTypeId: 'satellite'
+ });
 
-// Marker toko
-L.marker([tokoLat, tokoLng]).addTo(map)
-.bindPopup("Lokasi Toko").openPopup();
+ new google.maps.Marker({
+   position: toko,
+   map: map,
+   title: "Lokasi Toko"
+ });
 
-let markerTujuan;
+ map.addListener("click", (e) => {
+   tujuan = e.latLng;
 
-map.on('click', function(e){
- tujuanLat = e.latlng.lat;
- tujuanLng = e.latlng.lng;
+   if(marker){
+     marker.setMap(null);
+   }
 
- if(markerTujuan){
-   map.removeLayer(markerTujuan);
- }
+   marker = new google.maps.Marker({
+     position: tujuan,
+     map: map
+   });
+ });
 
- markerTujuan = L.marker([tujuanLat, tujuanLng]).addTo(map)
- .bindPopup("Lokasi Rumah").openPopup();
-});
+}
 
 async function proses(){
 
  let barang = document.querySelectorAll("input[type=checkbox]:checked");
 
- if(barang.length === 0 || tujuanLat === null){
+ if(barang.length === 0 || tujuan === null){
    alert("Pilih barang dan klik lokasi rumah dulu!");
    return;
  }
@@ -98,35 +99,50 @@ async function proses(){
    totalBarang += parseInt(item.value);
  });
 
- let route = await fetch(
- `https://router.project-osrm.org/route/v1/driving/${tokoLng},${tokoLat};${tujuanLng},${tujuanLat}?overview=false`
- );
+ let service = new google.maps.DistanceMatrixService();
 
- let routeData = await route.json();
- let jarakKm = routeData.routes[0].distance / 1000;
+ service.getDistanceMatrix({
+   origins: [toko],
+   destinations: [tujuan],
+   travelMode: 'DRIVING',
+ }, function(response,status){
 
- let bensin = jarakKm / kmPerLiter;
- let biayaBBM = (bensin * hargaPerLiter) * 2;
+   if(status !== "OK"){
+     alert("Gagal hitung jarak");
+     return;
+   }
 
- let ongkir = biayaBBM + biayaJasa + biayaPerawatan;
+   let jarakKm = response.rows[0].elements[0].distance.value / 1000;
 
- if(ongkir < minimumOngkir){
-   ongkir = minimumOngkir;
- }
+   let bensin = jarakKm / kmPerLiter;
+   let biayaBBM = (bensin * hargaPerLiter) * 2;
 
- ongkir = Math.ceil(ongkir / 1000) * 1000;
+   let ongkir = biayaBBM + biayaJasa + biayaPerawatan;
 
- let totalBayar = totalBarang + ongkir;
+   if(ongkir < minimumOngkir){
+     ongkir = minimumOngkir;
+   }
 
- let pesan =
- "Halo, saya mau pesan:%0A%0A" +
- "Total Barang: Rp" + totalBarang.toLocaleString() + "%0A" +
- "Jarak: " + jarakKm.toFixed(1) + " km%0A" +
- "Ongkir: Rp" + ongkir.toLocaleString() + "%0A" +
- "TOTAL BAYAR: Rp" + totalBayar.toLocaleString();
+   ongkir = Math.ceil(ongkir / 1000) * 1000;
 
- window.open("https://wa.me/6282319264646?text=" + pesan);
+   let totalBayar = totalBarang + ongkir;
+
+   let pesan =
+   "Halo, saya mau pesan:%0A%0A" +
+   "Total Barang: Rp" + totalBarang.toLocaleString() + "%0A" +
+   "Jarak: " + jarakKm.toFixed(1) + " km%0A" +
+   "Ongkir: Rp" + ongkir.toLocaleString() + "%0A" +
+   "TOTAL BAYAR: Rp" + totalBayar.toLocaleString();
+
+   window.open("https://wa.me/6282319264646?text=" + pesan);
+
+ });
+
 }
+</script>
+
+<script async
+src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap">
 </script>
 
 </body>
