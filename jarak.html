@@ -75,7 +75,12 @@ L.tileLayer(
    attribution: 'Tiles © Esri'
  }
 ).addTo(map);
-
+L.tileLayer(
+ 'https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',
+ {
+   attribution: 'Labels © Esri'
+ }
+).addTo(map);
 // Marker toko
 L.marker([tokoLat, tokoLng]).addTo(map)
 .bindPopup("Lokasi Toko").openPopup();
