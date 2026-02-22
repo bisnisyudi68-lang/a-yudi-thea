@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Toko Siap Antar</title>
+<style>
+body{
+  font-family: Arial;
+  background:#f4f4f4;
+  padding:20px;
+}
+.card{
+  background:white;
+  padding:20px;
+  border-radius:10px;
+  box-shadow:0 0 10px rgba(0,0,0,0.1);
+  max-width:500px;
+  margin:auto;
+}
+h2{text-align:center;}
+button{
+  background:green;
+  color:white;
+  padding:10px;
+  border:none;
+  border-radius:5px;
+  width:100%;
+  font-size:16px;
+}
+.total{
+  font-weight:bold;
+  margin-top:10px;
+}
+</style>
+</head>
+<body>
+
+<div class="card">
+<h2>🛒 Toko Siap Antar</h2>
+
+<h3>Pilih Barang</h3>
+<label><input type="checkbox" value="Minyak Goreng - 15000"> Minyak Goreng - Rp15.000</label><br>
+<label><input type="checkbox" value="Beras 5kg - 60000"> Beras 5kg - Rp60.000</label><br>
+<label><input type="checkbox" value="Gula 1kg - 14000"> Gula 1kg - Rp14.000</label><br><br>
+
+<label>Alamat Pembeli</label><br>
+<textarea id="alamat" rows="3" style="width:100%;"></textarea><br><br>
+
+<label>Jarak (km)</label><br>
+<input type="number" id="jarak" style="width:100%;"><br><br>
+
+<div class="total" id="hasil"></div><br>
+
+<button onclick="kirimWA()">Setuju & Kirim ke WhatsApp</button>
+</div>
+
+<script>
+const kmPerLiter = 50;
+const hargaPerLiter = 10000;
+
+function hitung() {
+  let jarak = document.getElementById("jarak").value;
+  if(jarak == "") return;
+
+  let bensin = jarak / kmPerLiter;
+  let ongkir = (bensin * hargaPerLiter) * 2;
+  ongkir = Math.ceil(ongkir);
+
+  document.getElementById("hasil").innerHTML =
+  "Estimasi Ongkir: Rp" + ongkir.toLocaleString();
+}
+
+document.getElementById("jarak").addEventListener("input", hitung);
+
+function kirimWA(){
+  let alamat = document.getElementById("alamat").value;
+  let jarak = document.getElementById("jarak").value;
+  let barang = document.querySelectorAll("input[type=checkbox]:checked");
+
+  if(barang.length == 0 || alamat == "" || jarak == ""){
+    alert("Lengkapi dulu ya!");
+    return;
+  }
+
+  let listBarang = "";
+  barang.forEach(item=>{
+    listBarang += "- " + item.value + "%0A";
+  });
+
+  let bensin = jarak / kmPerLiter;
+  let ongkir = (bensin * hargaPerLiter) * 2;
+  ongkir = Math.ceil(ongkir);
+
+  let pesan = "Halo, saya mau pesan:%0A%0A"
+              + listBarang
+              + "%0AAlamat:%0A" + alamat + "%0A"
+              + "Jarak: " + jarak + " km%0A"
+              + "Ongkir: Rp" + ongkir;
+
+  window.open("https://wa.me/6282319264646?text=" + pesan);
+}
+</script>
+
+</body>
+</html>
