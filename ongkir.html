@@ -41,17 +41,21 @@ style="width:100%;padding:8px;">
 
 <script>
 
-// ================= GOOGLE SHEET =================
+// ================= DATA GLOBAL =================
+let dataProduk=[];
+let produkDipilih=new Set();
+
 const sheetId="1iPbtRGldW5yz6tuUZ5oHzMGsnNb4cHyCbAEMkq51qK4";
 const tabProduk="Stock Konter";
 
+// ================= LOAD GOOGLE SHEET =================
 fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?sheet=${encodeURIComponent(tabProduk)}`)
 .then(r=>r.text())
 .then(t=>{
  const json=JSON.parse(t.substring(47).slice(0,-2));
  const rows=json.table.rows;
 
- window.dataProduk=rows
+ dataProduk=rows
  .filter(r=>r.c[0] && r.c[1])
  .map(r=>({
    kode:r.c[0]?.v||"",
@@ -63,15 +67,19 @@ fetch(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?sheet=${encodeU
  tampilProduk(dataProduk);
 });
 
-function tampilProduk(d){
+// ================= TAMPIL PRODUK =================
+function tampilProduk(list){
  hasil.innerHTML="";
- d.forEach(p=>{
+ list.forEach(p=>{
+
+  let checked=produkDipilih.has(p.kode)?"checked":"";
+
   hasil.innerHTML+=`
   <div class="card">
    <label>
    <input type="checkbox"
-   value="${p.harga}"
-   data-nama="${p.nama}"
+   ${checked}
+   onchange="toggleProduk('${p.kode}',this)"
    ${p.stok<=0?"disabled":""}>
    <b>${p.kode}</b><br>
    ${p.nama}<br>
@@ -80,6 +88,14 @@ function tampilProduk(d){
    </label>
   </div>`;
  });
+}
+
+function toggleProduk(kode,el){
+ if(el.checked){
+  produkDipilih.add(kode);
+ }else{
+  produkDipilih.delete(kode);
+ }
 }
 
 function filterProduk(){
@@ -91,11 +107,12 @@ function filterProduk(){
 }
 
 function ambilProduk(){
- let checked=document.querySelectorAll("input[type=checkbox]:checked");
  let total=0, daftar="";
- checked.forEach(i=>{
-   total+=parseInt(i.value);
-   daftar+=`- ${i.dataset.nama} (Rp ${parseInt(i.value).toLocaleString()})\n`;
+ dataProduk.forEach(p=>{
+  if(produkDipilih.has(p.kode)){
+   total+=p.harga;
+   daftar+=`- ${p.nama} (Rp ${p.harga.toLocaleString()})\n`;
+  }
  });
  return {total,daftar};
 }
@@ -126,7 +143,6 @@ let marker;
 map.on('click',function(e){
  tujuanLat=e.latlng.lat;
  tujuanLng=e.latlng.lng;
-
  if(marker) map.removeLayer(marker);
  marker=L.marker([tujuanLat,tujuanLng])
  .addTo(map).bindPopup("Lokasi Rumah").openPopup();
@@ -134,12 +150,12 @@ map.on('click',function(e){
 
 function pakaiGPS(){
  navigator.geolocation.getCurrentPosition(pos=>{
-   tujuanLat=pos.coords.latitude;
-   tujuanLng=pos.coords.longitude;
-   map.setView([tujuanLat,tujuanLng],17);
-   if(marker) map.removeLayer(marker);
-   marker=L.marker([tujuanLat,tujuanLng])
-   .addTo(map).bindPopup("Lokasi Anda").openPopup();
+  tujuanLat=pos.coords.latitude;
+  tujuanLng=pos.coords.longitude;
+  map.setView([tujuanLat,tujuanLng],17);
+  if(marker) map.removeLayer(marker);
+  marker=L.marker([tujuanLat,tujuanLng])
+  .addTo(map).bindPopup("Lokasi Anda").openPopup();
  },()=>alert("Aktifkan izin lokasi"));
 }
 
