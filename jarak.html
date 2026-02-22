@@ -76,9 +76,11 @@ L.tileLayer(
  }
 ).addTo(map);
 L.tileLayer(
- 'https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',
+ 'https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png',
  {
-   attribution: 'Labels © Esri'
+   attribution: 'Labels © CARTO',
+   subdomains: 'abcd',
+   maxZoom: 20
  }
 ).addTo(map);
 // Marker toko
