@@ -33,7 +33,7 @@ button{
   border-radius:5px;
   width:100%;
   font-size:16px;
-  margin-top:10px;
+  margin-top:8px;
 }
 </style>
 </head>
@@ -47,8 +47,9 @@ button{
 <label><input type="checkbox" value="60000"> Beras 5kg - Rp60.000</label><br>
 <label><input type="checkbox" value="14000"> Gula 1kg - Rp14.000</label><br>
 
-<h3>Pilih Lokasi Rumah (Klik Map)</h3>
+<h3>Pilih Lokasi Rumah</h3>
 <div id="map"></div>
+
 <button onclick="ambilLokasi()">📍 Gunakan Lokasi Saya</button>
 <button onclick="proses()">Setuju & Kirim ke WhatsApp</button>
 </div>
@@ -66,15 +67,15 @@ const minimumOngkir = 7000;
 let tujuanLat = null;
 let tujuanLng = null;
 
-// Buat map satelit
+// MAP SATELIT
 var map = L.map('map').setView([tokoLat, tokoLng], 16);
 
 L.tileLayer(
  'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
- {
-   attribution: 'Tiles © Esri'
- }
+ { attribution: 'Tiles © Esri' }
 ).addTo(map);
+
+// Label kota/jalan
 L.tileLayer(
  'https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png',
  {
@@ -83,13 +84,16 @@ L.tileLayer(
    maxZoom: 20
  }
 ).addTo(map);
+
 // Marker toko
-L.marker([tokoLat, tokoLng]).addTo(map)
-.bindPopup("Lokasi Toko").openPopup();
+L.marker([tokoLat, tokoLng])
+ .addTo(map)
+ .bindPopup("Lokasi Toko")
+ .openPopup();
 
 let markerTujuan;
 
-// Klik map untuk pilih rumah
+// Klik map pilih rumah
 map.on('click', function(e){
 
  tujuanLat = e.latlng.lat;
@@ -106,12 +110,45 @@ map.on('click', function(e){
 
 });
 
+// GPS otomatis
+function ambilLokasi(){
+
+ if (!navigator.geolocation){
+   alert("HP tidak mendukung GPS");
+   return;
+ }
+
+ navigator.geolocation.getCurrentPosition(function(pos){
+
+   tujuanLat = pos.coords.latitude;
+   tujuanLng = pos.coords.longitude;
+
+   map.setView([tujuanLat, tujuanLng], 17);
+
+   if(markerTujuan){
+     map.removeLayer(markerTujuan);
+   }
+
+   markerTujuan = L.marker([tujuanLat, tujuanLng])
+     .addTo(map)
+     .bindPopup("Lokasi Rumah Anda")
+     .openPopup();
+
+ }, function(){
+   alert("Aktifkan GPS dan izinkan akses lokasi ya");
+ }, {
+   enableHighAccuracy: true
+ });
+
+}
+
+// PROSES HITUNG + KIRIM WA
 async function proses(){
 
  let barang = document.querySelectorAll("input[type=checkbox]:checked");
 
  if(barang.length === 0 || tujuanLat === null){
-   alert("Pilih barang dan klik lokasi rumah dulu!");
+   alert("Pilih barang dan tentukan lokasi rumah dulu!");
    return;
  }
 
@@ -120,13 +157,12 @@ async function proses(){
    totalBarang += parseInt(item.value);
  });
 
- // Hitung jarak pakai OSRM
+ // Hitung jarak
  let route = await fetch(
  `https://router.project-osrm.org/route/v1/driving/${tokoLng},${tokoLat};${tujuanLng},${tujuanLat}?overview=false`
  );
 
  let routeData = await route.json();
-
  let jarakKm = routeData.routes[0].distance / 1000;
 
  let bensin = jarakKm / kmPerLiter;
@@ -142,12 +178,17 @@ async function proses(){
 
  let totalBayar = totalBarang + ongkir;
 
+ // LINK GOOGLE MAPS TITIK PEMBELI
+ let linkMaps = "https://www.google.com/maps?q=" + tujuanLat + "," + tujuanLng;
+
  let pesan =
  "Halo, saya mau pesan:%0A%0A" +
  "Total Barang: Rp" + totalBarang.toLocaleString() + "%0A" +
  "Jarak: " + jarakKm.toFixed(1) + " km%0A" +
  "Ongkir: Rp" + ongkir.toLocaleString() + "%0A" +
- "TOTAL BAYAR: Rp" + totalBayar.toLocaleString();
+ "TOTAL BAYAR: Rp" + totalBayar.toLocaleString() + "%0A%0A" +
+ "Lokasi Rumah:%0A" + linkMaps;
+
  window.open("https://wa.me/6282319264646?text=" + pesan);
 
 }
