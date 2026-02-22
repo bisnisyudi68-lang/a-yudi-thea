@@ -49,7 +49,7 @@ button{
 
 <h3>Pilih Lokasi Rumah (Klik Map)</h3>
 <div id="map"></div>
-
+<button onclick="ambilLokasi()">📍 Gunakan Lokasi Saya</button>
 <button onclick="proses()">Setuju & Kirim ke WhatsApp</button>
 </div>
 
@@ -148,8 +148,7 @@ async function proses(){
  "Jarak: " + jarakKm.toFixed(1) + " km%0A" +
  "Ongkir: Rp" + ongkir.toLocaleString() + "%0A" +
  "TOTAL BAYAR: Rp" + totalBayar.toLocaleString();
-
-<button onclick="ambilLokasi()">📍 Gunakan Lokasi Saya</button> window.open("https://wa.me/6282319264646?text=" + pesan);
+ window.open("https://wa.me/6282319264646?text=" + pesan);
 
 }
 </script>
