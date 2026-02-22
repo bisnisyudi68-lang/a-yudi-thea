@@ -15,19 +15,27 @@ border-radius:8px;box-shadow:0 0 5px rgba(0,0,0,0.1);}
 button{width:100%;padding:12px;margin-top:8px;
 background:green;color:white;border:none;border-radius:5px;}
 .harga{color:#0a7a00;font-weight:bold;}
+input{margin-bottom:8px;}
 </style>
 </head>
 <body>
 
 <h2>🛒 Toko Siap Antar</h2>
 
-<input id="cari" placeholder="Cari nama / kode..." 
-onkeyup="filterProduk()" style="width:100%;padding:8px;">
+<input id="waPembeli"
+placeholder="Nomor WhatsApp Anda (08xxxx)"
+style="width:100%;padding:8px;">
+
+<input id="cari"
+placeholder="Cari nama / kode..."
+onkeyup="filterProduk()"
+style="width:100%;padding:8px;">
 
 <div id="hasil"></div>
 
 <h3>Pilih Lokasi Rumah</h3>
 <div id="map"></div>
+
 <button onclick="pakaiGPS()">📍 Gunakan Lokasi Saya</button>
 <button onclick="proses()">Setuju & Kirim ke WhatsApp</button>
 
@@ -61,8 +69,10 @@ function tampilProduk(d){
   hasil.innerHTML+=`
   <div class="card">
    <label>
-   <input type="checkbox" value="${p.harga}" 
-   data-nama="${p.nama}" ${p.stok<=0?"disabled":""}>
+   <input type="checkbox"
+   value="${p.harga}"
+   data-nama="${p.nama}"
+   ${p.stok<=0?"disabled":""}>
    <b>${p.kode}</b><br>
    ${p.nama}<br>
    <span class="harga">Rp ${p.harga.toLocaleString()}</span><br>
@@ -135,13 +145,22 @@ function pakaiGPS(){
 
 // ================= ONGKIR =================
 const kmPerLiter=50;
-const hargaPerLiter=15000;
+const hargaPerLiter=10000;
 const biayaJasa=3000;
 const biayaPerawatan=2000;
 const minimumOngkir=7000;
 
 async function proses(){
+
+ let noWaPembeli=document.getElementById("waPembeli").value.trim();
+
+ if(noWaPembeli===""){
+  alert("Masukkan nomor WhatsApp Anda dulu!");
+  return;
+ }
+
  let produk=ambilProduk();
+
  if(produk.total===0 || tujuanLat===null){
   alert("Pilih produk dan lokasi dulu!");
   return;
@@ -150,6 +169,7 @@ async function proses(){
  let r=await fetch(
  `https://router.project-osrm.org/route/v1/driving/${tokoLng},${tokoLat};${tujuanLng},${tujuanLat}?overview=false`
  );
+
  let data=await r.json();
  let jarakKm=data.routes[0].distance/1000;
 
@@ -165,6 +185,7 @@ async function proses(){
 
  let pesan=
  "Halo, saya mau pesan:%0A%0A"+
+ "Nomor Pembeli: "+noWaPembeli+"%0A%0A"+
  produk.daftar.replace(/\n/g,"%0A")+
  "%0ATotal Barang: Rp"+produk.total.toLocaleString()+
  "%0AJarak: "+jarakKm.toFixed(1)+" km"+
