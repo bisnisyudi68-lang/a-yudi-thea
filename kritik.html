@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Kritik & Saran</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kritik & Saran TESPOIN</title>
 
   <style>
+
     *{
       margin:0;
       padding:0;
@@ -25,92 +26,134 @@
 
     .card{
       background:white;
+      border-radius:20px;
       padding:20px;
-      border-radius:15px;
-      box-shadow:0 4px 10px rgba(0,0,0,0.1);
       margin-bottom:20px;
+      box-shadow:0 4px 12px rgba(0,0,0,0.08);
     }
 
     h1{
       text-align:center;
-      margin-bottom:20px;
+      font-size:30px;
+      line-height:1.4;
+      margin-bottom:15px;
       color:#111827;
+    }
+
+    .desc{
+      text-align:center;
+      color:#4b5563;
+      line-height:1.6;
+      margin-bottom:25px;
     }
 
     textarea{
       width:100%;
-      min-height:120px;
       border:1px solid #d1d5db;
-      border-radius:10px;
-      padding:12px;
-      resize:none;
+      border-radius:15px;
+      padding:15px;
       font-size:16px;
-      margin-bottom:15px;
+      resize:none;
+      outline:none;
+    }
+
+    .main-textarea{
+      min-height:140px;
+    }
+
+    .reply-textarea{
+      min-height:80px;
+      margin-top:12px;
     }
 
     button{
-      background:#2563eb;
-      color:white;
       border:none;
-      padding:12px 20px;
-      border-radius:10px;
-      cursor:pointer;
+      border-radius:12px;
+      padding:12px 22px;
+      color:white;
       font-size:16px;
-      transition:0.3s;
+      cursor:pointer;
+      margin-top:15px;
     }
 
-    button:hover{
-      background:#1d4ed8;
+    .btn-kirim{
+      background:#2563eb;
+    }
+
+    .btn-balas{
+      background:#059669;
+    }
+
+    .btn-hapus{
+      background:#dc2626;
+      padding:8px 14px;
+      font-size:14px;
+      margin-top:0;
+    }
+
+    .judul-list{
+      font-size:28px;
+      font-weight:bold;
+      margin-bottom:20px;
+      color:#111827;
     }
 
     .item{
-      border:1px solid #e5e7eb;
-      padding:15px;
-      border-radius:12px;
-      margin-bottom:15px;
       background:#fafafa;
+      border:1px solid #e5e7eb;
+      border-radius:18px;
+      padding:18px;
+      margin-bottom:20px;
     }
 
-    .kritik-text{
-      font-size:16px;
-      margin-bottom:15px;
+    .kritik{
+      font-size:18px;
+      line-height:1.6;
       color:#111827;
       white-space:pre-wrap;
     }
 
-    .balasan{
+    .reply-box{
       background:#eef2ff;
-      padding:10px;
-      border-radius:10px;
-      margin-top:10px;
+      border-radius:15px;
+      padding:15px;
+      margin-top:15px;
     }
 
-    .balasan textarea{
-      min-height:80px;
-      margin-top:10px;
+    .reply-header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:10px;
     }
 
-    .reply-btn{
-      margin-top:10px;
-      background:#059669;
-    }
-
-    .reply-btn:hover{
-      background:#047857;
-    }
-
-    .judul{
-      font-size:22px;
+    .reply-title{
       font-weight:bold;
-      margin-bottom:15px;
-      color:#1f2937;
+      color:#111827;
     }
 
-    .kosong{
+    .reply-text{
+      line-height:1.6;
+      color:#111827;
+      white-space:pre-wrap;
+    }
+
+    .sub-reply{
+      margin-top:10px;
+      background:#f8fafc;
+      border-left:4px solid #94a3b8;
+      border-radius:10px;
+      padding:10px;
+      color:#374151;
+      line-height:1.5;
+    }
+
+    .empty{
       text-align:center;
       color:#6b7280;
       padding:20px;
     }
+
   </style>
 </head>
 
@@ -119,43 +162,55 @@
 <div class="container">
 
   <div class="card">
+
     <h1>
-  Menerima Kritikan atau Saran <br>
-  Untuk Kemajuan TESPOIN DPD Majalengka
-</h1>
+      Menerima Kritikan atau Saran
+      Untuk Kemajuan TESPOIN DPD Majalengka
+    </h1>
 
-<p style="text-align:center; margin-top:15px; color:#4b5563; font-size:16px; line-height:1.6;">
-  Silahkan tulis kritik dan saran anda di sini,<br>
-  dan siapapun bisa menanggapinya.
-</p>
+    <div class="desc">
+      Silahkan tulis kritik dan saran anda di sini,
+      dan siapapun bisa menanggapinya.
+    </div>
 
-    <textarea id="kritikInput" placeholder="Tulis kritik atau saran di sini..."></textarea>
+    <textarea
+      id="kritikInput"
+      class="main-textarea"
+      placeholder="Tulis kritik atau saran di sini..."></textarea>
 
-    <button onclick="tambahKritik()">Kirim</button>
+    <button class="btn-kirim" onclick="tambahKritik()">
+      Kirim
+    </button>
+
   </div>
 
   <div class="card">
-    <div class="judul">Daftar Kritik & Saran</div>
 
-    <div id="listKritik">
-      <div class="kosong">Belum ada kritik atau saran.</div>
+    <div class="judul-list">
+      Daftar Kritik & Saran
     </div>
+
+    <div id="listKritik"></div>
+
   </div>
 
 </div>
 
 <script>
+
 let dataKritik = JSON.parse(localStorage.getItem("kritikSaran")) || [];
 
-function simpanData() {
+function simpanData(){
   localStorage.setItem("kritikSaran", JSON.stringify(dataKritik));
 }
 
-function tambahKritik() {
+function tambahKritik(){
+
   const input = document.getElementById("kritikInput");
+
   const pesan = input.value.trim();
 
-  if (pesan === "") {
+  if(pesan === ""){
     alert("Isi kritik atau saran terlebih dahulu!");
     return;
   }
@@ -171,46 +226,70 @@ function tambahKritik() {
   input.value = "";
 }
 
-function tambahBalasan(index, parentReply = null) {
+function tambahBalasan(index){
 
-  let textarea;
-
-  if(parentReply === null){
-    textarea = document.getElementById(`reply-${index}`);
-  } else {
-    textarea = document.getElementById(`reply-${index}-${parentReply}`);
-  }
+  const textarea = document.getElementById(`reply-${index}`);
 
   const isi = textarea.value.trim();
 
-  if (isi === "") {
+  if(isi === ""){
     alert("Isi tanggapan terlebih dahulu!");
     return;
   }
 
-  if(parentReply === null){
-
-    dataKritik[index].replies.push({
-      text: isi,
-      subReplies: []
-    });
-
-  } else {
-
-    dataKritik[index].replies[parentReply].subReplies.push(isi);
-
-  }
+  dataKritik[index].replies.push({
+    text: isi,
+    subReplies: []
+  });
 
   simpanData();
   tampilkanData();
 }
 
-function tampilkanData() {
+function tambahSubBalasan(index, replyIndex){
+
+  const textarea = document.getElementById(`subreply-${index}-${replyIndex}`);
+
+  const isi = textarea.value.trim();
+
+  if(isi === ""){
+    alert("Isi balasan terlebih dahulu!");
+    return;
+  }
+
+  dataKritik[index].replies[replyIndex].subReplies.push(isi);
+
+  simpanData();
+  tampilkanData();
+}
+
+function hapusTanggapan(index, replyIndex){
+
+  const yakin = confirm("Hapus tanggapan ini?");
+
+  if(yakin){
+
+    dataKritik[index].replies.splice(replyIndex, 1);
+
+    simpanData();
+    tampilkanData();
+
+  }
+
+}
+
+function tampilkanData(){
 
   const list = document.getElementById("listKritik");
 
-  if (dataKritik.length === 0) {
-    list.innerHTML = '<div class="kosong">Belum ada kritik atau saran.</div>';
+  if(dataKritik.length === 0){
+
+    list.innerHTML = `
+      <div class="empty">
+        Belum ada kritik atau saran.
+      </div>
+    `;
+
     return;
   }
 
@@ -218,76 +297,100 @@ function tampilkanData() {
 
   dataKritik.forEach((item, index) => {
 
-    let repliesHTML = "";
+    let replyHTML = "";
 
-    item.replies.forEach((reply, rIndex) => {
+    item.replies.forEach((reply, replyIndex) => {
 
-      let subReplyHTML = "";
+      let subHTML = "";
 
       reply.subReplies.forEach(sub => {
-        subReplyHTML += `
-          <div style="
-            margin-top:10px;
-            margin-left:20px;
-            background:#f3f4f6;
-            padding:10px;
-            border-radius:10px;
-          ">
-            ${sub}
+
+        subHTML += `
+          <div class="sub-reply">
+            ↳ ${sub}
           </div>
         `;
+
       });
 
-      repliesHTML += `
-        <div class="balasan">
-          <b>Tanggapan:</b><br>
-          ${reply.text}
+      replyHTML += `
 
-          ${subReplyHTML}
+        <div class="reply-box">
 
-          <textarea 
-            id="reply-${index}-${rIndex}" 
-            placeholder="Tanggapi balasan ini..."
-            style="margin-top:10px;">
-          </textarea>
+          <div class="reply-header">
 
-          <button 
-            class="reply-btn"
-            onclick="tambahBalasan(${index}, ${rIndex})">
+            <div class="reply-title">
+              Tanggapan:
+            </div>
+
+            <button
+              class="btn-hapus"
+              onclick="hapusTanggapan(${index}, ${replyIndex})">
+
+              Hapus
+
+            </button>
+
+          </div>
+
+          <div class="reply-text">
+            ${reply.text}
+          </div>
+
+          ${subHTML}
+
+          <textarea
+            id="subreply-${index}-${replyIndex}"
+            class="reply-textarea"
+            placeholder="Balas tanggapan ini..."></textarea>
+
+          <button
+            class="btn-balas"
+            onclick="tambahSubBalasan(${index}, ${replyIndex})">
+
             Balas Tanggapan
+
           </button>
+
         </div>
+
       `;
+
     });
 
-    const div = document.createElement("div");
+    list.innerHTML += `
 
-    div.className = "item";
+      <div class="item">
 
-    div.innerHTML = `
-      <div class="kritik-text">
-        ${item.pesan}
+        <div class="kritik">
+          ${item.pesan}
+        </div>
+
+        ${replyHTML}
+
+        <textarea
+          id="reply-${index}"
+          class="reply-textarea"
+          placeholder="Tulis tanggapan..."></textarea>
+
+        <button
+          class="btn-balas"
+          onclick="tambahBalasan(${index})">
+
+          Kirim Tanggapan
+
+        </button>
+
       </div>
 
-      ${repliesHTML}
-
-      <textarea 
-        id="reply-${index}" 
-        placeholder="Tulis tanggapan...">
-      </textarea>
-
-      <button 
-        class="reply-btn"
-        onclick="tambahBalasan(${index})">
-        Kirim Tanggapan
-      </button>
     `;
 
-    list.appendChild(div);
   });
+
 }
 
 tampilkanData();
+
 </script>
 
 </body>
