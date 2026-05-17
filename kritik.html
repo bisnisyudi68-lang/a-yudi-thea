@@ -145,85 +145,149 @@
 </div>
 
 <script>
-  let dataKritik = JSON.parse(localStorage.getItem("kritikSaran")) || [];
+let dataKritik = JSON.parse(localStorage.getItem("kritikSaran")) || [];
 
-  function simpanData(){
-    localStorage.setItem("kritikSaran", JSON.stringify(dataKritik));
+function simpanData() {
+  localStorage.setItem("kritikSaran", JSON.stringify(dataKritik));
+}
+
+function tambahKritik() {
+  const input = document.getElementById("kritikInput");
+  const pesan = input.value.trim();
+
+  if (pesan === "") {
+    alert("Isi kritik atau saran terlebih dahulu!");
+    return;
   }
 
-  function tampilkanData(){
-    const list = document.getElementById("listKritik");
+  dataKritik.unshift({
+    pesan: pesan,
+    replies: []
+  });
 
-    if(dataKritik.length === 0){
-      list.innerHTML = '<div class="kosong">Belum ada kritik atau saran.</div>';
-      return;
-    }
-
-    list.innerHTML = "";
-
-    dataKritik.reverse().forEach((item, index) => {
-
-      const div = document.createElement("div");
-      div.className = "item";
-
-      div.innerHTML = `
-        <div class="kritik-text">${item.pesan}</div>
-
-        ${
-          item.balasan
-          ? `<div class="balasan"><b>Tanggapan:</b><br>${item.balasan}</div>`
-          : `
-            <textarea id="balas-${index}" placeholder="Tulis tanggapan..."></textarea>
-            <button class="reply-btn" onclick="balasKritik(${dataKritik.length - 1 - index})">
-              Kirim Tanggapan
-            </button>
-          `
-        }
-      `;
-
-      list.appendChild(div);
-    });
-
-    dataKritik.reverse();
-  }
-
-  function tambahKritik(){
-    const input = document.getElementById("kritikInput");
-    const pesan = input.value.trim();
-
-    if(pesan === ""){
-      alert("Isi kritik atau saran terlebih dahulu!");
-      return;
-    }
-
-    dataKritik.push({
-      pesan: pesan,
-      balasan: ""
-    });
-
-    simpanData();
-    tampilkanData();
-
-    input.value = "";
-  }
-
-  function balasKritik(index){
-    const textarea = document.getElementById(`balas-${dataKritik.length - 1 - index}`);
-
-    const isiBalasan = textarea.value.trim();
-
-    if(isiBalasan === ""){
-      alert("Isi tanggapan terlebih dahulu!");
-      return;
-    }
-
-    dataKritik[index].balasan = isiBalasan;
-
-    simpanData();
-    tampilkanData();
-  }
-
+  simpanData();
   tampilkanData();
+
+  input.value = "";
+}
+
+function tambahBalasan(index, parentReply = null) {
+
+  let textarea;
+
+  if(parentReply === null){
+    textarea = document.getElementById(`reply-${index}`);
+  } else {
+    textarea = document.getElementById(`reply-${index}-${parentReply}`);
+  }
+
+  const isi = textarea.value.trim();
+
+  if (isi === "") {
+    alert("Isi tanggapan terlebih dahulu!");
+    return;
+  }
+
+  if(parentReply === null){
+
+    dataKritik[index].replies.push({
+      text: isi,
+      subReplies: []
+    });
+
+  } else {
+
+    dataKritik[index].replies[parentReply].subReplies.push(isi);
+
+  }
+
+  simpanData();
+  tampilkanData();
+}
+
+function tampilkanData() {
+
+  const list = document.getElementById("listKritik");
+
+  if (dataKritik.length === 0) {
+    list.innerHTML = '<div class="kosong">Belum ada kritik atau saran.</div>';
+    return;
+  }
+
+  list.innerHTML = "";
+
+  dataKritik.forEach((item, index) => {
+
+    let repliesHTML = "";
+
+    item.replies.forEach((reply, rIndex) => {
+
+      let subReplyHTML = "";
+
+      reply.subReplies.forEach(sub => {
+        subReplyHTML += `
+          <div style="
+            margin-top:10px;
+            margin-left:20px;
+            background:#f3f4f6;
+            padding:10px;
+            border-radius:10px;
+          ">
+            ${sub}
+          </div>
+        `;
+      });
+
+      repliesHTML += `
+        <div class="balasan">
+          <b>Tanggapan:</b><br>
+          ${reply.text}
+
+          ${subReplyHTML}
+
+          <textarea 
+            id="reply-${index}-${rIndex}" 
+            placeholder="Tanggapi balasan ini..."
+            style="margin-top:10px;">
+          </textarea>
+
+          <button 
+            class="reply-btn"
+            onclick="tambahBalasan(${index}, ${rIndex})">
+            Balas Tanggapan
+          </button>
+        </div>
+      `;
+    });
+
+    const div = document.createElement("div");
+
+    div.className = "item";
+
+    div.innerHTML = `
+      <div class="kritik-text">
+        ${item.pesan}
+      </div>
+
+      ${repliesHTML}
+
+      <textarea 
+        id="reply-${index}" 
+        placeholder="Tulis tanggapan...">
+      </textarea>
+
+      <button 
+        class="reply-btn"
+        onclick="tambahBalasan(${index})">
+        Kirim Tanggapan
+      </button>
+    `;
+
+    list.appendChild(div);
+  });
+}
+
+tampilkanData();
 </script>
 
 </body>
