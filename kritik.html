@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kritik & Saran</title>
+
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:Arial, sans-serif;
+    }
+
+    body{
+      background:#f3f4f6;
+      padding:20px;
+    }
+
+    .container{
+      max-width:800px;
+      margin:auto;
+    }
+
+    .card{
+      background:white;
+      padding:20px;
+      border-radius:15px;
+      box-shadow:0 4px 10px rgba(0,0,0,0.1);
+      margin-bottom:20px;
+    }
+
+    h1{
+      text-align:center;
+      margin-bottom:20px;
+      color:#111827;
+    }
+
+    textarea{
+      width:100%;
+      min-height:120px;
+      border:1px solid #d1d5db;
+      border-radius:10px;
+      padding:12px;
+      resize:none;
+      font-size:16px;
+      margin-bottom:15px;
+    }
+
+    button{
+      background:#2563eb;
+      color:white;
+      border:none;
+      padding:12px 20px;
+      border-radius:10px;
+      cursor:pointer;
+      font-size:16px;
+      transition:0.3s;
+    }
+
+    button:hover{
+      background:#1d4ed8;
+    }
+
+    .item{
+      border:1px solid #e5e7eb;
+      padding:15px;
+      border-radius:12px;
+      margin-bottom:15px;
+      background:#fafafa;
+    }
+
+    .kritik-text{
+      font-size:16px;
+      margin-bottom:15px;
+      color:#111827;
+      white-space:pre-wrap;
+    }
+
+    .balasan{
+      background:#eef2ff;
+      padding:10px;
+      border-radius:10px;
+      margin-top:10px;
+    }
+
+    .balasan textarea{
+      min-height:80px;
+      margin-top:10px;
+    }
+
+    .reply-btn{
+      margin-top:10px;
+      background:#059669;
+    }
+
+    .reply-btn:hover{
+      background:#047857;
+    }
+
+    .judul{
+      font-size:22px;
+      font-weight:bold;
+      margin-bottom:15px;
+      color:#1f2937;
+    }
+
+    .kosong{
+      text-align:center;
+      color:#6b7280;
+      padding:20px;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="card">
+    <h1>Halaman Kritik & Saran</h1>
+
+    <textarea id="kritikInput" placeholder="Tulis kritik atau saran di sini..."></textarea>
+
+    <button onclick="tambahKritik()">Kirim</button>
+  </div>
+
+  <div class="card">
+    <div class="judul">Daftar Kritik & Saran</div>
+
+    <div id="listKritik">
+      <div class="kosong">Belum ada kritik atau saran.</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  let dataKritik = JSON.parse(localStorage.getItem("kritikSaran")) || [];
+
+  function simpanData(){
+    localStorage.setItem("kritikSaran", JSON.stringify(dataKritik));
+  }
+
+  function tampilkanData(){
+    const list = document.getElementById("listKritik");
+
+    if(dataKritik.length === 0){
+      list.innerHTML = '<div class="kosong">Belum ada kritik atau saran.</div>';
+      return;
+    }
+
+    list.innerHTML = "";
+
+    dataKritik.reverse().forEach((item, index) => {
+
+      const div = document.createElement("div");
+      div.className = "item";
+
+      div.innerHTML = `
+        <div class="kritik-text">${item.pesan}</div>
+
+        ${
+          item.balasan
+          ? `<div class="balasan"><b>Tanggapan:</b><br>${item.balasan}</div>`
+          : `
+            <textarea id="balas-${index}" placeholder="Tulis tanggapan..."></textarea>
+            <button class="reply-btn" onclick="balasKritik(${dataKritik.length - 1 - index})">
+              Kirim Tanggapan
+            </button>
+          `
+        }
+      `;
+
+      list.appendChild(div);
+    });
+
+    dataKritik.reverse();
+  }
+
+  function tambahKritik(){
+    const input = document.getElementById("kritikInput");
+    const pesan = input.value.trim();
+
+    if(pesan === ""){
+      alert("Isi kritik atau saran terlebih dahulu!");
+      return;
+    }
+
+    dataKritik.push({
+      pesan: pesan,
+      balasan: ""
+    });
+
+    simpanData();
+    tampilkanData();
+
+    input.value = "";
+  }
+
+  function balasKritik(index){
+    const textarea = document.getElementById(`balas-${dataKritik.length - 1 - index}`);
+
+    const isiBalasan = textarea.value.trim();
+
+    if(isiBalasan === ""){
+      alert("Isi tanggapan terlebih dahulu!");
+      return;
+    }
+
+    dataKritik[index].balasan = isiBalasan;
+
+    simpanData();
+    tampilkanData();
+  }
+
+  tampilkanData();
+</script>
+
+</body>
+</html>
